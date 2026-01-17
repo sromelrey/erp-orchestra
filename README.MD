@@ -35,15 +35,10 @@ Orchestrator is designed to be modular, scalable, and easy to maintain:
 ## Architecture
 ```bash
 erp-orchestra/
-├── apps/
-│   ├── hris-orchestra/ # HRIS frontend (Next.js)
-│   ├── ais-orchestra/ # AIS frontend (Next.js)
-│   ├── crm-orchestra/ # CRM frontend (Next.js)
-│   ├── pms-orchestra/ # PMS frontend (Next.js)
-│   └── backend-orchestra/ # Modular backend (NestJS)
-├── packages/
-│   └── core-orchestra/ # Reusable components & utilities
-├── package.json # Root dependencies
+├── admin.orchestra.com # Admin console (system config, RBAC, tenant management)
+├── portal.orchestra.com  # User-facing apps (HRIS, AIS, CRM, PMS)
+├── api.orchestra.com     # Backend API (NestJS, modular services)
+└── core-orchestra.com    # Shared core (UI components, utilities)
 └── README.md
 ```
 
