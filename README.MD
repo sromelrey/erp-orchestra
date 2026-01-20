@@ -1,6 +1,6 @@
 # Orchestrator ERP
 
-Orchestrator is a **modular and affordable ERP system** designed for small to medium enterprises. It integrates multiple modules such as **HRIS, Accounting (AIS), Property Management (PMS), and CRM** into a scalable architecture with **centralized RBAC** and separate databases for each module.
+Orchestrator is a **modular and affordable ERP system** designed for small to medium enterprises. It integrates core operational, financial, and human resource modules into a scalable architecture with **portal-based RBAC** and separate databases for each module.
 
 ---
 
@@ -8,14 +8,10 @@ Orchestrator is a **modular and affordable ERP system** designed for small to me
 
 - [Overview](#overview)
 - [Architecture](#architecture)
-- [Features](#features)
+- [Module Features](#module-features)
 - [Tech Stack](#tech-stack)
 - [Setup & Installation](#setup--installation)
-- [Database Schema](#database-schema)
 - [Authentication & RBAC](#authentication--rbac)
-- [Module Development](#module-development)
-- [Testing](#testing)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -24,70 +20,113 @@ Orchestrator is a **modular and affordable ERP system** designed for small to me
 
 Orchestrator is designed to be modular, scalable, and easy to maintain:
 
-- **Separate Frontend Apps** for each module (HRIS, AIS, PMS, CRM)
-- **Single Modular Backend** handling RBAC, shared services, and module APIs
-- **Centralized RBAC** for user authentication and module-level access control
-- **Separate Databases** per module for scalability and maintainability
-- Future-ready for **microservices migration** if needed
+- **Unified Portal Experience**: Users and Company Admins share the same portal with permission-based views.
+- **Dedicated System Admin**: Separate console for tenant management and global system configuration.
+- **Integrated Core Operations**: Seamless flow from raw materials to final sales.
+- **Financial Intelligence**: Real-time cash flow and financial reporting.
+- **Strategic Oversight**: High-level dashboards and task-based execution.
+- **Separate Databases**: Per-module database architecture for scalability and maintainability.
 
 ---
 
 ## Architecture
+
 ```bash
 erp-orchestra/
-├── admin.orchestra.com # Admin console (system config, RBAC, tenant management)
-├── portal.orchestra.com  # User-facing apps (HRIS, AIS, CRM, PMS)
-├── api.orchestra.com     # Backend API (NestJS, modular services)
-└── core-orchestra.com    # Shared core (UI components, utilities)
+├── admin.orchestra.com       # Super Admin Console (Tenant mgmt, Billing, System Config)
+├── api.orchestra.com         # Backend API (NestJS, modular services)
+├── core-orchestra.com        # Shared core (UI components, utilities)
+├── [portal.orchestra.com/](https://portal.orchestra.com/)     # Main User Portal (The ERP System)
+│   ├── Operations & Inventory/
+│   │   ├── Material Master          # Item & SKU central database
+│   │   ├── Bill of Materials (BOM)  # Manufacturing recipes
+│   │   ├── Procurement              # Vendor ordering
+│   │   ├── Goods Receipt (GR)       # Inbound inventory log
+│   │   ├── Sales Order (SO)         # Customer commitments
+│   │   └── Goods Issue (GI)         # Outbound shipping log
+│   ├── Finance & Accounting/
+│   │   ├── Sales Invoice            # Revenue recording
+│   │   ├── Accounts Payable (AP)    # Expense tracking
+│   │   ├── Financial Reporting      # Daily analytics
+│   │   └── Cash Flow Analysis       # Real-time cash logs
+│   ├── Management & Strategy/
+│   │   ├── Project Management       # Kanban & tasks
+│   │   └── Executive Dashboard      # Metrics & visual goals
+│   ├── HRIS/
+│   │   ├── Employee                 # Staff records
+│   │   ├── TimeSheets               # Attendance tracking
+│   │   └── Payroll                  # Compensation management
+│   └── RBAC & Settings/             # Company Admin Settings
+│       ├── User Management          # Add/Invite employees
+│       ├── Roles & Permissions      # Assign access (e.g., "Warehouse View")
+│       └── Company Profile          # Logo, Tax ID, Address settings
 └── README.md
+
 ```
 
+---
 
-**Key Features**
-- Monorepo with independent apps & shared packages
-- Modular backend with separate databases for HRIS, AIS, PMS, CRM, and RBAC
-- Centralized RBAC for authentication & access control
-- Reusable components in `shared-orchestra`
-- CI/CD ready, compatible with Nx or Turborepo for efficient builds
+## Module Features
+
+| Module | Features Included | Primary Goal |
+| --- | --- | --- |
+| **Operations** | Material Master, BOM, Procurement, GR, SO, GI | Manage the lifecycle of physical goods and manufacturing. |
+| **Finance** | Invoicing, AP, Reporting, Cash Flow | Maintain financial health and audit-ready transaction logs. |
+| **Management** | Kanban, Project Tasks, Dashboard | Align daily tasks with long-term business targets. |
+| **HRIS** | Employee Data, TimeSheets, Payroll | Manage the workforce and labor cost allocation. |
+| **RBAC (Portal)** | User Mgmt, Roles | Allow Company Admins to manage their own employees' access. |
+| **Admin Console** | Tenants, Billing, Global Logs | (Separate App) For the System Owner to manage subscribers. |
 
 ---
 
-## Apps
+## Tech Stack
 
-| App Name | Tech | Description |
-|----------|------|-------------|
-| HRIS     | Next.js | Employee management, attendance, payroll integration |
-| AIS      | Next.js | Accounting, financial reports, invoicing |
-| CRM      | Next.js | Customer relationship management, sales pipeline |
-| PMS      | Next.js | Property management and asset tracking |
-| Backend  | NestJS | Modular backend, RBAC, shared services |
+* **Frontend**: Next.js (Portal and Admin are separate Next.js apps)
+* **Backend**: NestJS (Modular services with shared RBAC core)
+* **Database**: PostgreSQL (Independent schemas/databases per module)
+* **State Management**: Shared Core for UI components and utilities
 
 ---
 
-## Packages
-
-| Package | Purpose |
-|---------|---------|
-| shared-orchestra | Reusable UI components, hooks, utilities, services shared across all frontend apps |
-
----
-
-## Getting Started
+## Setup & Installation
 
 ### Prerequisites
-- Node.js >= 20
-- Yarn or PNPM
-- PostgreSQL >= 14
-- Docker (optional, for DB or local containers)
+
+* Node.js >= 20
+* PNPM or Yarn
+* PostgreSQL >= 14
+* Docker (optional)
 
 ### Installation
+
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/erp-orchestra.git
+git clone [https://github.com/yourusername/erp-orchestra.git](https://github.com/yourusername/erp-orchestra.git)
 cd erp-orchestra
 
-# Install dependencies for monorepo
-yarn install
-# or
+# Install dependencies
 pnpm install
 
+# Run the development environment
+pnpm dev
+
+```
+
+---
+
+## Authentication & RBAC
+
+Orchestrator uses a split-level **Role-Based Access Control** system:
+
+1. **System Level (admin.orchestra.com)**:
+* **Super Admin**: Can create new Tenants (Companies) and manage billing.
+
+
+2. **Tenant Level (portal.orchestra.com)**:
+* **Company Admin**: Accessed via `RBAC & Settings` folder. Can invite users and assign roles.
+* **Employees**: View only the modules assigned to their role (e.g., Warehouse Staff sees Operations; Accountants see Finance).
+
+
+
+```
+ 
