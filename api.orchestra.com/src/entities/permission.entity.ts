@@ -1,5 +1,5 @@
-import { Column, Entity, Index, OneToMany } from "typeorm";
-import { CommonEntity } from "@entities/index";
+import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { CommonEntity } from './common.entity';
 
 @Entity('permissions')
 @Index(['slug'], { unique: true, where: 'deleted_at IS NULL' })

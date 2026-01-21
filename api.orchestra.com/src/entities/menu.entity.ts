@@ -1,5 +1,12 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, JoinColumn } from "typeorm";
-import { CommonEntity } from "@entities/index";
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { CommonEntity } from './common.entity';
 
 @Entity('menus')
 @Index(['parentId', 'sortOrder'], { where: 'deleted_at IS NULL' })

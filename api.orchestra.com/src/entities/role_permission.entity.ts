@@ -1,8 +1,11 @@
-import { Column, Entity, Index, ManyToOne, JoinColumn } from "typeorm";
-import { CommonEntity } from "@entities/index";
+import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { CommonEntity } from './common.entity';
 
 @Entity('role_permissions')
-@Index(['roleId', 'permissionId'], { unique: true, where: 'deleted_at IS NULL' })
+@Index(['roleId', 'permissionId'], {
+  unique: true,
+  where: 'deleted_at IS NULL',
+})
 export class RolePermission extends CommonEntity {
   @Column({ name: 'role_id', type: 'int' })
   @Index()

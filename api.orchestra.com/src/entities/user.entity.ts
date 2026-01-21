@@ -1,11 +1,21 @@
-import { Column, ManyToOne, OneToMany, JoinColumn, Index, Entity } from "typeorm";
-import { CommonEntity } from "@entities/index";
-import { Status } from "@/types/enums";
+import {
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+  Index,
+  Entity,
+} from 'typeorm';
+import { CommonEntity } from './common.entity';
+import { Status } from '@/types/enums';
 
 @Entity('users')
 @Index(['email'], { unique: true, where: 'deleted_at IS NULL' })
 @Index(['companyId'], { where: 'deleted_at IS NULL' })
 export class User extends CommonEntity {
+  @Column({ name: 'id', type: 'int', primary: true, generated: 'increment' })
+  id: number;
+
   @Column({ name: 'company_id', type: 'int', nullable: true })
   @Index()
   companyId?: number | null;
@@ -36,7 +46,11 @@ export class User extends CommonEntity {
   @Column({ type: 'enum', enum: Status, default: Status.ACTIVE })
   status: Status;
 
-  @Column({ name: 'last_login_at', type: 'timestamp with time zone', nullable: true })
+  @Column({
+    name: 'last_login_at',
+    type: 'timestamp with time zone',
+    nullable: true,
+  })
   lastLoginAt?: Date | null;
 
   // Relationships

@@ -1,5 +1,5 @@
-import { Column, Entity, Index, OneToMany } from "typeorm";
-import { CommonEntity } from "./common.entity";
+import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { CommonEntity } from './common.entity';
 
 @Entity('companies')
 @Index(['name'], { unique: true, where: 'deleted_at IS NULL' })

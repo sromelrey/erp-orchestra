@@ -1,6 +1,13 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, JoinColumn } from "typeorm";
-import { CommonEntity } from "@entities/index";
-import { RoleStatus } from "@/types/enums";
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
+import { CommonEntity } from './common.entity';
+import { RoleStatus } from '@/types/enums';
 
 @Entity('roles')
 @Index(['code'], { unique: true, where: 'deleted_at IS NULL' })
