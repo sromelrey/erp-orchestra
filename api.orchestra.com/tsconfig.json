@@ -23,7 +23,8 @@
       "@/*": ["src/*"],
       "@types/*": ["src/types/*"],
       "@entities": ["src/entities"],
-      "@entities/*": ["src/entities/*"]
+      "@entities/*": ["src/entities/*"],
+      "@modules": ["src/modules"], 
     }
   },
   "include": ["src/**/*"],

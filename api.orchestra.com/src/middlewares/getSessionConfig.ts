@@ -1,6 +1,6 @@
 import { TypeormStore } from 'connect-typeorm';
 import { Repository } from 'typeorm';
-import { Session } from '@/entities/session.entity';
+import { Session } from '@/entities/system/session.entity';
 
 /**
  * Creates session configuration object for Express session middleware.

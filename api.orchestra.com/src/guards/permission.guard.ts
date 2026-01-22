@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSION_KEY } from '@/decorators/permission.decorator';
-import { PermissionService } from '@/modules/rbac/permission/permission.service';
+import { PermissionService } from '@/modules/system/permission/permission.service';
 
 /**
  * Guard that enforces permission-based access control on protected routes.

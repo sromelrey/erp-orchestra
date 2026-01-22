@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      "@typescript-eslint/no-relative-imports": "error",
+    },
+  },
 ]);
 
 export default eslintConfig;

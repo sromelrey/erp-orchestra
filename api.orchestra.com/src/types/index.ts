@@ -1,4 +1,4 @@
-import { User } from '@/entities/user.entity';
+import { User } from '@/entities/system/user.entity';
 
 export * from './email.type';
 
@@ -21,9 +21,7 @@ export enum Env {
  *
  * @template Data - The type of principal data (defaults to User entity)
  */
-export interface UpdatedRequest<
-  Data extends User = User,
-> extends Request {
+export interface UpdatedRequest<Data extends User = User> extends Request {
   /** The authenticated user principal associated with this request */
   principal: Data;
 }

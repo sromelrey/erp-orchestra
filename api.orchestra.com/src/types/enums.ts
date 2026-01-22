@@ -18,3 +18,16 @@ export enum RoleStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
 }
+
+export enum MaterialType {
+  RAW = 'RAW',
+  SEMI_FINISHED = 'SEMI_FINISHED',
+  FINISHED = 'FINISHED',
+  SERVICE = 'SERVICE',
+}
+
+export enum BomStatus {
+  DRAFT = 'DRAFT',
+  ACTIVE = 'ACTIVE',
+  OBSOLETE = 'OBSOLETE',
+}

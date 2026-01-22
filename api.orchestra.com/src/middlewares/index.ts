@@ -4,8 +4,8 @@ import helmet from 'helmet';
 import { INestApplication } from '@nestjs/common';
 import { getSessionConfig } from './getSessionConfig';
 import { ConfigService } from '@nestjs/config';
-import { SessionModule } from '@/modules/core/session/session.module';
-import { SessionService } from '@/modules/core/session/session.service';
+import { SessionModule } from '@/modules/system/session/session.module';
+import { SessionService } from '@/modules/system/session/session.service';
 import { setupSwagger } from './setupSwagger';
 import { Env } from '@/types/';
 

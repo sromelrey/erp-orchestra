@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { CoreModule } from './modules/core/core.module';
 import { OperationsModule } from './modules/operations/operations.module';
 import { FinanceModule } from './modules/finance/finance.module';
-import { RbacModule } from './modules/rbac/rbac.module';
+import { SystemModule } from './modules/system/system.module';
 import { HrisModule } from './modules/hris/hris.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ManagementModule } from './modules/management/management.module';
 
 @Module({
   imports: [
@@ -20,24 +20,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        url: configService.get('DATABASE_URL'),
+        url: configService.get<string>('DATABASE_URL'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true, // Auto-create tables (dev only)
-        ssl: true,
-        extra: {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        },
+        ssl: false,
       }),
       inject: [ConfigService],
     }),
     // Feature modules
-    CoreModule,
     OperationsModule,
     FinanceModule,
-    RbacModule,
+    SystemModule,
     HrisModule,
+    ManagementModule,
   ],
 })
 export class AppModule {}
