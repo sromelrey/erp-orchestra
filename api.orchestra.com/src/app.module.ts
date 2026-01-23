@@ -22,15 +22,18 @@ import { ManagementModule } from './modules/management/management.module';
         type: 'postgres',
         url: configService.get<string>('DATABASE_URL'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // Auto-create tables (dev only)
-        ssl: false,
+        synchronize: false, // Use migrations instead
+        ssl: {
+          rejectUnauthorized: false, // Required for Neon
+        },
+        logging: true, // Enable logging to see what's happening
       }),
       inject: [ConfigService],
     }),
     // Feature modules
+    SystemModule,
     OperationsModule,
     FinanceModule,
-    SystemModule,
     HrisModule,
     ManagementModule,
   ],

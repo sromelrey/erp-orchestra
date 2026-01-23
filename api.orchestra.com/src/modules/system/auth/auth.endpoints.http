@@ -1,0 +1,19 @@
+### Admin Login (establish session cookie)
+# @name adminLogin
+POST {{API_BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{TEST_USERNAME}}",
+  "password": "{{TEST_USER_PASSWORD}}"
+}
+
+
+ 
+### Get Profile (Me)
+GET {{baseUrl}}/auth/me
+Content-Type: application/json
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json

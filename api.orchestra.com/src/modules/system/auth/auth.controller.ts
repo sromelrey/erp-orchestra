@@ -41,7 +41,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LoginGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@Req() req: Express.Request & { user?: User; principal?: User }) {
+  login(@Req() req: Express.Request & { user?: User; principal?: User }) {
     const user = req.user ?? req.principal;
     if (!user) {
       throw new BadRequestException('Unable to resolve authenticated user');

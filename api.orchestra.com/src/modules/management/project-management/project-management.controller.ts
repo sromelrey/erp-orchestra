@@ -3,5 +3,7 @@ import { ProjectManagementService } from './project-management.service';
 
 @Controller('project-management')
 export class ProjectManagementController {
-  constructor(private readonly projectManagementService: ProjectManagementService) {}
+  constructor(
+    private readonly projectManagementService: ProjectManagementService,
+  ) {}
 }

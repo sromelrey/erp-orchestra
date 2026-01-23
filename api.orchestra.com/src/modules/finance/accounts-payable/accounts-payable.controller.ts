@@ -3,5 +3,7 @@ import { AccountsPayableService } from './accounts-payable.service';
 
 @Controller('accounts-payable')
 export class AccountsPayableController {
-  constructor(private readonly accountsPayableService: AccountsPayableService) {}
+  constructor(
+    private readonly accountsPayableService: AccountsPayableService,
+  ) {}
 }

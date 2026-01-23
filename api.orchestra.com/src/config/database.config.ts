@@ -1,5 +1,4 @@
 import { DataSource } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -17,6 +16,6 @@ export const AppDataSource = new DataSource({
   url: databaseUrl,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
-  synchronize: false, // Don't auto-sync in production
+  synchronize: false, // Auto-sync for development
   ssl: false, // Disable SSL for local development
 });

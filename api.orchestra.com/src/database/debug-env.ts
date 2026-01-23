@@ -5,7 +5,10 @@ dotenv.config();
 
 console.log('=== DEBUG: Environment Variables ===');
 console.log('DATABASE_URL:', process.env.DATABASE_URL);
-console.log('All env vars with DB:', Object.keys(process.env).filter(key => key.toLowerCase().includes('db')));
+console.log(
+  'All env vars with DB:',
+  Object.keys(process.env).filter((key) => key.toLowerCase().includes('db')),
+);
 
 // Test URL parsing
 const dbUrl = process.env.DATABASE_URL;

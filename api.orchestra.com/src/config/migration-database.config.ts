@@ -7,14 +7,8 @@ import 'tsconfig-paths/register';
 dotenv.config({ path: path.resolve(__dirname, '../../.env.local') });
 dotenv.config(); // Fallback to .env
 
-const {
-  DATABASE_URL,
-  PG_HOST,
-  PG_PORT,
-  PG_USER,
-  PG_PASSWORD,
-  PG_DATABASE,
-} = process.env;
+const { DATABASE_URL, PG_HOST, PG_PORT, PG_USER, PG_PASSWORD, PG_DATABASE } =
+  process.env;
 
 export const MigrationDataSource = new DataSource({
   type: 'postgres',

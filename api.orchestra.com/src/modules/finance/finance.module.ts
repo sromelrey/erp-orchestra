@@ -5,6 +5,11 @@ import { FinanceReportingModule } from './finance-reporting/finance-reporting.mo
 import { FinanceAnalyticsModule } from './finance-analytics/finance-analytics.module';
 
 @Module({
-  imports: [SalesInvoiceModule, AccountsPayableModule, FinanceReportingModule, FinanceAnalyticsModule]
+  imports: [
+    SalesInvoiceModule,
+    AccountsPayableModule,
+    FinanceReportingModule,
+    FinanceAnalyticsModule,
+  ],
 })
 export class FinanceModule {}

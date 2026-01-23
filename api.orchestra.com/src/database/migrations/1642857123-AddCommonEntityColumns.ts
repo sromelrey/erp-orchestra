@@ -7,8 +7,8 @@ export class AddCommonEntityColumns1642857123 implements MigrationInterface {
     // Add common entity columns to operations tables
     const tables = [
       'operations.boms',
-      'operations.bom_items', 
-      'operations.materials'
+      'operations.bom_items',
+      'operations.materials',
     ];
 
     for (const tableName of tables) {
@@ -18,46 +18,46 @@ export class AddCommonEntityColumns1642857123 implements MigrationInterface {
           SELECT FROM information_schema.tables 
           WHERE table_schema = 'operations' 
           AND table_name = '${tableName.replace('operations.', '')}'
-        )`
+        )`,
       );
-      
+
       if (tableExists[0].exists) {
         console.log(`Adding columns to ${tableName}...`);
-        
+
         await queryRunner.addColumn(
           tableName,
           new TableColumn({
             name: 'created_by',
             type: 'int',
             isNullable: true,
-          })
+          }),
         );
-        
+
         await queryRunner.addColumn(
           tableName,
           new TableColumn({
-            name: 'updated_by', 
+            name: 'updated_by',
             type: 'int',
             isNullable: true,
-          })
+          }),
         );
-        
+
         await queryRunner.addColumn(
           tableName,
           new TableColumn({
             name: 'deleted_by',
-            type: 'int', 
+            type: 'int',
             isNullable: true,
-          })
+          }),
         );
-        
+
         await queryRunner.addColumn(
           tableName,
           new TableColumn({
             name: 'deleted_at',
             type: 'timestamp without time zone',
             isNullable: true,
-          })
+          }),
         );
 
         console.log(`✅ Added columns to ${tableName}`);
@@ -72,7 +72,7 @@ export class AddCommonEntityColumns1642857123 implements MigrationInterface {
     const tables = [
       'operations.boms',
       'operations.bom_items',
-      'operations.materials'
+      'operations.materials',
     ];
 
     for (const tableName of tables) {
@@ -83,7 +83,9 @@ export class AddCommonEntityColumns1642857123 implements MigrationInterface {
         await queryRunner.dropColumn(tableName, 'deleted_at');
         console.log(`✅ Removed columns from ${tableName}`);
       } catch (error) {
-        console.log(`⚠️  Columns may not exist in ${tableName}: ${error.message}`);
+        console.log(
+          `⚠️  Columns may not exist in ${tableName}: ${error.message}`,
+        );
       }
     }
   }

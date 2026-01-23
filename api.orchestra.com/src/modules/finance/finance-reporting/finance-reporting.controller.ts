@@ -3,5 +3,7 @@ import { FinanceReportingService } from './finance-reporting.service';
 
 @Controller('finance-reporting')
 export class FinanceReportingController {
-  constructor(private readonly financeReportingService: FinanceReportingService) {}
+  constructor(
+    private readonly financeReportingService: FinanceReportingService,
+  ) {}
 }

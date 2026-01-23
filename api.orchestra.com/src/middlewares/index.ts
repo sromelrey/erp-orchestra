@@ -28,11 +28,32 @@ export function applyMiddlewares(app: INestApplication<any>) {
     .select(SessionModule)
     .get(SessionService).repository;
   const cookieSecret = configService.getOrThrow<string>('SESSION_SECRET');
-  const secure = configService.getOrThrow<string>('NODE_ENV') === Env.Prod;
-  app.use(helmet());
+  const isProduction =
+    configService.getOrThrow<string>('NODE_ENV') === Env.Prod;
+  const secure = isProduction;
+
+  // Configure helmet with development-friendly settings
+  app.use(
+    helmet({
+      contentSecurityPolicy: isProduction ? undefined : false,
+      crossOriginEmbedderPolicy: isProduction ? undefined : false,
+      crossOriginOpenerPolicy: isProduction ? undefined : false,
+      crossOriginResourcePolicy: isProduction ? undefined : false,
+      originAgentCluster: false,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+      strictTransportSecurity: isProduction
+        ? { maxAge: 15552000, includeSubDomains: true }
+        : false,
+      xssFilter: false,
+    }),
+  );
   app.use(
     session(getSessionConfig({ cookieSecret, secure, sessionRepository })),
   );
+  app.use((req: any, _res, next) => {
+    console.log('[Middleware] Session requested:', req.session ? 'PRESENT' : 'MISSING');
+    next();
+  });
   app.use(passport.initialize());
   app.use(passport.session());
   app.use((req: any, _res, next) => {
@@ -41,10 +62,12 @@ export function applyMiddlewares(app: INestApplication<any>) {
     }
     next();
   });
-  // ✅ ENABLE CORS FOR FRONTEND TO ACCESS COOKIES
+  // Configure CORS to allow all origins (disable CSRF for development)
   app.enableCors({
-    origin: configService.getOrThrow<string>('FRONTEND_URL'), // Your Next.js frontend
+    origin: true, // Allow all origins
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true, // Allow cookies, Authorization headers, etc.
+    allowedHeaders: 'Content-Type, Accept, Authorization',
   });
   setupSwagger(app);
 }

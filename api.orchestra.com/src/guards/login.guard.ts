@@ -4,6 +4,7 @@ import {
   Injectable,
   HttpException,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -18,7 +19,7 @@ import { Request } from 'express';
 @Injectable()
 export class LoginGuard extends AuthGuard('local') {
   /** Logger instance for security monitoring and error tracking */
-  private readonly logger = new Logger();
+  private readonly logger = new Logger(LoginGuard.name);
 
   /**
    * Attempts to authenticate the user and establish a session.
@@ -28,23 +29,25 @@ export class LoginGuard extends AuthGuard('local') {
    * logged for security monitoring.
    *
    * @param context - The execution context containing request details
-   * @returns Promise resolving to true if authentication succeeds, false otherwise
+   * @returns Promise resolving to true if authentication succeeds
+   * @throws UnauthorizedException if authentication fails
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     try {
       const result = (await super.canActivate(context)) as boolean;
+      if (!result) {
+        this.logger.warn('Authentication failed - invalid credentials');
+        throw new UnauthorizedException('Invalid email or password');
+      }
       await super.logIn(request);
       return result;
     } catch (e: any) {
+      this.logger.error(`Authentication error: ${e.message}`, e.stack);
       if (e instanceof HttpException) {
-        this.logger.error(
-          `[${context.getClass().name}] [${e.name}] Invoking method: ${context.getHandler().name}`,
-        );
-      } else {
-        this.logger.error(e);
+        throw e;
       }
-      return false;
+      throw new UnauthorizedException('Invalid email or password');
     }
   }
 }

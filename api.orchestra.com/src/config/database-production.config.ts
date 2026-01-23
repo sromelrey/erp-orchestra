@@ -8,3 +8,5 @@ export const AppDataSource = new DataSource({
   synchronize: false, // Keep sync disabled for production
   ssl: false,
 });
+
+export default AppDataSource;

@@ -4,11 +4,9 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  BaseEntity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { CommonEntity } from '../common.entity';
 
 @Entity({ name: 'bom_items', schema: 'operations' })
 @Index(['bomId'], { where: 'deleted_at IS NULL' })
@@ -18,10 +16,7 @@ import {
   where: 'deleted_at IS NULL',
 })
 @Index(['bomId', 'sortOrder'], { where: 'deleted_at IS NULL' })
-export class BomItem extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class BomItem extends CommonEntity {
   @Column({ name: 'bom_id', type: 'int' })
   @Index()
   bomId: number;
@@ -59,14 +54,4 @@ export class BomItem extends BaseEntity {
 
   @Column({ type: 'int', name: 'sort_order', nullable: true })
   sortOrder?: number | null;
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp without time zone' })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    name: 'updated_at',
-    type: 'timestamp without time zone',
-    nullable: true,
-  })
-  updatedAt: Date;
 }
