@@ -1,0 +1,6 @@
+{
+  "api.orchestra.com/**/*.{ts,js,json}": [
+    "npm run lint --prefix api.orchestra.com",
+    "npm run format --prefix api.orchestra.com"
+  ]
+}

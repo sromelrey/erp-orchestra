@@ -33,7 +33,18 @@ export interface UpdatedRequest<Data extends User = User> extends Request {
 export type DeleteResponse = { deleted: boolean };
 
 /**
- * Response type for bulk delete operations.
+ * Response type for bulk delete operations.`
  * Indicates the number of items that were successfully deleted.
  */
 export type BulkDeleteResponse = { deletions: number };
+
+/**
+ * Generic interface for paginated results.
+ * Used across the application for cursor-based pagination responses.
+ */
+export interface PaginatedResult<T> {
+  data: T[];
+  meta: {
+    nextCursor: string | number | null;
+  };
+}

@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  JoinColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 
 @Entity({ name: 'bom_items', schema: 'operations' })

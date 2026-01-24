@@ -41,13 +41,21 @@ export class RolesGuard implements CanActivate {
 
     if (!requiredRoles || requiredRoles.length === 0) return true;
 
-    const req = context.switchToHttp().getRequest<any>();
+    interface Principal {
+      isSystemAdmin?: boolean;
+      roles?: string[];
+    }
+
+    const req = context.switchToHttp().getRequest<{
+      principal?: Principal;
+      user?: Principal;
+    }>();
     const principal = req?.principal ?? req?.user;
 
     if (!principal) throw new ForbiddenException('Not authenticated');
 
     // Allow if user is system admin or has SUPER_ADMIN role
-    if (principal.system_admin) return true;
+    if (principal.isSystemAdmin) return true;
 
     const roles: string[] = Array.isArray(principal.roles)
       ? principal.roles

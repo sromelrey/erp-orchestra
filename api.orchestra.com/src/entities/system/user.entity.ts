@@ -8,21 +8,22 @@ import {
 } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Status } from '@/types/enums';
+import { Tenant } from './tenant.entity';
 
 @Entity({ name: 'users', schema: 'system' })
 @Index(['email'], { unique: true, where: 'deleted_at IS NULL' })
-@Index(['companyId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId'], { where: 'deleted_at IS NULL' })
 export class User extends CommonEntity {
   @Column({ name: 'id', type: 'int', primary: true, generated: 'increment' })
   id: number;
 
-  @Column({ name: 'company_id', type: 'int', nullable: true })
+  @Column({ name: 'tenant_id', type: 'int', nullable: true })
   @Index()
-  companyId?: number | null;
+  tenantId?: number | null;
 
-  @ManyToOne('Company', 'users', { onDelete: 'RESTRICT', nullable: true })
-  @JoinColumn({ name: 'company_id' })
-  company?: any;
+  @ManyToOne(() => Tenant, (tenant) => tenant.users)
+  @JoinColumn({ name: 'tenant_id' })
+  tenant?: Tenant;
 
   @Column({ type: 'varchar', length: 255, unique: true })
   @Index()
@@ -55,5 +56,5 @@ export class User extends CommonEntity {
 
   // Relationships
   @OneToMany('UserRole', 'user')
-  userRoles: any[];
+  userRoles!: import('./user-role.entity').UserRole[];
 }

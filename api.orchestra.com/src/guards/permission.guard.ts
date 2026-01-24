@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSION_KEY } from '@/decorators/permission.decorator';
-import { PermissionService } from '@/modules/system/permission/permission.service';
+import { PermissionService } from '@/modules/system/permissions/permission.service';
 
 /**
  * Guard that enforces permission-based access control on protected routes.
@@ -55,8 +55,11 @@ export class PermissionGuard implements CanActivate {
     }
 
     const { menuIdOrCode, action } = requiredPermission;
-    const request = context.switchToHttp().getRequest();
-    const principal = request.user || request.principal;
+    const request = context.switchToHttp().getRequest<{
+      user?: { id: number };
+      principal?: { id: number };
+    }>();
+    const principal = request.user ?? request.principal;
 
     // If no authenticated user, deny access
     if (!principal) {

@@ -30,7 +30,9 @@ async function fixUserRoles() {
       ADD COLUMN IF NOT EXISTS "expires_at" TIMESTAMP WITH TIME ZONE
     `);
 
-    console.log('✅ Added assigned_at and expires_at columns to user_roles table');
+    console.log(
+      '✅ Added assigned_at and expires_at columns to user_roles table',
+    );
 
     // Verify columns were added
     const columns = await connection.query(`
@@ -44,7 +46,6 @@ async function fixUserRoles() {
     columns.forEach((col: any) => {
       console.log(`   - ${col.column_name}: ${col.data_type}`);
     });
-
   } catch (error) {
     console.error('❌ Fix failed:', error);
     throw error;

@@ -4,8 +4,32 @@ import { Repository } from 'typeorm';
 
 import { Session } from '@/entities/system/session.entity';
 import { User } from '@/entities/system/user.entity';
-import { UserRole } from '@/entities/system/user_role.entity';
+import { UserRole } from '@/entities/system/user-role.entity';
 import { Status } from '@/types/enums';
+
+/**
+ * Interface for parsed session data structure
+ */
+interface SessionData {
+  passport?: {
+    user?: number;
+  };
+}
+
+/**
+ * Parse session JSON safely with type guard
+ */
+function parseSessionData(json: string): SessionData | null {
+  try {
+    const data: unknown = JSON.parse(json);
+    if (typeof data === 'object' && data !== null) {
+      return data as SessionData;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Service for managing user session data.
@@ -57,36 +81,31 @@ export class SessionService {
     }> = [];
 
     for (const session of sessions) {
-      try {
-        // Parse session data to get user ID
-        const sessionData = JSON.parse(session.json);
-        const userId = sessionData.passport?.user;
+      // Parse session data to get user ID
+      const sessionData = parseSessionData(session.json);
+      const userId = sessionData?.passport?.user;
 
-        if (userId) {
-          const user = await this.userRepo.findOne({
-            where: { id: userId },
-            select: [
-              'id',
-              'email',
-              'firstName',
-              'lastName',
-              'status',
-              'companyId',
-              'isSystemAdmin',
-            ] as (keyof User)[],
+      if (userId) {
+        const user = await this.userRepo.findOne({
+          where: { id: userId },
+          select: [
+            'id',
+            'email',
+            'firstName',
+            'lastName',
+            'status',
+            'tenantId',
+            'isSystemAdmin',
+          ] as (keyof User)[],
+        });
+
+        if (user) {
+          enrichedSessions.push({
+            id: session.id,
+            expiredAt: new Date(session.expiredAt),
+            user,
           });
-
-          if (user) {
-            enrichedSessions.push({
-              id: session.id,
-              expiredAt: new Date(session.expiredAt),
-              user,
-            });
-          }
         }
-      } catch (error) {
-        // Skip sessions with invalid data
-        continue;
       }
     }
 
@@ -107,38 +126,34 @@ export class SessionService {
       throw new NotFoundException('Session not found');
     }
 
-    try {
-      // Parse session data to get user ID
-      const sessionData = JSON.parse(session.json);
-      const userId = sessionData.passport?.user;
+    // Parse session data to get user ID
+    const sessionData = parseSessionData(session.json);
+    const userId = sessionData?.passport?.user;
 
-      if (userId) {
-        const user = await this.userRepo.findOne({
-          where: { id: userId },
-          select: [
-            'id',
-            'email',
-            'firstName',
-            'lastName',
-            'status',
-            'companyId',
-            'isSystemAdmin',
-          ] as (keyof User)[],
-        });
+    if (userId) {
+      const user = await this.userRepo.findOne({
+        where: { id: userId },
+        select: [
+          'id',
+          'email',
+          'firstName',
+          'lastName',
+          'status',
+          'tenantId',
+          'isSystemAdmin',
+        ] as (keyof User)[],
+      });
 
-        if (user) {
-          return {
-            id: session.id,
-            expiredAt: new Date(session.expiredAt),
-            user,
-          };
-        }
+      if (user) {
+        return {
+          id: session.id,
+          expiredAt: new Date(session.expiredAt),
+          user,
+        };
       }
-
-      throw new NotFoundException('Session has no associated user');
-    } catch (error) {
-      throw new NotFoundException('Invalid session data');
     }
+
+    throw new NotFoundException('Session has no associated user');
   }
 
   /**
@@ -164,9 +179,12 @@ export class SessionService {
       relations: ['role'],
     });
 
-    // Map to role details
+    // Map to role details - filter out undefined roles and map to details
     const roles = userRoles
-      .filter((ur) => ur.role)
+      .filter(
+        (ur): ur is typeof ur & { role: NonNullable<typeof ur.role> } =>
+          ur.role !== null && ur.role !== undefined,
+      )
       .map((ur) => ({
         id: ur.role.id,
         name: ur.role.name,
@@ -193,8 +211,8 @@ export class SessionService {
       if (session.expiredAt < Date.now()) return false;
 
       // Parse session data to get user ID
-      const sessionData = JSON.parse(session.json);
-      const userId = sessionData.passport?.user;
+      const sessionData = parseSessionData(session.json);
+      const userId = sessionData?.passport?.user;
 
       if (!userId) return false;
 
@@ -205,7 +223,7 @@ export class SessionService {
       });
 
       return user?.status === Status.ACTIVE;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -228,14 +246,9 @@ export class SessionService {
     const sessions = await this.repository.find();
 
     for (const session of sessions) {
-      try {
-        const sessionData = JSON.parse(session.json);
-        if (sessionData.passport?.user === userId) {
-          await this.repository.remove(session);
-        }
-      } catch (error) {
-        // Skip sessions with invalid data
-        continue;
+      const sessionData = parseSessionData(session.json);
+      if (sessionData?.passport?.user === userId) {
+        await this.repository.remove(session);
       }
     }
   }

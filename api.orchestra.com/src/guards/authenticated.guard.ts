@@ -16,7 +16,12 @@ export class AuthenticatedGuard implements CanActivate {
    * @returns true if the user is authenticated, false otherwise
    */
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<
+      Express.Request & {
+        isAuthenticated?: () => boolean;
+        user?: unknown;
+      }
+    >();
     // Prefer passport's helper if available, otherwise rely on principal presence
     if (typeof req.isAuthenticated === 'function') {
       return req.isAuthenticated();

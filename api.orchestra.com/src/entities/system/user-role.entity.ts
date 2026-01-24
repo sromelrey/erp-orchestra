@@ -10,7 +10,7 @@ export class UserRole extends CommonEntity {
 
   @ManyToOne('User', 'userRoles', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: any;
+  user!: import('./user.entity').User;
 
   @Column({ name: 'role_id', type: 'int' })
   @Index()
@@ -18,7 +18,7 @@ export class UserRole extends CommonEntity {
 
   @ManyToOne('Role', 'userRoles', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
-  role: any;
+  role!: import('./role.entity').Role;
 
   @Column({
     name: 'assigned_at',

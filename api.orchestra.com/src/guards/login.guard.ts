@@ -42,8 +42,9 @@ export class LoginGuard extends AuthGuard('local') {
       }
       await super.logIn(request);
       return result;
-    } catch (e: any) {
-      this.logger.error(`Authentication error: ${e.message}`, e.stack);
+    } catch (e: unknown) {
+      const error = e instanceof Error ? e : new Error(String(e));
+      this.logger.error(`Authentication error: ${error.message}`, error.stack);
       if (e instanceof HttpException) {
         throw e;
       }

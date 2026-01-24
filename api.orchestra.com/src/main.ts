@@ -48,4 +48,4 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, doc);
   await app.listen(port);
 }
-bootstrap();
+void bootstrap();

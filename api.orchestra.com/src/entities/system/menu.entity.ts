@@ -7,7 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CommonEntity } from '../common.entity';
-import { SystemModule } from './system_module.entity'; // Import your new Module entity
+import { SystemModule } from './system-module.entity'; // Import your new Module entity
 import { Permission } from './permission.entity';
 
 @Entity({ name: 'menus', schema: 'system' })

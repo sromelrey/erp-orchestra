@@ -1,0 +1,40 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List Modules (Paginated)
+GET {{API_BASE_URL}}/system-modules?limit=10
+Content-Type: application/json
+
+### Create Module
+POST {{API_BASE_URL}}/system-modules
+Content-Type: application/json
+
+{
+    "name": "Warehouse Management",
+    "code": "WMS",
+    "isActive": true
+}
+
+### Get Module by ID
+@moduleId = 1
+GET {{API_BASE_URL}}/system-modules/{{moduleId}}
+Content-Type: application/json
+
+### Update Module
+PATCH {{API_BASE_URL}}/system-modules/{{moduleId}}
+Content-Type: application/json
+
+{
+    "name": "Warehouse Management System (WMS)"
+}
+
+### Delete Module
+DELETE {{API_BASE_URL}}/system-modules/{{moduleId}}
+Content-Type: application/json

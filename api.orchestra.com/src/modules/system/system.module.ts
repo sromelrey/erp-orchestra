@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './user/user.controller';
-import { UserModule } from './user/user.module';
-import { RoleModule } from './role/role.module';
-import { PermissionModule } from './permission/permission.module';
-import { SessionModule } from './session/session.module';
+import { UserController } from './users/user.controller';
+import { UserModule } from './users/user.module';
+import { RoleModule } from './roles/role.module';
+import { PermissionModule } from './permissions/permission.module';
+import { SessionModule } from './sessions/session.module';
 import { AuthModule } from './auth/auth.module';
-import { CompanyModule } from './company/company.module';
-import { MenuModule } from './menu/menu.module';
+import { MenuModule } from './menus/menu.module';
+import { TenantsModule } from './tenants/tenants.module';
+import { PlansModule } from './plans/plans.module';
+import { SystemModulesModule } from './system-modules/system-modules.module';
 
 @Module({
   controllers: [UserController],
@@ -19,8 +21,10 @@ import { MenuModule } from './menu/menu.module';
     // Authentication
     SessionModule,
     AuthModule,
+    TenantsModule,
+    PlansModule,
+    SystemModulesModule,
     // System
-    CompanyModule,
   ],
 })
 export class SystemModule {}

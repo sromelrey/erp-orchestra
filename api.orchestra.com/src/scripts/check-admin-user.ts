@@ -34,7 +34,9 @@ async function checkAdminUser() {
       console.log('✅ Admin user found:');
       console.log(`   - ID: ${adminUser[0].id}`);
       console.log(`   - Email: ${adminUser[0].email}`);
-      console.log(`   - Name: ${adminUser[0].first_name} ${adminUser[0].last_name}`);
+      console.log(
+        `   - Name: ${adminUser[0].first_name} ${adminUser[0].last_name}`,
+      );
       console.log(`   - System Admin: ${adminUser[0].is_system_admin}`);
       console.log(`   - Status: ${adminUser[0].status}`);
       console.log(`   - Created: ${adminUser[0].created_at}`);
@@ -43,17 +45,22 @@ async function checkAdminUser() {
     }
 
     // Check user roles
-    const userRoles = await connection.query(`
+    const userRoles = await connection.query(
+      `
       SELECT ur.user_id, ur.role_id, ur.assigned_at, r.name as role_name
       FROM system.user_roles ur
       JOIN system.roles r ON ur.role_id = r.id
       WHERE ur.user_id = $1
-    `, adminUser.length > 0 ? [adminUser[0].id] : [0]);
+    `,
+      adminUser.length > 0 ? [adminUser[0].id] : [0],
+    );
 
     if (userRoles.length > 0) {
       console.log('✅ User roles found:');
       userRoles.forEach((role: any) => {
-        console.log(`   - Role: ${role.role_name} (assigned: ${role.assigned_at})`);
+        console.log(
+          `   - Role: ${role.role_name} (assigned: ${role.assigned_at})`,
+        );
       });
     } else {
       console.log('❌ No user roles found');
@@ -69,9 +76,10 @@ async function checkAdminUser() {
 
     console.log(`📋 Total users found: ${allUsers.length}`);
     allUsers.forEach((user: any) => {
-      console.log(`   - ${user.email} (${user.status}, admin: ${user.is_system_admin})`);
+      console.log(
+        `   - ${user.email} (${user.status}, admin: ${user.is_system_admin})`,
+      );
     });
-
   } catch (error) {
     console.error('❌ Check failed:', error);
     throw error;

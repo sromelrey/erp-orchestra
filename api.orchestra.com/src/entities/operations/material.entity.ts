@@ -9,20 +9,22 @@ import {
 import { CommonEntity } from '../common.entity';
 import { MaterialType } from '@/types/enums';
 
+import { Tenant } from '../system/tenant.entity';
+
 @Entity({ name: 'materials', schema: 'operations' })
 @Index(['sku'], { unique: true, where: 'deleted_at IS NULL' })
-@Index(['companyId'], { where: 'deleted_at IS NULL' })
-@Index(['companyId', 'materialType'], { where: 'deleted_at IS NULL' })
-@Index(['companyId', 'materialGroup'], { where: 'deleted_at IS NULL' })
-@Index(['companyId', 'isActive'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'materialType'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'materialGroup'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'isActive'], { where: 'deleted_at IS NULL' })
 export class Material extends CommonEntity {
-  @Column({ name: 'company_id', type: 'int' })
+  @Column({ name: 'tenant_id', type: 'int' })
   @Index()
-  companyId: number;
+  tenantId: number;
 
-  @ManyToOne('Company', 'materials', { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'company_id' })
-  company?: any;
+  @ManyToOne(() => Tenant, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant?: Tenant;
 
   @Column({ type: 'varchar', length: 50 })
   sku: string;

@@ -1,0 +1,42 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List Plans (Paginated)
+GET {{API_BASE_URL}}/plans?limit=10
+Content-Type: application/json
+
+### Create Plan
+POST {{API_BASE_URL}}/plans
+Content-Type: application/json
+
+{
+    "name": "Standard Plan",
+    "monthlyPrice": 49.99,
+    "maxUsers": 20,
+    "moduleIds": []
+}
+
+### Get Plan by ID
+@planId = 1
+GET {{API_BASE_URL}}/plans/{{planId}}
+Content-Type: application/json
+
+### Update Plan
+PATCH {{API_BASE_URL}}/plans/{{planId}}
+Content-Type: application/json
+
+{
+    "name": "Standard Plan (Renamed)",
+    "monthlyPrice": 59.99
+}
+
+### Delete Plan
+DELETE {{API_BASE_URL}}/plans/{{planId}}
+Content-Type: application/json

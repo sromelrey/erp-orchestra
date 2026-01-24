@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -29,14 +29,15 @@ export class AuthService {
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.userRepository.findOne({
       where: { email },
-      relations: ['userRoles', 'userRoles.role', 'company'],
+      relations: ['userRoles', 'userRoles.role', 'tenant'],
     });
 
     if (user && user.passwordHash) {
       const isMatch = await bcrypt.compare(pass, user.passwordHash);
       if (isMatch) {
+        // Return user without passwordHash
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordHash, ...result } = user;
+        const { passwordHash: _, ...result } = user;
         return result as User;
       }
     }
@@ -48,11 +49,11 @@ export class AuthService {
    *
    * @param req - Express request
    */
-  async logOut(req: Request) {
+  async logOut(req: Request): Promise<void> {
     return new Promise((resolve, reject) => {
       req.session.destroy((err) => {
-        if (err) reject(err);
-        resolve(undefined);
+        if (err) reject(new Error(String(err)));
+        resolve();
       });
     });
   }
@@ -70,9 +71,9 @@ export class AuthService {
       firstName: user.firstName,
       lastName: user.lastName,
       avatarUrl: user.avatarUrl,
-      companyId: user.companyId,
+      tenantId: user.tenantId,
       isSystemAdmin: user.isSystemAdmin,
-      roles: user.userRoles?.map((ur) => ur.role?.name) || [],
+      roles: user.userRoles?.map((ur) => ur.role?.name).filter(Boolean) ?? [],
     };
   }
 }

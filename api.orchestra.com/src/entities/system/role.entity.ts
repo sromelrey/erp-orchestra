@@ -7,19 +7,23 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { Tenant } from './tenant.entity';
 import { RoleStatus } from '@/types/enums';
 
 @Entity({ name: 'roles', schema: 'system' })
 @Index(['code'], { unique: true, where: 'deleted_at IS NULL' })
-@Index(['companyId', 'name'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'name'], { where: 'deleted_at IS NULL' })
 export class Role extends CommonEntity {
-  @Column({ name: 'company_id', type: 'int', nullable: true })
+  @Column({ name: 'tenant_id', type: 'int', nullable: true })
   @Index()
-  companyId?: number | null;
+  tenantId?: number | null;
 
-  @ManyToOne('Company', 'roles', { onDelete: 'RESTRICT', nullable: true })
-  @JoinColumn({ name: 'company_id' })
-  company?: any;
+  @ManyToOne(() => Tenant, (tenant) => tenant.roles, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 
   @Column({ type: 'varchar', length: 100 })
   name: string;

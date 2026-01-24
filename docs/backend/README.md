@@ -7,11 +7,14 @@ This directory contains the comprehensive standards and guidelines for backend d
 ### Core Standards
 
 - **[Naming Standards](./naming.md)** - File, directory, code, and database naming conventions
+- **[Naming Standards](./naming.md)** - File, directory, code, and database naming conventions
 - **[Import Standards](./import-standards.md)** - Import path rules and best practices
+- **[Documentation Standards](./documentation-standards.md)** - Swagger and Compodoc guidelines
 
 ### Architecture & Guidelines
 
 - **[Architecture](./architecture.md)** - Backend architecture patterns and principles
+- **[Module Creation Guide](./module-creation-guide.md)** - **How to create new resources**
 - **[API Guidelines](./api-guidelines.md)** - REST API design and documentation standards
 - **[Folder Structure](./folder-structure.md)** - Project organization and directory layout
 - **[Testing Standards](./testing.md)** - Unit, integration, and E2E testing guidelines

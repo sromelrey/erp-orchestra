@@ -136,11 +136,21 @@ export class CreateSimpleSystemSchema1737646400000 implements MigrationInterface
     `);
 
     // Add basic foreign key constraints
-    await queryRunner.query(`ALTER TABLE "system"."users" ADD CONSTRAINT "FK_users_company" FOREIGN KEY ("company_id") REFERENCES "system"."companies"("id") ON DELETE RESTRICT`);
-    await queryRunner.query(`ALTER TABLE "system"."user_roles" ADD CONSTRAINT "FK_user_roles_user" FOREIGN KEY ("user_id") REFERENCES "system"."users"("id") ON DELETE CASCADE`);
-    await queryRunner.query(`ALTER TABLE "system"."user_roles" ADD CONSTRAINT "FK_user_roles_role" FOREIGN KEY ("role_id") REFERENCES "system"."roles"("id") ON DELETE CASCADE`);
-    await queryRunner.query(`ALTER TABLE "system"."role_permissions" ADD CONSTRAINT "FK_role_permissions_role" FOREIGN KEY ("role_id") REFERENCES "system"."roles"("id") ON DELETE CASCADE`);
-    await queryRunner.query(`ALTER TABLE "system"."role_permissions" ADD CONSTRAINT "FK_role_permissions_permission" FOREIGN KEY ("permission_id") REFERENCES "system"."permissions"("id") ON DELETE CASCADE`);
+    await queryRunner.query(
+      `ALTER TABLE "system"."users" ADD CONSTRAINT "FK_users_company" FOREIGN KEY ("company_id") REFERENCES "system"."companies"("id") ON DELETE RESTRICT`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "system"."user_roles" ADD CONSTRAINT "FK_user_roles_user" FOREIGN KEY ("user_id") REFERENCES "system"."users"("id") ON DELETE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "system"."user_roles" ADD CONSTRAINT "FK_user_roles_role" FOREIGN KEY ("role_id") REFERENCES "system"."roles"("id") ON DELETE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "system"."role_permissions" ADD CONSTRAINT "FK_role_permissions_role" FOREIGN KEY ("role_id") REFERENCES "system"."roles"("id") ON DELETE CASCADE`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "system"."role_permissions" ADD CONSTRAINT "FK_role_permissions_permission" FOREIGN KEY ("permission_id") REFERENCES "system"."permissions"("id") ON DELETE CASCADE`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

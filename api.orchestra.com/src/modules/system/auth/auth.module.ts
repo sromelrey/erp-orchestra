@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 import { AuthService } from './providers/auth.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './providers/local.strategy';

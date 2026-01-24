@@ -4,8 +4,16 @@ Follow these conventions for all backend development using NestJS and TypeORM.
 
 ## File and Directory Naming
 
-- **Folders**: Use `kebab-case`. Examples: `bill-of-materials`, `user-profile`.
-- **Files**: Use `kebab-case` with a descriptive suffix. Examples: `user.controller.ts`, `auth.service.ts`, `user.entity.ts`.
+- **Folders**: 
+    - Use `plural-kebab-case` for resource modules (e.g., `modules/system/users`, `modules/system/roles`).
+    - Use `singular-kebab-case` for concept/feature modules (e.g., `modules/system/auth`, `modules/shared/database`).
+    - **Multi-word Modules**: Always use `kebab-case`. Start with the resource name.
+        - **Correct**: `system-modules`, `user-profiles`.
+        - **Incorrect**: `system_modules`, `systemModules`.
+- **Files**: 
+    - Use `singular-kebab-case` with a descriptive suffix. 
+    - **Correct**: `user.entity.ts`, `user-role.entity.ts`, `system-module.entity.ts`.
+    - **Incorrect**: `users.entity.ts`, `user_role.entity.ts`.
 
 ## Code Naming
 

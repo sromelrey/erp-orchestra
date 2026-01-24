@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import { User } from '@/entities/system/user.entity';
 
@@ -62,11 +63,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async logout(
     @Req()
-    req: Express.Request & {
-      logOut: (cb: (err: Error | null) => void) => void;
-    },
+    req: Request,
   ) {
-    await this.authService.logOut(req as any);
+    await this.authService.logOut(req);
   }
 
   /**
@@ -80,10 +79,8 @@ export class AuthController {
   @Get('me')
   @UseGuards(AuthenticatedGuard)
   @HttpCode(HttpStatus.OK)
-  async getProfile(
-    @Req() req: Express.Request & { user?: User; principal?: User },
-  ) {
-    const user = req.user || req.principal;
+  getProfile(@Req() req: Express.Request & { user?: User; principal?: User }) {
+    const user = req.user ?? req.principal;
     if (!user?.id) {
       return null;
     }

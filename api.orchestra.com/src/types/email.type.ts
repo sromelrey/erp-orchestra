@@ -42,7 +42,7 @@ export interface SendEmailParams {
   /** Custom headers as key/value pairs */
   headers?: Record<string, string>;
 
-  /** Attachments (max total 40 MB encoded) */
+  /** Attachments (max total 40 MB encoded) */
   attachments?: Array<{
     /** Binary file data, as Buffer or Base64 string */
     content: Buffer | string;
@@ -54,11 +54,11 @@ export interface SendEmailParams {
     content_type?: string;
   }>;
 
-  /** Arbitrary key/value tags for tracking (ASCII, ≤256 chars each) */
+  /** Arbitrary key/value tags for tracking (ASCII, <=256 chars each) */
   tags?: Array<{
-    /** Tag name (ASCII only, ≤256 chars) */
+    /** Tag name (ASCII only, <=256 chars) */
     name: string;
-    /** Tag value (ASCII only, ≤256 chars) */
+    /** Tag value (ASCII only, <=256 chars) */
     value: string;
   }>;
 }

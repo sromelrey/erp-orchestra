@@ -4,10 +4,18 @@ import helmet from 'helmet';
 import { INestApplication } from '@nestjs/common';
 import { getSessionConfig } from './getSessionConfig';
 import { ConfigService } from '@nestjs/config';
-import { SessionModule } from '@/modules/system/session/session.module';
-import { SessionService } from '@/modules/system/session/session.service';
+import { SessionModule } from '@/modules/system/sessions/session.module';
+import { SessionService } from '@/modules/system/sessions/session.service';
 import { setupSwagger } from './setupSwagger';
 import { Env } from '@/types/';
+import { Request, Response, NextFunction } from 'express';
+
+/**
+ * Request with session and user information
+ */
+interface AuthenticatedRequest extends Request {
+  principal?: Express.User;
+}
 
 /**
  * Applies all necessary middlewares to the NestJS application.
@@ -22,14 +30,14 @@ import { Env } from '@/types/';
  *
  * @param app - The NestJS application instance to configure with middlewares
  */
-export function applyMiddlewares(app: INestApplication<any>) {
+export function applyMiddlewares(app: INestApplication) {
   const configService = app.get(ConfigService);
   const sessionRepository = app
     .select(SessionModule)
     .get(SessionService).repository;
   const cookieSecret = configService.getOrThrow<string>('SESSION_SECRET');
-  const isProduction =
-    configService.getOrThrow<string>('NODE_ENV') === Env.Prod;
+  const nodeEnv = configService.getOrThrow<string>('NODE_ENV');
+  const isProduction = nodeEnv === (Env.Prod as string);
   const secure = isProduction;
 
   // Configure helmet with development-friendly settings
@@ -50,13 +58,16 @@ export function applyMiddlewares(app: INestApplication<any>) {
   app.use(
     session(getSessionConfig({ cookieSecret, secure, sessionRepository })),
   );
-  app.use((req: any, _res, next) => {
-    console.log('[Middleware] Session requested:', req.session ? 'PRESENT' : 'MISSING');
+  app.use((req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+    console.log(
+      '[Middleware] Session requested:',
+      req.session ? 'PRESENT' : 'MISSING',
+    );
     next();
   });
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use((req: any, _res, next) => {
+  app.use((req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     if (req.user && !req.principal) {
       req.principal = req.user;
     }

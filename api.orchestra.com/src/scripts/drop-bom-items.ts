@@ -16,11 +16,11 @@ async function dropBomItemsTable() {
   try {
     await dataSource.initialize();
     console.log('Connected to database');
-    
+
     // Drop the table
     await dataSource.query('DROP TABLE IF EXISTS operations.bom_items CASCADE');
     console.log('✅ Dropped bom_items table');
-    
+
     await dataSource.destroy();
   } catch (error) {
     console.error('❌ Error:', error);

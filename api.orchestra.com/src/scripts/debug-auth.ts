@@ -42,7 +42,9 @@ async function debugAuth() {
       console.log(`   - Email: ${user.email}`);
       console.log(`   - Status: ${user.status}`);
       console.log(`   - System Admin: ${user.is_system_admin}`);
-      console.log(`   - Password Hash: ${user.password_hash.substring(0, 20)}...`);
+      console.log(
+        `   - Password Hash: ${user.password_hash.substring(0, 20)}...`,
+      );
 
       // Test password comparison
       const isMatch = await bcrypt.compare(testPassword, user.password_hash);
@@ -52,18 +54,21 @@ async function debugAuth() {
         console.log('✅ Authentication should work!');
       } else {
         console.log('❌ Password mismatch - this is the problem');
-        
+
         // Test with a new hash
         const newHash = await bcrypt.hash(testPassword, 10);
         console.log(`🔧 New hash would be: ${newHash}`);
-        
+
         // Update the password
-        await connection.query(`
+        await connection.query(
+          `
           UPDATE system.users 
           SET password_hash = $1 
           WHERE email = 'admin@orchestra.com'
-        `, [newHash]);
-        
+        `,
+          [newHash],
+        );
+
         console.log('✅ Password updated in database');
       }
     } else {
@@ -83,11 +88,12 @@ async function debugAuth() {
     console.log(`📊 Query returned ${fullQuery.length} rows`);
     if (fullQuery.length > 0) {
       console.log('✅ Full query successful');
-      console.log(`   - User has ${fullQuery.filter(row => row.role_id).length} roles`);
+      console.log(
+        `   - User has ${fullQuery.filter((row) => row.role_id).length} roles`,
+      );
     } else {
       console.log('❌ Full query failed');
     }
-
   } catch (error) {
     console.error('❌ Debug failed:', error);
     throw error;

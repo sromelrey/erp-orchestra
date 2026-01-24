@@ -54,7 +54,7 @@ export class SeedAdminUser1737646300000 implements MigrationInterface {
     const adminUserResult = await queryRunner.query(`
       SELECT "id" FROM "system"."users" WHERE "email" = 'admin@orchestra.com'
     `);
-    
+
     const adminRoleResult = await queryRunner.query(`
       SELECT "id" FROM "system"."roles" WHERE "name" = 'System Admin'
     `);
@@ -81,11 +81,31 @@ export class SeedAdminUser1737646300000 implements MigrationInterface {
 
     // Create basic permissions
     const permissions = [
-      { name: 'Manage Users', code: 'MANAGE_USERS', description: 'Create, read, update, delete users' },
-      { name: 'Manage Roles', code: 'MANAGE_ROLES', description: 'Create, read, update, delete roles' },
-      { name: 'Manage Permissions', code: 'MANAGE_PERMISSIONS', description: 'Create, read, update, delete permissions' },
-      { name: 'Manage Companies', code: 'MANAGE_COMPANIES', description: 'Create, read, update, delete companies' },
-      { name: 'System Admin', code: 'SYSTEM_ADMIN', description: 'Full system administration access' },
+      {
+        name: 'Manage Users',
+        code: 'MANAGE_USERS',
+        description: 'Create, read, update, delete users',
+      },
+      {
+        name: 'Manage Roles',
+        code: 'MANAGE_ROLES',
+        description: 'Create, read, update, delete roles',
+      },
+      {
+        name: 'Manage Permissions',
+        code: 'MANAGE_PERMISSIONS',
+        description: 'Create, read, update, delete permissions',
+      },
+      {
+        name: 'Manage Companies',
+        code: 'MANAGE_COMPANIES',
+        description: 'Create, read, update, delete companies',
+      },
+      {
+        name: 'System Admin',
+        code: 'SYSTEM_ADMIN',
+        description: 'Full system administration access',
+      },
     ];
 
     for (const permission of permissions) {
@@ -135,12 +155,22 @@ export class SeedAdminUser1737646300000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Remove admin user and related data
-    await queryRunner.query(`DELETE FROM "system"."role_permissions" WHERE "role_id" IN (SELECT "id" FROM "system"."roles" WHERE "name" = 'System Admin')`);
-    await queryRunner.query(`DELETE FROM "system"."user_roles" WHERE "user_id" IN (SELECT "id" FROM "system"."users" WHERE "email" = 'admin@orchestra.com')`);
-    await queryRunner.query(`DELETE FROM "system"."permissions" WHERE "code" IN ('MANAGE_USERS', 'MANAGE_ROLES', 'MANAGE_PERMISSIONS', 'MANAGE_COMPANIES', 'SYSTEM_ADMIN')`);
-    await queryRunner.query(`DELETE FROM "system"."roles" WHERE "name" = 'System Admin'`);
-    await queryRunner.query(`DELETE FROM "system"."users" WHERE "email" = 'admin@orchestra.com'`);
-    
+    await queryRunner.query(
+      `DELETE FROM "system"."role_permissions" WHERE "role_id" IN (SELECT "id" FROM "system"."roles" WHERE "name" = 'System Admin')`,
+    );
+    await queryRunner.query(
+      `DELETE FROM "system"."user_roles" WHERE "user_id" IN (SELECT "id" FROM "system"."users" WHERE "email" = 'admin@orchestra.com')`,
+    );
+    await queryRunner.query(
+      `DELETE FROM "system"."permissions" WHERE "code" IN ('MANAGE_USERS', 'MANAGE_ROLES', 'MANAGE_PERMISSIONS', 'MANAGE_COMPANIES', 'SYSTEM_ADMIN')`,
+    );
+    await queryRunner.query(
+      `DELETE FROM "system"."roles" WHERE "name" = 'System Admin'`,
+    );
+    await queryRunner.query(
+      `DELETE FROM "system"."users" WHERE "email" = 'admin@orchestra.com'`,
+    );
+
     console.log('❌ Admin user and related data removed');
   }
 }

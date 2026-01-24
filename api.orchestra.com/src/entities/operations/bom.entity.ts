@@ -9,20 +9,22 @@ import {
 import { CommonEntity } from '../common.entity';
 import { BomStatus } from '@/types/enums';
 
+import { Tenant } from '../system/tenant.entity';
+
 @Entity({ name: 'boms', schema: 'operations' })
-@Index(['companyId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId'], { where: 'deleted_at IS NULL' })
 @Index(['parentMaterialId'], { where: 'deleted_at IS NULL' })
-@Index(['companyId', 'parentMaterialId'], { where: 'deleted_at IS NULL' })
-@Index(['companyId', 'status'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'parentMaterialId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'status'], { where: 'deleted_at IS NULL' })
 @Index(['parentMaterialId', 'version'], { where: 'deleted_at IS NULL' })
 export class Bom extends CommonEntity {
-  @Column({ name: 'company_id', type: 'int' })
+  @Column({ name: 'tenant_id', type: 'int' })
   @Index()
-  companyId: number;
+  tenantId: number;
 
-  @ManyToOne('Company', 'boms', { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'company_id' })
-  company?: any;
+  @ManyToOne(() => Tenant, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant?: Tenant;
 
   @Column({ name: 'parent_material_id', type: 'int' })
   @Index()

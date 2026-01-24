@@ -1,12 +1,12 @@
 import { Column, Entity, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Tenant } from './tenant.entity';
-import { SystemModule } from './system_module.entity';
+import { SystemModule } from './system-module.entity';
 
 @Entity({ name: 'plans', schema: 'system' })
 export class Plan extends CommonEntity {
   @Column({ type: 'varchar', length: 50, unique: true })
-  name: string; // e.g., 'Starter', 'Professional', 'Enterprise'
+  name: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
   monthlyPrice: number;
@@ -17,10 +17,10 @@ export class Plan extends CommonEntity {
   @OneToMany(() => Tenant, (tenant) => tenant.plan)
   tenants: Tenant[];
 
-  // Many-to-Many: A Plan can have many Modules, and a Module can be in many Plans
-  @ManyToMany(() => SystemModule)
+  @ManyToMany(() => SystemModule, (module) => module.plans)
   @JoinTable({
     name: 'plan_modules',
+    schema: 'system',
     joinColumn: { name: 'plan_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'module_id', referencedColumnName: 'id' },
   })
