@@ -42,8 +42,8 @@ export class Role extends CommonEntity {
 
   // Relationships
   @OneToMany('UserRole', 'role')
-  userRoles: any[];
+  userRoles!: import('./user-role.entity').UserRole[];
 
   @OneToMany('RolePermission', 'role')
-  rolePermissions: any[];
+  rolePermissions!: import('./role-permission.entity').RolePermission[];
 }

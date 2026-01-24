@@ -13,7 +13,7 @@ export class RolePermission extends CommonEntity {
 
   @ManyToOne('Role', 'rolePermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
-  role: any;
+  role!: import('./role.entity').Role;
 
   @Column({ name: 'permission_id', type: 'int' })
   @Index()
@@ -21,5 +21,5 @@ export class RolePermission extends CommonEntity {
 
   @ManyToOne('Permission', 'rolePermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'permission_id' })
-  permission: any;
+  permission!: import('./permission.entity').Permission;
 }

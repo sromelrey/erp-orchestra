@@ -27,7 +27,7 @@ export class Permission extends CommonEntity {
 
   // Relationships
   @OneToMany('RolePermission', 'permission')
-  rolePermissions: any[];
+  rolePermissions!: import('./role-permission.entity').RolePermission[];
 
   @OneToMany('Menu', 'permission')
   menus!: import('./menu.entity').Menu[];
