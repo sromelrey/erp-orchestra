@@ -1,6 +1,6 @@
 ### Login (Establish Session)
 # @name adminLogin
-POST {{API_BASE_URL}}/auth/login
+POST {{API_BASE_URL}}/v1/auth/login
 Content-Type: application/json
 
 {
@@ -9,11 +9,11 @@ Content-Type: application/json
 }
 
 ### List Tenants (Paginated)
-GET {{API_BASE_URL}}/tenants?limit=10
+GET {{API_BASE_URL}}/v1/tenants?limit=10
 Content-Type: application/json
 
 ### Create Tenant
-POST {{API_BASE_URL}}/tenants
+POST {{API_BASE_URL}}/v1/tenants
 Content-Type: application/json
 
 {
@@ -25,11 +25,11 @@ Content-Type: application/json
 
 ### Get Tenant by ID
 @tenantId = 1
-GET {{API_BASE_URL}}/tenants/{{tenantId}}
+GET {{API_BASE_URL}}/v1/tenants/{{tenantId}}
 Content-Type: application/json
 
 ### Update Tenant
-PATCH {{API_BASE_URL}}/tenants/{{tenantId}}
+PATCH {{API_BASE_URL}}/v1/tenants/{{tenantId}}
 Content-Type: application/json
 
 {
@@ -37,5 +37,5 @@ Content-Type: application/json
 }
 
 ### Delete Tenant
-DELETE {{API_BASE_URL}}/tenants/{{tenantId}}
+DELETE {{API_BASE_URL}}/v1/tenants/{{tenantId}}
 Content-Type: application/json

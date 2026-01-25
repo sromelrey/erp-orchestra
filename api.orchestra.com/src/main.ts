@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { applyMiddlewares } from '@/middlewares/index';
 
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
@@ -26,6 +26,10 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
   applyMiddlewares(app);
   const configService = app.get(ConfigService);
   const port =
