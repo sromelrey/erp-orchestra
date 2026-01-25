@@ -20,12 +20,20 @@ export class AuthenticatedGuard implements CanActivate {
       Express.Request & {
         isAuthenticated?: () => boolean;
         user?: unknown;
+        sessionID?: string;
+        url: string;
       }
     >();
-    // Prefer passport's helper if available, otherwise rely on principal presence
-    if (typeof req.isAuthenticated === 'function') {
-      return req.isAuthenticated();
-    }
-    return !!req.user;
+
+    const isAuth =
+      typeof req.isAuthenticated === 'function'
+        ? req.isAuthenticated()
+        : !!req.user;
+
+    console.log(
+      `[AuthenticatedGuard] url: ${req.url}, isAuth: ${isAuth}, sessionID: ${req.sessionID}`,
+    );
+
+    return isAuth;
   }
 }

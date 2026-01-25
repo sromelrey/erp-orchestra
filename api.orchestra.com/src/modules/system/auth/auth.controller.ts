@@ -42,8 +42,18 @@ export class AuthController {
   @Post('login')
   @UseGuards(LoginGuard)
   @HttpCode(HttpStatus.OK)
-  login(@Req() req: Express.Request & { user?: User; principal?: User }) {
+  login(
+    @Req()
+    req: Express.Request & {
+      user?: User;
+      principal?: User;
+      sessionID?: string;
+    },
+  ) {
     const user = req.user ?? req.principal;
+    console.log(
+      `[AuthController] login success for user: ${user?.email}, sessionID: ${req.sessionID}`,
+    );
     if (!user) {
       throw new BadRequestException('Unable to resolve authenticated user');
     }
@@ -58,13 +68,14 @@ export class AuthController {
    *
    * @param req - Express request object for session management
    */
-  @Post('logout')
+  @Get('logout')
   @UseGuards(AuthenticatedGuard)
   @HttpCode(HttpStatus.OK)
   async logout(
     @Req()
     req: Request,
   ) {
+    console.log(`[AuthController] logging out sessionID: ${req.sessionID}`);
     await this.authService.logOut(req);
   }
 

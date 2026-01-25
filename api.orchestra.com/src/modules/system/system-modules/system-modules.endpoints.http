@@ -1,6 +1,6 @@
 ### Login (Establish Session)
 # @name adminLogin
-POST {{API_BASE_URL}}/auth/login
+POST {{API_BASE_URL}}/v1/auth/login
 Content-Type: application/json
 
 {
@@ -9,11 +9,11 @@ Content-Type: application/json
 }
 
 ### List Modules (Paginated)
-GET {{API_BASE_URL}}/system-modules?limit=10
+GET {{API_BASE_URL}}/v1/system-modules?limit=10
 Content-Type: application/json
 
 ### Create Module
-POST {{API_BASE_URL}}/system-modules
+POST {{API_BASE_URL}}/v1/system-modules
 Content-Type: application/json
 
 {
@@ -24,11 +24,11 @@ Content-Type: application/json
 
 ### Get Module by ID
 @moduleId = 1
-GET {{API_BASE_URL}}/system-modules/{{moduleId}}
+GET {{API_BASE_URL}}/v1/system-modules/{{moduleId}}
 Content-Type: application/json
 
 ### Update Module
-PATCH {{API_BASE_URL}}/system-modules/{{moduleId}}
+PATCH {{API_BASE_URL}}/v1/system-modules/{{moduleId}}
 Content-Type: application/json
 
 {
@@ -36,5 +36,5 @@ Content-Type: application/json
 }
 
 ### Delete Module
-DELETE {{API_BASE_URL}}/system-modules/{{moduleId}}
+DELETE {{API_BASE_URL}}/v1/system-modules/{{moduleId}}
 Content-Type: application/json
