@@ -13,6 +13,7 @@ import {
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../store/slices/authSlice";
 import { useLogout } from "../hooks/useLogout";
+import { SidebarTrigger } from "./ui/sidebar";
 
 export function Header() {
   const { logout } = useLogout();
@@ -24,7 +25,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b bg-white px-8 shadow-sm">
-      <div className="flex w-1/3 items-center">
+      <div className="flex w-1/3 items-center gap-4">
+        <SidebarTrigger />
         <div className="relative w-full max-w-md group">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-indigo-500 transition-colors">
             <Search size={18} />

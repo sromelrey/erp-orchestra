@@ -49,26 +49,7 @@ export const SUPER_ADMIN_MENU_ITEMS = [
     label: "Tenant Management",
     icon: Building2Icon,
     menu_code:'SA-03',
-    children: [
-      {
-        label: "All Tenants",
-        href: "/tenants",
-        description: "Manage tenant instances and environment status",
-        menu_code:'SA-03-01'
-      },
-      {
-        label: "Provision Tenant",
-        href: "/tenants/new",
-        description: "Create tenant DB, initialize default settings, allocate resources",
-        menu_code:'SA-03-02'
-      },
-      {
-        label: "Tenant Health",
-        href: "/tenants/health",
-        description: "Monitor tenant uptime, DB connections, performance",
-        menu_code:'SA-03-03'
-      },
-    ],
+    href: "/tenants",
   },
 
   {
