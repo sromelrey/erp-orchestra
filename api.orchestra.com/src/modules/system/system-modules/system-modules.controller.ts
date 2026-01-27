@@ -78,6 +78,22 @@ export class SystemModulesController {
   }
 
   /**
+   * Retrieves a lightweight list of modules for select dropdowns.
+   * Only returns id, name, and code - no pagination.
+   *
+   * @returns Array of module options with id, name, code
+   */
+  @Get('options')
+  @ApiOperation({ summary: 'Get modules for select dropdown' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return list of modules with id and name only.',
+  })
+  getOptions(): Promise<Pick<SystemModule, 'id' | 'name' | 'code'>[]> {
+    return this.systemModulesService.getOptions();
+  }
+
+  /**
    * Retrieves a single module by ID.
    *
    * @param id - The unique identifier of the module

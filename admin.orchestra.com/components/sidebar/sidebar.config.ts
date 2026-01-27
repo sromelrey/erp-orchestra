@@ -8,6 +8,7 @@ import {
   Building2Icon,
   CreditCard,
   UserCircle,
+  Book,
 } from "lucide-react";
 // Define navigation items with icons
 export const SUPER_ADMIN_MENU_ITEMS = [
@@ -189,4 +190,12 @@ export const SUPER_ADMIN_MENU_ITEMS = [
       },
     ],
   },
+  
+  {
+      label: "Knowledge Base",
+      icon: Book,
+      menu_code: 'SA-10',
+      href: "/knowledge-base",
+      description: "Core concepts and system documentation"
+  }
 ];
