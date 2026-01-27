@@ -18,6 +18,7 @@ export interface FormField {
   defaultValue?: any;
   disabled?: boolean;
   suffix?: ReactNode; // For custom suffixes like ".orchestra.com"
+  description?: string; // Helper text below the field
 }
 
 export interface StatCard {

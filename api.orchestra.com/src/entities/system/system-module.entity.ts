@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, ManyToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  ManyToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Menu } from './menu.entity';
 import { Plan } from './plan.entity';
@@ -13,6 +20,27 @@ export class SystemModule extends CommonEntity {
 
   @Column({ type: 'boolean', name: 'is_active', default: true })
   isActive: boolean;
+
+  // New Column: Identifies if it's a top-level Module or a Sub-module
+  @Column({
+    type: 'enum',
+    enum: ['MODULE', 'SUB_MODULE'],
+    default: 'MODULE',
+  })
+  type: string;
+
+  // The Self-Reference: Links a sub-module to its parent
+  @Column({ name: 'parent_id', type: 'int', nullable: true })
+  parentId?: number | null;
+
+  @ManyToOne(() => SystemModule, (module) => module.children, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'parent_id' })
+  parent?: SystemModule;
+
+  @OneToMany(() => SystemModule, (module) => module.parent)
+  children: SystemModule[];
 
   @OneToMany(() => Menu, (menu) => menu.module)
   menus: Menu[];

@@ -67,6 +67,20 @@ export class SystemModulesService {
   }
 
   /**
+   * Retrieves a lightweight list of modules for select dropdowns.
+   * Only returns id, name, and code - useful for parent module selection.
+   *
+   * @returns Array of module options
+   */
+  async getOptions(): Promise<Pick<SystemModule, 'id' | 'name' | 'code'>[]> {
+    return this.systemModulesRepository.find({
+      select: ['id', 'name', 'code'],
+      where: { type: 'MODULE' }, // Only top-level modules can be parents
+      order: { name: 'ASC' },
+    });
+  }
+
+  /**
    * Retrieves a single module by ID.
    *
    * @param id - The unique identifier of the module
@@ -76,6 +90,7 @@ export class SystemModulesService {
   async findOne(id: number): Promise<SystemModule> {
     const module = await this.systemModulesRepository.findOne({
       where: { id },
+      relations: ['parent', 'children'],
     });
     if (!module) {
       throw new NotFoundException(`System Module with ID ${id} not found`);

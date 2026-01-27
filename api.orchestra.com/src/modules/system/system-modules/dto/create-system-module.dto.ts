@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsBoolean, IsOptional, Matches } from 'class-validator';
+import {
+  IsString,
+  IsBoolean,
+  IsOptional,
+  Matches,
+  IsEnum,
+  IsNumber,
+} from 'class-validator';
 
 export class CreateSystemModuleDto {
   @ApiProperty({
@@ -27,4 +34,22 @@ export class CreateSystemModuleDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @ApiPropertyOptional({
+    example: 'MODULE',
+    description: 'Type of the module (MODULE or SUB_MODULE)',
+    enum: ['MODULE', 'SUB_MODULE'],
+    default: 'MODULE',
+  })
+  @IsOptional()
+  @IsEnum(['MODULE', 'SUB_MODULE'])
+  type?: 'MODULE' | 'SUB_MODULE';
+
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'ID of the parent module (if this is a sub-module)',
+  })
+  @IsOptional()
+  @IsNumber()
+  parentId?: number;
 }
