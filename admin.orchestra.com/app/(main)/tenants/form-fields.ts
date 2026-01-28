@@ -22,11 +22,11 @@ export const formFields: FormField[] = [
     label: "Plan",
     type: "select",
     options: [
-      { label: "Basic", value: "Basic" },
-      { label: "Pro", value: "Pro" },
+      { label: "Starter", value: "Starter" },
+      { label: "Professional", value: "Professional" },
       { label: "Enterprise", value: "Enterprise" },
     ],
-    defaultValue: "Basic",
+    defaultValue: "Starter",
   },
   {
     name: "status",
@@ -34,9 +34,9 @@ export const formFields: FormField[] = [
     type: "select",
     options: [
       { label: "Active", value: "active" },
-      { label: "Pending", value: "pending" },
       { label: "Suspended", value: "suspended" },
+      { label: "Trial", value: "trial" }, 
     ],
-    defaultValue: "pending",
+    defaultValue: "active",
   },
 ];

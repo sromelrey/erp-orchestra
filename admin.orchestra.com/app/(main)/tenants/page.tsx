@@ -11,12 +11,14 @@ import {
   useDeleteTenantMutation,
 } from "@/store/api/tenantsApi";
 import { toast } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
 export default function TenantsPage() {
   const { data: tenantsData, isLoading } = useGetTenantsQuery({});
   const [createTenant] = useCreateTenantMutation();
   const [updateTenant] = useUpdateTenantMutation();
   const [deleteTenant] = useDeleteTenantMutation();
+  const router = useRouter();
 
   const tenants = tenantsData?.data || [];
 
@@ -79,6 +81,10 @@ export default function TenantsPage() {
     }
   };
 
+  const handleView = (item: any) => {
+    router.push(`/tenants/${item.id}`);
+  };
+
   return (
     <EntityManager
       data={tenants}
@@ -90,6 +96,7 @@ export default function TenantsPage() {
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       onDelete={handleDelete}
+      onView={handleView}
       showViewButton={true}
       showEditButton={true}
       showDeleteButton={true}

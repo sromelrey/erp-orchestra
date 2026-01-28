@@ -21,6 +21,6 @@ export * from './system/plan.entity';
 export * from './system/system-module.entity';
 
 // * Operations
-export * from './operations/material.entity';
+export * from './inventory/material.entity';
 export * from './operations/bom.entity';
 export * from './operations/bom-item.entity';

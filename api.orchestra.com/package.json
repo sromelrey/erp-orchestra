@@ -18,15 +18,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-commonjs",
-    "migration:generate": "npm run typeorm -- migration:generate",
     "migrate": "npx typeorm-ts-node-commonjs migration:run -d src/config/migration-database.config.ts",
-    "migration:run": "npm run typeorm -- migration:run -- -d src/config/database-production.config.ts",
-    "migration:revert": "npm run typeorm -- migration:revert -- -d src/config/database-production.config.ts",
-    "migration:run-direct": "ts-node -r tsconfig-paths/register src/database/run-migration.ts",
+    "migrate:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/config/migration-database.config.ts",
+    "migrate:generate": "npx typeorm-ts-node-commonjs migration:generate -d src/config/migration-database.config.ts",
+    "seed": "ts-node -r tsconfig-paths/register src/database/run-seeder.ts",
+    "db:reset": "ts-node -r tsconfig-paths/register src/database/reset-db.ts",
     "doc:build": "npx compodoc -p tsconfig.json -s",
-    "doc:serve": "npx compodoc -p tsconfig.json -s",
-    "seed": "ts-node -r tsconfig-paths/register src/database/run-seeder.ts"
+    "doc:serve": "npx compodoc -p tsconfig.json -s"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.12",

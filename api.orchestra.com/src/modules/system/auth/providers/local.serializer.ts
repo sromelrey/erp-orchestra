@@ -49,9 +49,20 @@ export class LocalSerializer extends PassportSerializer {
    */
   async deserializeUser(
     id: number,
-    done: (err: Error | null, user?: User) => void,
+    done: (err: Error | null, user?: User | false) => void,
   ) {
-    const user = await this.userRepository.findOne({ where: { id } });
-    done(null, user ?? undefined);
+    try {
+      const user = await this.userRepository.findOne({ where: { id } });
+
+      if (!user) {
+        // User not found - return false to indicate authentication failure
+        // This will clear the invalid session
+        return done(null, false);
+      }
+
+      done(null, user);
+    } catch (error) {
+      done(error as Error);
+    }
   }
 }

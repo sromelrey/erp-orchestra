@@ -107,9 +107,15 @@ export function FormRenderer({
   };
 
   return (
-    <>
+    <div className="grid grid-cols-2 gap-4">
       {fields.map((field) => (
-        <div key={field.name} className="grid gap-2">
+        <div 
+          key={field.name} 
+          className={cn(
+            "grid gap-2",
+            field.width === "half" ? "col-span-1" : "col-span-2"
+          )}
+        >
           <label
             htmlFor={field.name}
             className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 ml-1"
@@ -119,6 +125,6 @@ export function FormRenderer({
           {renderField(field)}
         </div>
       ))}
-    </>
+    </div>
   );
 }
