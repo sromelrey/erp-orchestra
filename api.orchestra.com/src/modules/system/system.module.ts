@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './users/user.controller';
 import { UserModule } from './users/user.module';
 import { RoleModule } from './roles/role.module';
 import { PermissionModule } from './permissions/permission.module';
@@ -11,7 +10,7 @@ import { PlansModule } from './plans/plans.module';
 import { SystemModulesModule } from './system-modules/system-modules.module';
 
 @Module({
-  controllers: [UserController],
+  controllers: [],
   imports: [
     // Role Base Access Control
     UserModule,

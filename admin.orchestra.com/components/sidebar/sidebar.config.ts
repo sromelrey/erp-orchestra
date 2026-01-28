@@ -19,32 +19,7 @@ export const SUPER_ADMIN_MENU_ITEMS = [
     description: "Overview of system health, active clients, revenue, usage metrics",
     menu_code:'SA-01'
   },
-
-  {
-    label: "Clients",
-    icon: Users,
-    menu_code:'SA-02',
-    children: [
-      {
-        label: "All Clients",
-        href: "/clients",
-        description: "View and manage client companies/tenants",
-        menu_code:'SA-02-01'
-      },
-      {
-        label: "Add Client",
-        href: "/clients/new",
-        description: "Create a new client company account",
-        menu_code:'SA-02-02'
-      },
-      {
-        label: "Client Settings",
-        href: "/clients/settings",
-        description: "Manage client-specific settings (branding, domain, locale)",
-        menu_code:'SA-02-03'
-      },
-    ],
-  },
+ 
 
   {
     label: "Tenant Management",

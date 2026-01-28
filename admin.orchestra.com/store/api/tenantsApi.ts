@@ -9,7 +9,7 @@ export const tenantsApi = createApi({
     },
     credentials: 'include',
   }),
-  tagTypes: ['Tenants'],
+  tagTypes: ['Tenants', 'TenantUsers'],
   endpoints: (builder) => ({
     getTenants: builder.query<any, { limit?: number; cursor?: string | number }>({
       query: (params) => ({
@@ -54,6 +54,27 @@ export const tenantsApi = createApi({
       }),
       invalidatesTags: [{ type: 'Tenants', id: 'LIST' }],
     }),
+    getTenantUsers: builder.query<any, { tenantId: string | number; cursor?: string | number }>({
+      query: ({ tenantId, ...params }) => ({
+        url: `/users/tenant/${tenantId}`,
+        params,
+      }),
+      providesTags: (result, error, { tenantId }) =>
+        result
+          ? [
+              ...result.data.map(({ id }: { id: string | number }) => ({ type: 'TenantUsers' as const, id })),
+              { type: 'TenantUsers', id: `LIST_${tenantId}` },
+            ]
+          : [{ type: 'TenantUsers', id: `LIST_${tenantId}` }],
+    }),
+    createTenantUser: builder.mutation<any, { tenantId: string | number; body: any }>({
+      query: ({ tenantId, body }) => ({
+        url: `/users/tenant/${tenantId}`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (result, error, { tenantId }) => [{ type: 'TenantUsers', id: `LIST_${tenantId}` }],
+    }),
   }),
 });
 
@@ -63,4 +84,6 @@ export const {
   useGetTenantByIdQuery,
   useUpdateTenantMutation,
   useDeleteTenantMutation,
+  useGetTenantUsersQuery,
+  useCreateTenantUserMutation,
 } = tenantsApi;

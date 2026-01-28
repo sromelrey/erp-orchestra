@@ -4,6 +4,7 @@ import { authApi } from './api/authApi';
 import { tenantsApi } from './api/tenantsApi';
 import { plansApi } from './api/plansApi';
 import { systemModulesApi } from './api/systemModulesApi';
+import { rolesApi } from './api/rolesApi';
 import authReducer from './slices/authSlice';
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     [tenantsApi.reducerPath]: tenantsApi.reducer,
     [plansApi.reducerPath]: plansApi.reducer,
     [systemModulesApi.reducerPath]: systemModulesApi.reducer,
+    [rolesApi.reducerPath]: rolesApi.reducer,
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -19,7 +21,8 @@ export const store = configureStore({
       authApi.middleware, 
       tenantsApi.middleware, 
       plansApi.middleware,
-      systemModulesApi.middleware
+      systemModulesApi.middleware,
+      rolesApi.middleware
     ),
 });
 

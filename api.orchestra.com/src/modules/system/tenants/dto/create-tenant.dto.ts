@@ -1,6 +1,5 @@
 import {
   IsEnum,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -25,12 +24,12 @@ export class CreateTenantDto {
   name: string;
 
   @ApiProperty({
-    description: 'Unique slug for the tenant (subdomain)',
+    description: 'Unique subdomain for the tenant',
     example: 'acme-corp',
   })
   @IsString()
   @IsNotEmpty()
-  slug: string;
+  subdomain: string;
 
   @ApiProperty({
     description: 'Current status of the tenant',
@@ -42,12 +41,13 @@ export class CreateTenantDto {
   status?: TenantStatus = TenantStatus.TRIAL;
 
   @ApiProperty({
-    description: 'ID of the subscription plan',
-    example: 1,
+    description:
+      'Name of the subscription plan (e.g., Starter, Professional, Enterprise)',
+    example: 'Enterprise',
   })
-  @IsInt()
+  @IsString()
   @IsNotEmpty()
-  planId: number;
+  plan: string;
 
   @ApiProperty({
     description: 'URL to the tenant logo',

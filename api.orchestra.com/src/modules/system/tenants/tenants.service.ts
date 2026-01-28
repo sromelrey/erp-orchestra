@@ -1,7 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tenant } from '../../../entities/system/tenant.entity';
+import { Plan } from '../../../entities/system/plan.entity';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { CursorPaginationDto } from '../../../common/dto/cursor-pagination.dto';
@@ -16,6 +21,8 @@ export class TenantsService {
   constructor(
     @InjectRepository(Tenant)
     private readonly tenantsRepository: Repository<Tenant>,
+    @InjectRepository(Plan)
+    private readonly plansRepository: Repository<Plan>,
   ) {}
 
   /**
@@ -23,9 +30,27 @@ export class TenantsService {
    *
    * @param createTenantDto - The DTO containing tenant creation details
    * @returns The newly created Tenant entity
+   * @throws {BadRequestException} If the plan name is not found
    */
   async create(createTenantDto: CreateTenantDto): Promise<Tenant> {
-    const tenant = this.tenantsRepository.create(createTenantDto);
+    const { plan: planName, subdomain, ...rest } = createTenantDto;
+
+    // Look up plan by name
+    const plan = await this.plansRepository.findOne({
+      where: { name: planName },
+    });
+
+    if (!plan) {
+      throw new BadRequestException(`Plan "${planName}" not found`);
+    }
+
+    // Create tenant with planId and slug (mapped from subdomain)
+    const tenant = this.tenantsRepository.create({
+      ...rest,
+      slug: subdomain,
+      planId: plan.id,
+    });
+
     return await this.tenantsRepository.save(tenant);
   }
 
@@ -41,7 +66,9 @@ export class TenantsService {
     const { cursor, limit = 10 } = paginationDto;
     // Assuming cursor is the ID for simplicity, typically you'd decode a cursor
     // But since the plan says "next cursor", we'll just use ID.
-    const queryBuilder = this.tenantsRepository.createQueryBuilder('tenant');
+    const queryBuilder = this.tenantsRepository
+      .createQueryBuilder('tenant')
+      .leftJoinAndSelect('tenant.plan', 'plan');
 
     if (cursor) {
       queryBuilder.where('tenant.id > :cursor', { cursor });
@@ -73,7 +100,10 @@ export class TenantsService {
    * @throws {NotFoundException} If no tenant is found with the given ID
    */
   async findOne(id: number): Promise<Tenant> {
-    const tenant = await this.tenantsRepository.findOne({ where: { id } });
+    const tenant = await this.tenantsRepository.findOne({
+      where: { id },
+      relations: ['plan'],
+    });
     if (!tenant) {
       throw new NotFoundException(`Tenant with ID ${id} not found`);
     }
@@ -87,10 +117,34 @@ export class TenantsService {
    * @param updateTenantDto - The DTO containing fields to update
    * @returns The updated Tenant entity
    * @throws {NotFoundException} If the tenant does not exist
+   * @throws {BadRequestException} If the plan name is not found
    */
   async update(id: number, updateTenantDto: UpdateTenantDto): Promise<Tenant> {
     const tenant = await this.findOne(id);
-    const updatedTenant = this.tenantsRepository.merge(tenant, updateTenantDto);
+    const { plan: planName, subdomain, ...rest } = updateTenantDto;
+
+    // Build update object
+    const updateData: Partial<Tenant> = { ...rest };
+
+    // Map subdomain to slug if provided
+    if (subdomain !== undefined) {
+      updateData.slug = subdomain;
+    }
+
+    // Look up plan by name if provided
+    if (planName !== undefined) {
+      const plan = await this.plansRepository.findOne({
+        where: { name: planName },
+      });
+
+      if (!plan) {
+        throw new BadRequestException(`Plan "${planName}" not found`);
+      }
+
+      updateData.planId = plan.id;
+    }
+
+    const updatedTenant = this.tenantsRepository.merge(tenant, updateData);
     return await this.tenantsRepository.save(updatedTenant);
   }
 

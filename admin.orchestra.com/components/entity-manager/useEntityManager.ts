@@ -16,6 +16,7 @@ export function useEntityManager<T extends Record<string, any>>({
   onCreate,
   onUpdate,
   onDelete,
+  onView,
   showViewButton,
   showEditButton,
   showDeleteButton,
@@ -53,6 +54,10 @@ export function useEntityManager<T extends Record<string, any>>({
   };
 
   const handleView = (item: T) => {
+    if (onView) {
+      onView(item);
+      return;
+    }
     setFormMode("view");
     setSelectedItem(item);
     setFormData(item);
