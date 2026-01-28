@@ -1,4 +1,7 @@
 import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Eye, Edit, Trash2 } from "lucide-react";
+import { Column } from "@/components/ui/data-table";
 import { EntityManagerProps, FormMode } from "./types";
 
 export function useEntityManager<T extends Record<string, any>>({
@@ -13,6 +16,7 @@ export function useEntityManager<T extends Record<string, any>>({
   onCreate,
   onUpdate,
   onDelete,
+  onView,
   showViewButton,
   showEditButton,
   showDeleteButton,
@@ -50,6 +54,10 @@ export function useEntityManager<T extends Record<string, any>>({
   };
 
   const handleView = (item: T) => {
+    if (onView) {
+      onView(item);
+      return;
+    }
     setFormMode("view");
     setSelectedItem(item);
     setFormData(item);

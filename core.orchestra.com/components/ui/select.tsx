@@ -7,8 +7,16 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 function Select({
+  className,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+}: React.ComponentProps<typeof SelectPrimitive.Root> & { className?: string }) {
+  if (className) {
+    return (
+      <div className={className}>
+        <SelectPrimitive.Root data-slot="select" {...props} />
+      </div>
+    )
+  }
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 
