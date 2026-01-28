@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { Plus, Search, Loader2, Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { SliderForm } from "@/components/ui/slider-form";
 import { FormRenderer } from "./FormRenderer";
