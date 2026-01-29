@@ -25,6 +25,9 @@ export class Permission extends CommonEntity {
   @Column({ type: 'text', nullable: true })
   description?: string | null;
 
+  @Column({ type: 'boolean', name: 'is_active', default: true })
+  isActive: boolean;
+
   // Relationships
   @OneToMany('RolePermission', 'permission')
   rolePermissions!: import('./role-permission.entity').RolePermission[];

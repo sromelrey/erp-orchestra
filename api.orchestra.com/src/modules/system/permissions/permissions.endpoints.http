@@ -1,0 +1,34 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Permissions (Admin Only)
+# Requires ADMIN role
+GET {{API_BASE_URL}}/v1/system/permissions
+Content-Type: application/json
+
+###
+
+### Check Permission
+# Checks if current user has the specified permission
+POST {{API_BASE_URL}}/v1/system/permissions/check
+Content-Type: application/json
+
+{
+    "permission": "hris.employee.view"
+}
+
+###
+
+### Forbidden Test - Non-Admin Access (Expected: 403)
+# Use a token from a non-admin user to verify guard works
+# GET {{API_BASE_URL}}/system/permissions
+# Authorization: Bearer {{nonAdminToken}}
