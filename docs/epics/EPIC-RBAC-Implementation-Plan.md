@@ -229,7 +229,7 @@ As a developer, I need guards and decorators to enforce permissions on routes.
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-004 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 8 |
 
@@ -241,7 +241,7 @@ As an admin, I want to manage roles and assign permissions dynamically.
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-004-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
