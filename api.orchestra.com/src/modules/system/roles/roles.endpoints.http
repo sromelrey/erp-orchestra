@@ -1,0 +1,70 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Roles
+GET {{API_BASE_URL}}/v1/system/roles
+Content-Type: application/json
+
+###
+
+### Get Role by ID (with permissions)
+@roleId = 1
+GET {{API_BASE_URL}}/v1/system/roles/{{roleId}}
+Content-Type: application/json
+
+###
+
+### Create New Role
+POST {{API_BASE_URL}}/v1/system/roles
+Content-Type: application/json
+
+{
+    "name": "HR Manager",
+    "code": "HR_MGR",
+    "description": "Manages HR department operations"
+}
+
+###
+
+### Update Role
+PATCH {{API_BASE_URL}}/v1/system/roles/{{roleId}}
+Content-Type: application/json
+
+{
+    "description": "Updated description"
+}
+
+###
+
+### Assign Permissions to Role
+POST {{API_BASE_URL}}/v1/system/roles/{{roleId}}/permissions
+Content-Type: application/json
+
+{
+    "permissionIds": [1, 2, 3]
+}
+
+###
+
+### Remove Permissions from Role
+DELETE {{API_BASE_URL}}/v1/system/roles/{{roleId}}/permissions
+Content-Type: application/json
+
+{
+    "permissionIds": [3]
+}
+
+###
+
+### Delete Role (Soft Delete)
+DELETE {{API_BASE_URL}}/v1/system/roles/{{roleId}}
+Content-Type: application/json
