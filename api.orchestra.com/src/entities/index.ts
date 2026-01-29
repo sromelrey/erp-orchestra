@@ -9,6 +9,7 @@ export * from './system/role.entity';
 export * from './system/permission.entity';
 export * from './system/user-role.entity';
 export * from './system/role-permission.entity';
+export * from './system/user-permission.entity';
 // * Menu
 export * from './system/menu.entity';
 // * Tenant

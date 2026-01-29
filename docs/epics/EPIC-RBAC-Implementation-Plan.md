@@ -4,7 +4,7 @@
 |-------|-------|
 | **Epic ID** | EPIC-01 |
 | **Epic Name** | Role-Based Access Control & Advanced Session Management |
-| **Status** | 📋 Planned |
+| **Status** | � In Progress |
 | **Priority** | High |
 | **Sprint** | Sprint 1-2 |
 | **Story Points** | 42 |
@@ -24,7 +24,7 @@ Implement a comprehensive RBAC system with flexible role/permission management a
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-001 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 5 |
 
@@ -36,7 +36,7 @@ As a developer, I need a permission system so that access control can be enforce
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-001-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -85,7 +85,7 @@ export class Permission extends CommonEntity {
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-001-2 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -121,7 +121,7 @@ export class Permission extends CommonEntity {
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-001-3 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done (caching deferred) |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -146,7 +146,7 @@ export class Permission extends CommonEntity {
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-002 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 5 |
 
@@ -158,7 +158,7 @@ As a developer, I need RBAC junction tables so that roles can be assigned permis
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-002-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -177,7 +177,7 @@ As a developer, I need RBAC junction tables so that roles can be assigned permis
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-002-2 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -196,7 +196,7 @@ As a developer, I need RBAC junction tables so that roles can be assigned permis
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-003 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 5 |
 
@@ -208,7 +208,7 @@ As a developer, I need guards and decorators to enforce permissions on routes.
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-003-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
