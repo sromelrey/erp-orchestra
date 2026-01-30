@@ -8,7 +8,9 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -25,6 +27,11 @@ import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RolesGuard } from '@/guards/roles.guard';
 import { Roles } from '@/decorators/roles.decorator';
 import { Role } from '@/entities/system/role.entity';
+import { User } from '@/entities/system/user.entity';
+
+interface AuthenticatedRequest extends Request {
+  user: User;
+}
 
 /**
  * Controller for managing Role resources.
@@ -46,8 +53,8 @@ export class RoleController {
   @Get()
   @ApiOperation({ summary: 'List all roles' })
   @ApiResponse({ status: 200, description: 'Returns all roles.' })
-  findAll(): Promise<Role[]> {
-    return this.roleService.findAll();
+  findAll(@Req() req: AuthenticatedRequest): Promise<Role[]> {
+    return this.roleService.findAll(req.user.tenantId ?? undefined);
   }
 
   /**
@@ -61,8 +68,11 @@ export class RoleController {
     description: 'Returns the role with permissions.',
   })
   @ApiResponse({ status: 404, description: 'Role not found.' })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Role> {
-    return this.roleService.findOne(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<Role> {
+    return this.roleService.findOne(id, req.user.tenantId ?? undefined);
   }
 
   /**
@@ -73,8 +83,11 @@ export class RoleController {
   @ApiBody({ type: CreateRoleDto })
   @ApiResponse({ status: 201, description: 'Role created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  create(@Body() dto: CreateRoleDto): Promise<Role> {
-    return this.roleService.create(dto);
+  create(
+    @Body() dto: CreateRoleDto,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<Role> {
+    return this.roleService.create(dto, req.user.tenantId ?? undefined);
   }
 
   /**
@@ -89,8 +102,9 @@ export class RoleController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateRoleDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<Role> {
-    return this.roleService.update(id, dto);
+    return this.roleService.update(id, dto, req.user.tenantId ?? undefined);
   }
 
   /**
@@ -101,8 +115,11 @@ export class RoleController {
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Role deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Role not found.' })
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.roleService.remove(id);
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<void> {
+    return this.roleService.remove(id, req.user.tenantId ?? undefined);
   }
 
   /**
@@ -120,8 +137,13 @@ export class RoleController {
   assignPermissions(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AssignPermissionsDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<Role> {
-    return this.roleService.assignPermissions(id, dto.permissionIds);
+    return this.roleService.assignPermissions(
+      id,
+      dto.permissionIds,
+      req.user.tenantId ?? undefined,
+    );
   }
 
   /**
@@ -139,7 +161,12 @@ export class RoleController {
   removePermissions(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AssignPermissionsDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<Role> {
-    return this.roleService.removePermissions(id, dto.permissionIds);
+    return this.roleService.removePermissions(
+      id,
+      dto.permissionIds,
+      req.user.tenantId ?? undefined,
+    );
   }
 }

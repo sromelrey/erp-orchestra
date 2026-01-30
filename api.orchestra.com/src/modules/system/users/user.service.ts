@@ -11,6 +11,7 @@ import { Tenant } from '../../../entities/system/tenant.entity';
 import { Role } from '../../../entities/system/role.entity';
 import { UserRole } from '../../../entities/system/user-role.entity';
 import { CreateTenantUserDto } from './dto/create-tenant-user.dto';
+import { UpdateTenantUserDto } from './dto/update-tenant-user.dto';
 import { CursorPaginationDto } from '../../../common/dto/cursor-pagination.dto';
 import { PaginatedResult } from '@/types';
 
@@ -159,5 +160,78 @@ export class UserService {
     });
     if (!user) throw new NotFoundException(`User with ID ${id} not found`);
     return user;
+  }
+
+  /**
+   * Find a user belonging to a specific tenant
+   */
+  async findOneForTenant(tenantId: number, id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id, tenantId },
+      relations: ['userRoles', 'userRoles.role'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with ID ${id} not found in this tenant`,
+      );
+    }
+    return user;
+  }
+
+  /**
+   * Update a user for a specific tenant
+   */
+  async updateForTenant(
+    tenantId: number,
+    id: number,
+    dto: UpdateTenantUserDto,
+  ): Promise<User> {
+    const user = await this.findOneForTenant(tenantId, id);
+
+    // Update basic fields
+    const { roleIds, password, ...rest } = dto;
+    Object.assign(user, rest);
+
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      user.passwordHash = await bcrypt.hash(password, salt);
+    }
+
+    await this.userRepository.save(user);
+
+    // Update Roles if provided
+    if (roleIds) {
+      // Remove existing roles
+      await this.userRoleRepository.delete({ userId: id });
+
+      // Add new roles
+      if (roleIds.length > 0) {
+        for (const roleId of roleIds) {
+          // Verify role belongs to tenant or is a common role
+          const role = await this.roleRepository.findOne({
+            where: { id: roleId },
+          });
+
+          // Check if role is valid and allowed for this tenant
+          if (role && (role.tenantId === tenantId || role.tenantId === null)) {
+            await this.userRoleRepository.save({
+              userId: id,
+              roleId: role.id,
+            });
+          }
+        }
+      }
+    }
+
+    return this.findOneForTenant(tenantId, id);
+  }
+
+  /**
+   * Remove a user from a specific tenant
+   */
+  async removeForTenant(tenantId: number, id: number): Promise<void> {
+    const user = await this.findOneForTenant(tenantId, id);
+    await this.userRepository.softRemove(user);
   }
 }

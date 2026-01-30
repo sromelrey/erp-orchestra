@@ -366,7 +366,7 @@ export class LeaveRequestController {
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-007 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 5 |
 
@@ -378,7 +378,7 @@ As a Tenant Admin, I need to manage MY custom roles without seeing other tenants
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-007-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -398,7 +398,7 @@ As a Tenant Admin, I need to manage MY custom roles without seeing other tenants
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-008 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 8 |
 
@@ -410,7 +410,7 @@ As a Tenant Admin, I want to create new users and assign them roles so that I ca
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-008-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
