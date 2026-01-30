@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 
 import { User } from '@/entities';
+import { SessionModule } from '@/modules/system/sessions/session.module';
 import { AuthService } from './providers/auth.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './providers/local.strategy';
@@ -19,6 +20,7 @@ import { LocalSerializer } from './providers/local.serializer';
   imports: [
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'local', session: true }),
+    SessionModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, LocalSerializer],

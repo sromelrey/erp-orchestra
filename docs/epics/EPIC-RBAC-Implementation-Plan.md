@@ -264,7 +264,7 @@ As an admin, I want to manage roles and assign permissions dynamically.
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-005 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 8 |
 
@@ -276,7 +276,7 @@ As a user, I want secure session management so that I can see and revoke my acti
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-005-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -298,7 +298,7 @@ As a user, I want secure session management so that I can see and revoke my acti
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-005-2 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
