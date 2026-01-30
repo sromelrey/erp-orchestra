@@ -53,7 +53,16 @@ export class LocalSerializer extends PassportSerializer {
     done: (err: Error | null, user?: User | false) => void,
   ) {
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.userRepository.findOne({
+        where: { id },
+        relations: [
+          'userRoles',
+          'userRoles.role',
+          'userRoles.role.rolePermissions',
+          'userRoles.role.rolePermissions.permission',
+          'tenant',
+        ],
+      });
 
       if (!user || user.status !== Status.ACTIVE) {
         // User not found or not active - return false to indicate authentication failure

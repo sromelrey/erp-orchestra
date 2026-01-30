@@ -23,7 +23,7 @@ Implement the frontend consumption of the RBAC system, enabling permission-based
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-F001 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Frontend |
 
 **Description:**
