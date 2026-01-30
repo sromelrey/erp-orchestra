@@ -72,6 +72,16 @@ export class AuthService {
    * @returns User profile data
    */
   buildLoginResponse(user: User) {
+    // Aggregate unique permissions from all roles
+    const permissions = new Set<string>();
+    user.userRoles?.forEach((ur) => {
+      ur.role?.rolePermissions?.forEach((rp) => {
+        if (rp.permission?.slug) {
+          permissions.add(rp.permission.slug);
+        }
+      });
+    });
+
     return {
       id: user.id,
       email: user.email,
@@ -81,6 +91,7 @@ export class AuthService {
       tenantId: user.tenantId,
       isSystemAdmin: user.isSystemAdmin,
       roles: user.userRoles?.map((ur) => ur.role?.name).filter(Boolean) ?? [],
+      permissions: Array.from(permissions),
     };
   }
 }
