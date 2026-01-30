@@ -139,6 +139,50 @@ UI for users to view their active sessions and for admins to revoke suspicious s
 
 ---
 
+---
+
+### STORY-F006: Tenant User Management UI
+
+| Field | Value |
+|-------|-------|
+| **Story ID** | STORY-F006 |
+| **Status** | 📋 Planned |
+| **Type** | Frontend |
+
+**Description:**
+UI for Tenant Admins to invite/manage users and assign them roles.
+
+**Tasks:**
+- [ ] **User List Page**: List users belonging to the tenant.
+- [ ] **User Form**: Create/Edit user (First Name, Last Name, Email, Role Selection).
+- [ ] **Role Selection**: Dropdown showing available roles (System + Tenant Custom).
+
+**Files to Create:**
+- `app/admin/users/page.tsx`
+- `app/admin/users/components/UserForm.tsx`
+
+---
+
+### STORY-F007: Tenant Role Management UI
+
+| Field | Value |
+|-------|-------|
+| **Story ID** | STORY-F007 |
+| **Status** | 📋 Planned |
+| **Type** | Frontend |
+
+**Description:**
+UI for Tenant Admins to manage their custom roles.
+
+**Tasks:**
+- [ ] **Role List Page**: Show only roles available to this tenant.
+- [ ] **Role Editor**: Allow creating custom roles with permissions.
+
+**Files to Create:**
+- `app/admin/roles/page.tsx` (Update to handle tenant context)
+
+---
+
 ## Dependencies
-- Backend EPIC-01 (STORY-001, STORY-002, STORY-004 completed)
-- Backend STORY-005 (Session Management API - In Progress)
+- Backend EPIC-01 (STORY-001, STORY-002, STORY-004, STORY-005, STORY-007, STORY-008)
+- Backend STORY-006 (Double-Gating)
