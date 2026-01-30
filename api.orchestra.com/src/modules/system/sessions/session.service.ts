@@ -229,6 +229,57 @@ export class SessionService {
   }
 
   /**
+   * Revokes a specific session by ID.
+   *
+   * @param sessionId - ID of the session to revoke
+   */
+  async revokeSession(sessionId: string) {
+    await this.repository.delete(sessionId);
+  }
+
+  /**
+   * Revokes all sessions for a specific user.
+   *
+   * @param userId - ID of the user
+   */
+  async revokeAllSessions(userId: number) {
+    return this.removeUserSessions(userId);
+  }
+
+  /**
+   * Retrieves all active sessions for a specific user.
+   *
+   * @param userId - ID of the user
+   * @returns Array of user's active sessions
+   */
+  async getUserActiveSessions(userId: number) {
+    const sessions = await this.repository.find();
+    const userSessions: Array<{
+      id: string;
+      expiredAt: Date;
+      ip?: string;
+      userAgent?: string;
+      current: boolean; // Flag to indicate if this is the current session (caller needs to check against their session ID)
+    }> = [];
+
+    for (const session of sessions) {
+      const sessionData = parseSessionData(session.json);
+      if (sessionData?.passport?.user === userId) {
+        // Try to extract extra info if available in the future.
+        // For now, connect-typeorm/express-session default store doesn't easily expose IP/UA unless we customize the session object.
+        // We will return basic info.
+        userSessions.push({
+          id: session.id,
+          expiredAt: new Date(session.expiredAt),
+          current: false, // Calculated by controller or caller
+        });
+      }
+    }
+
+    return userSessions;
+  }
+
+  /**
    * Removes all sessions from the database.
    *
    * This operation clears all session data and will log out all users.
@@ -248,7 +299,7 @@ export class SessionService {
     for (const session of sessions) {
       const sessionData = parseSessionData(session.json);
       if (sessionData?.passport?.user === userId) {
-        await this.repository.remove(session);
+        await this.repository.delete(session.id);
       }
     }
   }

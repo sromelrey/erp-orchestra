@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 
 import { User } from '@/entities/system/user.entity';
+import { SessionService } from '@/modules/system/sessions/session.service';
 
 /**
  * Service handling authentication logic.
@@ -17,6 +18,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly sessionService: SessionService,
   ) {}
 
   /**
@@ -50,6 +52,11 @@ export class AuthService {
    * @param req - Express request
    */
   async logOut(req: Request): Promise<void> {
+    const sessionId = req.sessionID;
+    if (sessionId) {
+      await this.sessionService.revokeSession(sessionId);
+    }
+
     return new Promise((resolve, reject) => {
       req.session.destroy((err) => {
         if (err) reject(new Error(String(err)));

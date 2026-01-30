@@ -1,0 +1,48 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### Get My Sessions
+GET {{API_BASE_URL}}/v1/sessions/my
+Content-Type: application/json
+
+### Revoke My Session
+@sessionId = <session_id>
+DELETE {{API_BASE_URL}}/v1/sessions/my/{{sessionId}}
+Content-Type: application/json
+
+### List All Sessions (Admin)
+GET {{API_BASE_URL}}/v1/sessions
+Content-Type: application/json
+
+### List Sessions with Details (Admin)
+GET {{API_BASE_URL}}/v1/sessions/details
+Content-Type: application/json
+
+### Get Session by ID (Admin)
+# @name sessionDetails
+GET {{API_BASE_URL}}/v1/sessions/{{sessionId}}
+Content-Type: application/json
+
+### Get Session Roles (Admin)
+GET {{API_BASE_URL}}/v1/sessions/{{sessionId}}/roles
+Content-Type: application/json
+
+### Validate Session (Admin)
+GET {{API_BASE_URL}}/v1/sessions/{{sessionId}}/validate
+Content-Type: application/json
+
+### Delete All Sessions (Admin)
+DELETE {{API_BASE_URL}}/v1/sessions
+Content-Type: application/json
+
+### Delete User Sessions (Admin)
+@userId = 1
+DELETE {{API_BASE_URL}}/v1/sessions/user/{{userId}}
+Content-Type: application/json

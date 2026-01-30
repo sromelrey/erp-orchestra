@@ -1,7 +1,21 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  UseGuards,
+  Req,
+  NotFoundException,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequirePermission } from '@/decorators/permission.decorator';
 import { SessionService } from './session.service';
+import { User } from '@/entities/system/user.entity';
+
+interface AuthenticatedRequest extends Request {
+  user: User;
+}
 
 /**
  * Controller for managing user sessions.
@@ -14,6 +28,52 @@ import { SessionService } from './session.service';
 @UseGuards(AuthenticatedGuard)
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
+
+  /**
+   * Retrieves all active sessions for the current user.
+   *
+   * @param req - Request object containing user info
+   * @returns Array of user's active sessions
+   */
+  @Get('my')
+  async getMySessions(@Req() req: AuthenticatedRequest) {
+    const sessions = await this.sessionService.getUserActiveSessions(
+      req.user.id,
+    );
+    // Mark current session
+    return sessions.map((s) => ({
+      ...s,
+      current: s.id === req.sessionID, // req.sessionID is standard in express-session/connect-typeorm
+    }));
+  }
+
+  /**
+   * Revokes a specific session for the current user.
+   *
+   * @param req - Request object containing user info
+   * @param id - ID of the session to revoke
+   * @returns Object confirming revocation
+   */
+  @Delete('my/:id')
+  async revokeMySession(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+  ) {
+    // Verify the session belongs to the user
+    const sessions = await this.sessionService.getUserActiveSessions(
+      req.user.id,
+    );
+    const session = sessions.find((s) => s.id === id);
+
+    if (!session) {
+      throw new NotFoundException(
+        'Session not found or does not belong to user',
+      );
+    }
+
+    await this.sessionService.revokeSession(id);
+    return { revoked: true };
+  }
 
   /**
    * Retrieves all active sessions with basic information.

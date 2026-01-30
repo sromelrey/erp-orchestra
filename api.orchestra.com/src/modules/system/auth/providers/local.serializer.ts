@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User } from '@/entities/system/user.entity';
+import { Status } from '@/types/enums';
 
 /**
  * Passport serializer for managing user session data.
@@ -54,8 +55,8 @@ export class LocalSerializer extends PassportSerializer {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
 
-      if (!user) {
-        // User not found - return false to indicate authentication failure
+      if (!user || user.status !== Status.ACTIVE) {
+        // User not found or not active - return false to indicate authentication failure
         // This will clear the invalid session
         return done(null, false);
       }
