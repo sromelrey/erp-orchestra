@@ -319,7 +319,7 @@ As a user, I want secure session management so that I can see and revoke my acti
 | Field | Value |
 |-------|-------|
 | **Story ID** | STORY-006 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Assignee** | Backend |
 | **Story Points** | 3 |
 
@@ -331,7 +331,7 @@ As the system, I need to check both tenant feature access AND user permissions.
 | Field | Value |
 |-------|-------|
 | **Sub-Task ID** | BE-006-1 |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Done |
 | **Type** | Backend |
 
 **Changes to Make:**
@@ -358,6 +358,71 @@ export class LeaveRequestController {
   async create() { /* ... */ }
 }
 ```
+
+---
+
+### STORY-007: Tenant-Scoped Role Management
+
+| Field | Value |
+|-------|-------|
+| **Story ID** | STORY-007 |
+| **Status** | 📋 Planned |
+| **Assignee** | Backend |
+| **Story Points** | 5 |
+
+**Description:**
+As a Tenant Admin, I need to manage MY custom roles without seeing other tenants' roles or system roles that don't apply to me.
+
+#### Sub-Task: BE-007-1 – Scope Role Service to Tenant
+
+| Field | Value |
+|-------|-------|
+| **Sub-Task ID** | BE-007-1 |
+| **Status** | 📋 Planned |
+| **Type** | Backend |
+
+**Changes to Make:**
+- Update `RoleService.findAll(tenantId)` to filter by tenant OR system default roles.
+- Update `RoleService.create` to strictly attach `tenantId` from the authenticated session.
+- Update `RoleService.assignPermissions` to verify that the role belongs to the requestor's tenant.
+
+**Files to Modify:**
+| File | Change |
+|------|--------|
+| `api.orchestra.com/src/modules/system/roles/role.service.ts` | [MODIFY] |
+
+---
+
+### STORY-008: Tenant User Management
+
+| Field | Value |
+|-------|-------|
+| **Story ID** | STORY-008 |
+| **Status** | 📋 Planned |
+| **Assignee** | Backend |
+| **Story Points** | 8 |
+
+**Description:**
+As a Tenant Admin, I want to create new users and assign them roles so that I can onboard my team.
+
+#### Sub-Task: BE-008-1 – Tenant User CRUD
+
+| Field | Value |
+|-------|-------|
+| **Sub-Task ID** | BE-008-1 |
+| **Status** | 📋 Planned |
+| **Type** | Backend |
+
+**Changes to Make:**
+- Create `UsersController` (or update existing) with endpoints for Tenant Admins: `GET /users`, `POST /users`, `PUT /users/:id`.
+- Ensure `POST /users` creates user with requestor's `tenantId`.
+- Ensure role assignment during creation/update validates that the Role ID belongs to the tenant.
+
+**Files to Modify:**
+| File | Change |
+|------|--------|
+| `api.orchestra.com/src/modules/system/users/user.controller.ts` | [NEW/MODIFY] |
+| `api.orchestra.com/src/modules/system/users/user.service.ts` | [MODIFY] |
 
 ---
 
@@ -453,6 +518,7 @@ Authorization: Bearer {{AUTH_TOKEN}}
 | Permission caching | RBAC checks are expensive; cache aggressively |
 | Slug-based permission checks | Code uses `hris.employee.view` not IDs for readability |
 | Feature + Permission gating | Double-layer security: company tier + user role |
+| Tenant-Scoped Roles | Prevent tenants from seeing or modifying each other's custom roles |
 
 ---
 
@@ -464,3 +530,5 @@ Authorization: Bearer {{AUTH_TOKEN}}
 4. **STORY-004**: Role Management API
 5. **STORY-005**: Session Management Enhancements
 6. **STORY-006**: Feature + Permission Double-Gating
+7. **STORY-007**: Tenant-Scoped Role Management
+8. **STORY-008**: Tenant User Management

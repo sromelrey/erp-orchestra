@@ -160,4 +160,24 @@ export class TenantsService {
     await this.findOne(id);
     await this.tenantsRepository.softDelete(id);
   }
+
+  /**
+   * Retrieves the feature codes (module codes) available to a tenant through their plan.
+   *
+   * @param tenantId - The ID of the tenant
+   * @returns Array of module codes available to the tenant
+   * @throws {NotFoundException} If the tenant does not exist
+   */
+  async getTenantFeatures(tenantId: number): Promise<string[]> {
+    const tenant = await this.tenantsRepository.findOne({
+      where: { id: tenantId },
+      relations: ['plan', 'plan.modules'],
+    });
+
+    if (!tenant) {
+      throw new NotFoundException(`Tenant with ID ${tenantId} not found`);
+    }
+
+    return tenant.plan?.modules?.map((module) => module.code) ?? [];
+  }
 }
