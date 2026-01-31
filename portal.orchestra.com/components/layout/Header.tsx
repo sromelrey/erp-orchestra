@@ -4,20 +4,24 @@ import React from 'react';
 import { Bell, Search, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/slices/authSlice';
+import { SidebarTrigger } from '../ui/sidebar';
 
 export function Header() {
   const user = useSelector(selectCurrentUser);
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-white px-6 shadow-sm">
-      {/* Search Bar */}
-      <div className="flex items-center gap-4 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-500 w-96">
-        <Search className="h-4 w-4" />
-        <input
-          type="text"
-          placeholder="Search items, orders, or employees..."
-          className="bg-transparent outline-none w-full placeholder:text-gray-400"
-        />
+    <header className="flex h-16 items-center justify-between border-b bg-white px-6 shadow-sm sticky top-0 z-10 w-full">
+      <div className="flex items-center gap-4">
+        <SidebarTrigger />
+        {/* Search Bar */}
+        <div className="flex items-center gap-4 rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-500 w-96">
+          <Search className="h-4 w-4" />
+          <input
+            type="text"
+            placeholder="Search items, orders, or employees..."
+            className="bg-transparent outline-none w-full placeholder:text-gray-400"
+          />
+        </div>
       </div>
 
       {/* Right Actions */}

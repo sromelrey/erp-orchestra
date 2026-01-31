@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SUPER_ADMIN_MENU_ITEMS } from "./sidebar.config";
+import { CUSTOMER_PORTAL_MENU_ITEMS } from "./sidebar.config";
 import { useLogout } from "../../hooks/useLogout";
 import { LogOut } from "lucide-react";
 
@@ -20,7 +20,7 @@ export function Sidebar() {
         <h2 className="text-2xl font-bold tracking-tight">Orchestra</h2>
       </div>
       <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
-        {SUPER_ADMIN_MENU_ITEMS.map((item) => {
+        {CUSTOMER_PORTAL_MENU_ITEMS.map((item) => {
           if (item.children) {
             return (
               <div key={item.menu_code} className="mb-4">
