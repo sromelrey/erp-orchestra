@@ -76,13 +76,18 @@ export const useSignInForm = () => {
 
     try {
       const result = await login(formData).unwrap();
+      console.log('[Login] API Response:', result);
       
       // Set role cookie for middleware to use
       const role = result.roles?.[0] || 'ADMIN';
+      console.log('[Login] Setting cookie with role:', role);
       document.cookie = `user_role=${role}; path=/; max-age=86400; SameSite=Lax`;
+      console.log('[Login] Cookie after set:', document.cookie);
       
-      dispatch(setCredentials({ user: result.user }));
-      router.push('/dashboard');
+      dispatch(setCredentials({ user: result }));
+      console.log('[Login] Redirecting to /dashboard...');
+      // Use hard navigation to ensure middleware can read the new cookie
+      window.location.href = '/dashboard';
     } catch (err) {
       // Error handled by useEffect
       console.error('Failed to log in:', err);

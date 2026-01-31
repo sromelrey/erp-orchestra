@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Sidebar } from '../../components/sidebar/Sidebar';
-import { Header } from '../../components/layout/Header';
+import { AppSidebar } from "@/components/sidebar/AppSidebar";
+import { Header } from "@/components/layout/Header";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -10,21 +10,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
-      {/* Sidebar */}
-      <Sidebar />
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div className="flex flex-col flex-1 overflow-hidden min-h-screen">
+          {/* Header */}
+          <Header />
 
-      {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
-        
-        {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-6 lg:p-10">
-          <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
+          {/* Dynamic Content */}
+          <main className="flex-1 overflow-y-auto bg-gray-50/50 p-8">
+            <div className="mx-auto w-full max-w-7xl">
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {children}
+              </div>
+            </div>
+          </main>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

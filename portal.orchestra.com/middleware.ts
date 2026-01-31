@@ -16,17 +16,18 @@ const roleDefaultRoutes: Record<string, string> = {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Check for the session cookie from NestJS (connect.sid) AND our user_role cookie
-  const hasSession = request.cookies.has('connect.sid');
   const hasRole = request.cookies.has('user_role');
-  const isAuthenticated = hasSession && hasRole;
+  const isAuthenticated = hasRole;
   const userRole = request.cookies.get('user_role')?.value || 'USER';
 
   // Temporary debug logging
+  console.log('[Middleware] Cookies:', request.cookies.getAll().map(c => `${c.name}=${c.value}`));
+  
   console.log('[Middleware]', {
     pathname,
     isAuthenticated,
     userRole,
+    hasRole,
   });
 
   // Redirect authenticated users away from auth routes (e.g., /login)
