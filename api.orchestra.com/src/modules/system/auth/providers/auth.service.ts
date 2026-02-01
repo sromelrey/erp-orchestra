@@ -90,7 +90,7 @@ export class AuthService {
       avatarUrl: user.avatarUrl,
       tenantId: user.tenantId,
       isSystemAdmin: user.isSystemAdmin,
-      roles: user.userRoles?.map((ur) => ur.role?.name).filter(Boolean) ?? [],
+      roles: user.userRoles?.map((ur) => ur.role?.code).filter(Boolean) ?? [],
       permissions: Array.from(permissions),
     };
   }

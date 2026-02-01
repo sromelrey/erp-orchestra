@@ -8,8 +8,6 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../../entities/system/user.entity';
 import { Tenant } from '../../../entities/system/tenant.entity';
-import { Role } from '../../../entities/system/role.entity';
-import { UserRole } from '../../../entities/system/user-role.entity';
 import { CreateTenantUserDto } from './dto/create-tenant-user.dto';
 import { UpdateTenantUserDto } from './dto/update-tenant-user.dto';
 import { CursorPaginationDto } from '../../../common/dto/cursor-pagination.dto';
@@ -22,10 +20,6 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
   ) {}
 
   /**
@@ -56,35 +50,15 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(createDto.password, salt);
 
-    console.log('Creating user for tenant:', tenantId);
-    console.log('Role IDs received:', createDto.roleIds);
-
     // Create user
     const user = this.userRepository.create({
       ...createDto,
       passwordHash,
       tenantId,
-      isSystemAdmin: false, // Tenant users are never system admins by this method
+      isSystemAdmin: false,
     });
 
     const savedUser = await this.userRepository.save(user);
-
-    // Assign Roles if provided
-    if (createDto.roleIds && createDto.roleIds.length > 0) {
-      for (const roleId of createDto.roleIds) {
-        // Verify role belongs to tenant or is a common role
-        // For now, assuming any valid roleId is okay, but ideally should check tenant ownership
-        const role = await this.roleRepository.findOne({
-          where: { id: roleId },
-        });
-        if (role) {
-          await this.userRoleRepository.save({
-            userId: savedUser.id,
-            roleId: role.id,
-          });
-        }
-      }
-    }
 
     return savedUser;
   }
@@ -190,7 +164,7 @@ export class UserService {
     const user = await this.findOneForTenant(tenantId, id);
 
     // Update basic fields
-    const { roleIds, password, ...rest } = dto;
+    const { password, ...rest } = dto;
     Object.assign(user, rest);
 
     if (password) {
@@ -199,30 +173,6 @@ export class UserService {
     }
 
     await this.userRepository.save(user);
-
-    // Update Roles if provided
-    if (roleIds) {
-      // Remove existing roles
-      await this.userRoleRepository.delete({ userId: id });
-
-      // Add new roles
-      if (roleIds.length > 0) {
-        for (const roleId of roleIds) {
-          // Verify role belongs to tenant or is a common role
-          const role = await this.roleRepository.findOne({
-            where: { id: roleId },
-          });
-
-          // Check if role is valid and allowed for this tenant
-          if (role && (role.tenantId === tenantId || role.tenantId === null)) {
-            await this.userRoleRepository.save({
-              userId: id,
-              roleId: role.id,
-            });
-          }
-        }
-      }
-    }
 
     return this.findOneForTenant(tenantId, id);
   }

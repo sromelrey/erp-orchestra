@@ -41,9 +41,14 @@ export class RolesGuard implements CanActivate {
 
     if (!requiredRoles || requiredRoles.length === 0) return true;
 
+    interface UserRole {
+      role?: { code?: string };
+    }
+
     interface Principal {
       isSystemAdmin?: boolean;
       roles?: string[];
+      userRoles?: UserRole[];
     }
 
     const req = context.switchToHttp().getRequest<{
@@ -57,9 +62,15 @@ export class RolesGuard implements CanActivate {
     // Allow if user is system admin or has SUPER_ADMIN role
     if (principal.isSystemAdmin) return true;
 
-    const roles: string[] = Array.isArray(principal.roles)
-      ? principal.roles
-      : [];
+    // Extract role codes from either flat 'roles' array or nested 'userRoles' structure
+    let roles: string[] = [];
+    if (Array.isArray(principal.roles)) {
+      roles = principal.roles;
+    } else if (Array.isArray(principal.userRoles)) {
+      roles = principal.userRoles
+        .map((ur) => ur.role?.code)
+        .filter((code): code is string => !!code);
+    }
 
     // SUPER_ADMIN has all permissions
     if (roles.includes('SUPER_ADMIN')) return true;

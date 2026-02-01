@@ -1,7 +1,7 @@
 import { Column } from "@/components/ui/data-table";
 import { ReactNode } from "react";
 
-export type FormFieldType = "text" | "email" | "number" | "select" | "textarea" | "date";
+export type FormFieldType = "text" | "email" | "number" | "select" | "textarea" | "date" | 'password';
 
 export interface FormFieldOption {
   label: string;

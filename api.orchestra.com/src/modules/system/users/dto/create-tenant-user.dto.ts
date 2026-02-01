@@ -5,8 +5,6 @@ import {
   MinLength,
   IsEnum,
   IsOptional,
-  IsArray,
-  IsInt,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Status } from '@/types/enums';
@@ -47,9 +45,4 @@ export class CreateTenantUserDto {
   isTenantAdmin?: boolean;
 
   // Role IDs to assign to this user
-  @ApiProperty({ example: [1, 2], type: [Number], required: false })
-  @IsOptional()
-  @IsArray()
-  @IsInt({ each: true })
-  roleIds?: number[];
 }

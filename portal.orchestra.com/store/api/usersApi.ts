@@ -1,11 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export interface User {
-  id: string;
-  name: string;
+  id: number;
   email: string;
-  roleId: string; // Assuming a role ID for simplicity
-  status: 'active' | 'inactive';
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  tenantId?: number;
+  userRoles?: Array<{
+    role?: {
+      id: number;
+      name: string;
+      code: string;
+    };
+  }>;
+}
+
+interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    nextCursor: string | number | null;
+  };
 }
 
 export const usersApi = createApi({
@@ -13,7 +29,6 @@ export const usersApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     prepareHeaders: (headers) => {
-      // Inherit logic from authApi.ts
       return headers;
     },
     credentials: 'include',
@@ -22,6 +37,7 @@ export const usersApi = createApi({
   endpoints: (builder) => ({
     getUsers: builder.query<User[], void>({
       query: () => '/users',
+      transformResponse: (response: PaginatedResponse<User>) => response.data,
       providesTags: (result) =>
         result
           ? [
@@ -34,7 +50,7 @@ export const usersApi = createApi({
       query: (id) => `/users/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'User', id }],
     }),
-    createUser: builder.mutation<User, Omit<User, 'id' | 'status'>>({
+    createUser: builder.mutation<User, { email: string; password: string; firstName: string; lastName: string }>({
       query: (data) => ({
         url: '/users',
         method: 'POST',
@@ -42,7 +58,7 @@ export const usersApi = createApi({
       }),
       invalidatesTags: [{ type: 'User', id: 'LIST' }],
     }),
-    updateUser: builder.mutation<User, Partial<User> & Pick<User, 'id'>>({
+    updateUser: builder.mutation<User, Partial<User> & { id: number }>({
       query: ({ id, ...patch }) => ({
         url: `/users/${id}`,
         method: 'PATCH',
@@ -50,7 +66,7 @@ export const usersApi = createApi({
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: 'User', id }],
     }),
-    deleteUser: builder.mutation<void, string>({
+    deleteUser: builder.mutation<void, number>({
       query: (id) => ({
         url: `/users/${id}`,
         method: 'DELETE',
@@ -67,3 +83,4 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
 } = usersApi;
+
