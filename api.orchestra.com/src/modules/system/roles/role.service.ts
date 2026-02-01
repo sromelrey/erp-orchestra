@@ -77,7 +77,17 @@ export class RoleService {
       tenantId,
       isSystemRole: false, // Custom roles are never system roles
     });
-    return this.roleRepository.save(role);
+
+    const savedRole = await this.roleRepository.save(role);
+
+    // If permissions are provided, assign them immediately
+    if (dto.permissionIds && dto.permissionIds.length > 0) {
+      await this.assignPermissions(savedRole.id, dto.permissionIds, tenantId);
+      // Reload role with permissions
+      return this.findOne(savedRole.id, tenantId);
+    }
+
+    return savedRole;
   }
 
   /**

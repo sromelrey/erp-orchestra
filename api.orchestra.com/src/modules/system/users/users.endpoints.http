@@ -1,0 +1,48 @@
+### Login (Establish Session)
+# @name adminLogin
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List Users (Current Tenant)
+GET {{API_BASE_URL}}/v1/users?limit=10
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+### Create User (Current Tenant)
+# @name createUser
+POST {{API_BASE_URL}}/v1/users
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+    "email": "newuser@example.com",
+    "password": "password123",
+    "firstName": "New",
+    "lastName": "User",
+    "isTenantAdmin": false
+}
+
+### Get User by ID
+@userId = {{createUser.response.body.id}}
+GET {{API_BASE_URL}}/v1/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+### Update User
+PATCH {{API_BASE_URL}}/v1/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+{
+    "firstName": "Updated Name"
+}
+
+### Delete User
+DELETE {{API_BASE_URL}}/v1/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
