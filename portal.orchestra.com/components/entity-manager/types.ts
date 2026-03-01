@@ -65,4 +65,16 @@ export interface EntityManagerProps<T> {
   showViewButton?: boolean;
   showEditButton?: boolean;
   showDeleteButton?: boolean;
+
+  /**
+   * Permissions required for various CRUD operations.
+   * If provided, the EntityManager will automatically hide buttons
+   * using HasPermission.
+   */
+  permissions?: {
+    create?: string;
+    update?: string;
+    delete?: string;
+    view?: string;
+  };
 }

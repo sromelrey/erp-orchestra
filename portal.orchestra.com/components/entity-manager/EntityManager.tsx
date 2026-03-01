@@ -10,6 +10,7 @@ import { SliderForm } from "@/components/ui/slider-form";
 import { FormRenderer } from "./FormRenderer";
 import { EntityManagerProps } from "./types";
 import { useEntityManager } from "./useEntityManager";
+import { HasPermission } from "@/components/auth/HasPermission";
 
 function EntityManager<T extends Record<string, any>>(props: EntityManagerProps<T>) {
   const {
@@ -28,6 +29,7 @@ function EntityManager<T extends Record<string, any>>(props: EntityManagerProps<
     showViewButton = true,
     showEditButton = true,
     showDeleteButton = true,
+    permissions,
   } = props;
 
   const {
@@ -62,34 +64,40 @@ function EntityManager<T extends Record<string, any>>(props: EntityManagerProps<
         cell: (item: T) => (
           <div className="flex items-center justify-end gap-2">
             {showViewButton && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleView(item)}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
+              <HasPermission permission={permissions?.view}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleView(item)}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+              </HasPermission>
             )}
             {showEditButton && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => handleEdit(item)}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
+              <HasPermission permission={permissions?.update}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => handleEdit(item)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </HasPermission>
             )}
             {showDeleteButton && onDelete && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={() => handleDelete(item)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <HasPermission permission={permissions?.delete}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  onClick={() => handleDelete(item)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </HasPermission>
             )}
           </div>
         ),
@@ -110,10 +118,12 @@ function EntityManager<T extends Record<string, any>>(props: EntityManagerProps<
           </p>
         </div>
         {onCreate && (
-          <Button className="gap-2" onClick={openCreateForm}>
-            <Plus className="h-4 w-4" />
-            Add {entityName}
-          </Button>
+          <HasPermission permission={permissions?.create}>
+            <Button className="gap-2" onClick={openCreateForm}>
+              <Plus className="h-4 w-4" />
+              Add {entityName}
+            </Button>
+          </HasPermission>
         )}
       </div>
 
