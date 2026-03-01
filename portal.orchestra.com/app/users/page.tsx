@@ -1,22 +1,31 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import { EntityManager } from "@/components/entity-manager";
-import { columns } from "./column";
+import { columns as baseColumns } from "./column";
 import { userFormFields } from "./form-fields";
-import { Users as UsersIcon } from "lucide-react";
+import { Users as UsersIcon, UserCog } from "lucide-react";
 import {
   useGetUsersQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
+  User,
 } from "@/store/api/usersApi";
 import { toast } from "sonner";
+import { UserRolesManager } from "@/components/users/UserRolesManager";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Column } from "@/components/ui/data-table";
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
   const [createUser] = useCreateUserMutation();
   const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
+
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
 
   const stats = [
     {
@@ -55,7 +64,7 @@ export default function UsersPage() {
 
   const handleDelete = async (id: string | number) => {
     try {
-      await deleteUser(String(id)).unwrap();
+      await deleteUser(Number(id)).unwrap();
       toast.success("User deleted successfully");
     } catch (error) {
       toast.error("Failed to delete user");
@@ -63,20 +72,63 @@ export default function UsersPage() {
     }
   };
 
+  const handleManageRoles = (user: User) => {
+    setSelectedUser(user);
+    setIsRoleDialogOpen(true);
+  };
+
+  // Add Manage Roles column
+  const columns: Column<any>[] = useMemo(() => {
+    return [
+      ...baseColumns,
+      {
+        header: "Manage",
+        className: "text-center",
+        cell: (item: User) => (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => handleManageRoles(item)}
+          >
+            <UserCog className="h-4 w-4" />
+            Roles
+          </Button>
+        ),
+      },
+    ];
+  }, []);
+
   return (
-    <EntityManager
-      entityName="User"
-      entityNamePlural="Users"
-      data={users}
-      columns={columns}
-      formFields={userFormFields}
-      keyExtractor={(item) => item.id}
-      onCreate={handleCreate}
-      onUpdate={handleUpdate}
-      onDelete={handleDelete}
-      stats={stats}
-      searchPlaceholder="Search users..."
-      isLoading={isLoading}
-    />
+    <>
+      <EntityManager
+        entityName="User"
+        entityNamePlural="Users"
+        data={users}
+        columns={columns}
+        formFields={userFormFields}
+        keyExtractor={(item) => item.id}
+        onCreate={handleCreate}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+        stats={stats}
+        searchPlaceholder="Search users..."
+        isLoading={isLoading}
+      />
+
+      <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Manage User Roles</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <UserRolesManager
+              user={selectedUser}
+              onClose={() => setIsRoleDialogOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

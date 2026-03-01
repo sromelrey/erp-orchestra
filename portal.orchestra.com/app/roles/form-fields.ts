@@ -10,6 +10,14 @@ export const roleFormFields: FormField[] = [
     width: "full",
   },
   {
+    name: "code",
+    label: "Role Code",
+    type: "text",
+    required: true,
+    placeholder: "e.g., MANAGER",
+    width: "full",
+  },
+  {
     name: "description",
     label: "Description",
     type: "textarea",
