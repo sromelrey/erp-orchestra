@@ -17,6 +17,8 @@ import { UserRolesManager } from "@/components/users/UserRolesManager";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
+import { HasPermission } from "@/components/auth/HasPermission";
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
@@ -85,22 +87,24 @@ export default function UsersPage() {
         header: "Manage",
         className: "text-center",
         cell: (item: User) => (
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => handleManageRoles(item)}
-          >
-            <UserCog className="h-4 w-4" />
-            Roles
-          </Button>
+          <HasPermission permission="system.user.manage">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => handleManageRoles(item)}
+            >
+              <UserCog className="h-4 w-4" />
+              Roles
+            </Button>
+          </HasPermission>
         ),
       },
     ];
   }, []);
 
   return (
-    <>
+    <PermissionGuard permission="system.user.view">
       <EntityManager
         entityName="User"
         entityNamePlural="Users"
@@ -114,6 +118,12 @@ export default function UsersPage() {
         stats={stats}
         searchPlaceholder="Search users..."
         isLoading={isLoading}
+        permissions={{
+          create: "system.user.manage",
+          update: "system.user.manage",
+          delete: "system.user.manage",
+          view: "system.user.view",
+        }}
       />
 
       <Dialog open={isRoleDialogOpen} onOpenChange={setIsRoleDialogOpen}>
@@ -129,6 +139,6 @@ export default function UsersPage() {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </PermissionGuard>
   );
 }

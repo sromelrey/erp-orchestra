@@ -17,6 +17,8 @@ import { RoleDetailsPanel } from "@/components/roles/RoleDetailsPanel";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
+import { HasPermission } from "@/components/auth/HasPermission";
 
 export default function RolesPage() {
   const { data: roles = [], isLoading } = useGetRolesQuery();
@@ -95,22 +97,24 @@ export default function RolesPage() {
         header: "Manage",
         className: "text-center",
         cell: (item: Role) => (
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            onClick={() => handleManagePermissions(item)}
-          >
-            <Settings className="h-4 w-4" />
-            Permissions
-          </Button>
+          <HasPermission permission="system.role.manage">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              onClick={() => handleManagePermissions(item)}
+            >
+              <Settings className="h-4 w-4" />
+              Permissions
+            </Button>
+          </HasPermission>
         ),
       },
     ];
   }, []);
 
   return (
-    <>
+    <PermissionGuard permission="system.role.view">
       <EntityManager
         entityName="Role"
         entityNamePlural="Roles"
@@ -124,6 +128,12 @@ export default function RolesPage() {
         stats={stats}
         searchPlaceholder="Search roles..."
         isLoading={isLoading}
+        permissions={{
+          create: "system.role.manage",
+          update: "system.role.manage",
+          delete: "system.role.manage",
+          view: "system.role.view",
+        }}
       />
 
       <Dialog open={isPermissionDialogOpen} onOpenChange={setIsPermissionDialogOpen}>
@@ -139,6 +149,6 @@ export default function RolesPage() {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </PermissionGuard>
   );
 }
