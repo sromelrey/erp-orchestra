@@ -3,7 +3,22 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export interface Role {
   id: string;
   name: string;
+  code: string;
   description: string;
+  isSystemRole?: boolean;
+  rolePermissions?: Array<{
+    permission: Permission;
+  }>;
+}
+
+export interface Permission {
+  id: number;
+  module: string;
+  resource: string;
+  action: string;
+  slug: string;
+  description?: string;
+  isActive: boolean;
 }
 
 export const rolesApi = createApi({
@@ -16,10 +31,10 @@ export const rolesApi = createApi({
     },
     credentials: 'include',
   }),
-  tagTypes: ['Role'],
+  tagTypes: ['Role', 'Permission', 'User'],
   endpoints: (builder) => ({
     getRoles: builder.query<Role[], void>({
-      query: () => '/roles',
+      query: () => '/system/roles',
       providesTags: (result) =>
         result
           ? [
@@ -29,12 +44,12 @@ export const rolesApi = createApi({
           : [{ type: 'Role', id: 'LIST' }],
     }),
     getRole: builder.query<Role, string>({
-      query: (id) => `/roles/${id}`,
+      query: (id) => `/system/roles/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Role', id }],
     }),
-    createRole: builder.mutation<Role, Omit<Role, 'id'>>({
+    createRole: builder.mutation<Role, Omit<Role, 'id'> & { permissionIds?: number[] }>({
       query: (data) => ({
-        url: '/roles',
+        url: '/system/roles',
         method: 'POST',
         body: data,
       }),
@@ -42,7 +57,7 @@ export const rolesApi = createApi({
     }),
     updateRole: builder.mutation<Role, Partial<Role> & Pick<Role, 'id'>>({
       query: ({ id, ...patch }) => ({
-        url: `/roles/${id}`,
+        url: `/system/roles/${id}`,
         method: 'PATCH',
         body: patch,
       }),
@@ -50,10 +65,51 @@ export const rolesApi = createApi({
     }),
     deleteRole: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/roles/${id}`,
+        url: `/system/roles/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'Role', id: 'LIST' }],
+    }),
+    getPermissions: builder.query<Permission[], void>({
+      query: () => '/system/permissions',
+      providesTags: [{ type: 'Permission', id: 'LIST' }],
+    }),
+    assignPermissions: builder.mutation<Role, { roleId: string; permissionIds: number[] }>({
+      query: ({ roleId, permissionIds }) => ({
+        url: `/system/roles/${roleId}/permissions`,
+        method: 'POST',
+        body: { permissionIds },
+      }),
+      invalidatesTags: (_result, _error, { roleId }) => [{ type: 'Role', id: roleId }],
+    }),
+    removePermissions: builder.mutation<Role, { roleId: string; permissionIds: number[] }>({
+      query: ({ roleId, permissionIds }) => ({
+        url: `/system/roles/${roleId}/permissions`,
+        method: 'DELETE',
+        body: { permissionIds },
+      }),
+      invalidatesTags: (_result, _error, { roleId }) => [{ type: 'Role', id: roleId }],
+    }),
+    assignUsers: builder.mutation<Role, { roleId: string; userIds: number[] }>({
+      query: ({ roleId, userIds }) => ({
+        url: `/system/roles/${roleId}/users`,
+        method: 'POST',
+        body: { userIds },
+      }),
+      invalidatesTags: (_result, _error, { roleId }) => [
+        { type: 'Role', id: roleId },
+        { type: 'User', id: 'LIST' },
+      ],
+    }),
+    removeUserFromRole: builder.mutation<void, { roleId: string; userId: number }>({
+      query: ({ roleId, userId }) => ({
+        url: `/system/roles/${roleId}/users/${userId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { roleId }) => [
+        { type: 'Role', id: roleId },
+        { type: 'User', id: 'LIST' },
+      ],
     }),
   }),
 });
@@ -64,4 +120,9 @@ export const {
   useCreateRoleMutation,
   useUpdateRoleMutation,
   useDeleteRoleMutation,
+  useGetPermissionsQuery,
+  useAssignPermissionsMutation,
+  useRemovePermissionsMutation,
+  useAssignUsersMutation,
+  useRemoveUserFromRoleMutation,
 } = rolesApi;

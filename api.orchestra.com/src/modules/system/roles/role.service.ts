@@ -174,4 +174,58 @@ export class RoleService {
 
     return this.findOne(roleId, tenantId);
   }
+
+  /**
+   * Assigns users to a role.
+   *
+   * @param roleId - The role ID
+   * @param userIds - Array of user IDs to assign
+   * @param tenantId - Optional tenant ID for scoping
+   * @returns The updated role
+   */
+  async assignUsers(
+    roleId: number,
+    userIds: number[],
+    tenantId?: number,
+  ): Promise<Role> {
+    await this.findOne(roleId, tenantId); // Validate role exists and belongs to tenant
+
+    // Create user-role links (ignore duplicates)
+    for (const userId of userIds) {
+      const existing = await this.roleRepository.manager
+        .getRepository('UserRole')
+        .findOne({
+          where: { userId, roleId },
+        });
+
+      if (!existing) {
+        await this.roleRepository.manager
+          .getRepository('UserRole')
+          .save({ userId, roleId });
+      }
+    }
+
+    return this.findOne(roleId, tenantId);
+  }
+
+  /**
+   * Removes a user from a role.
+   *
+   * @param roleId - The role ID
+   * @param userId - The user ID to remove
+   * @param tenantId - Optional tenant ID for scoping
+   * @returns The updated role
+   */
+  async removeUser(
+    roleId: number,
+    userId: number,
+    tenantId?: number,
+  ): Promise<void> {
+    await this.findOne(roleId, tenantId); // Verify role exists and belongs to tenant
+
+    await this.roleRepository.manager.getRepository('UserRole').delete({
+      roleId,
+      userId,
+    });
+  }
 }

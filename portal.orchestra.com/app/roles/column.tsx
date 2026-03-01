@@ -11,9 +11,21 @@ export const columns: Column<any>[] = [
         <div className="h-8 w-8 rounded-lg bg-purple-100 flex items-center justify-center">
           <Shield className="h-4 w-4 text-purple-600" />
         </div>
-        <span className="font-medium">{item.name}</span>
+        <div className="flex flex-col">
+          <span className="font-medium">{item.name}</span>
+          {item.isSystemRole && (
+            <Badge variant="secondary" className="w-fit text-xs">
+              System Role
+            </Badge>
+          )}
+        </div>
       </div>
     ),
+  },
+  {
+    header: "Code",
+    accessorKey: "code",
+    cell: (item) => <span className="text-sm font-mono text-gray-600">{item.code}</span>,
   },
   {
     header: "Description",

@@ -23,6 +23,7 @@ import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { AssignPermissionsDto } from './dto/assign-permissions.dto';
+import { AssignUsersDto } from './dto/assign-users.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RolesGuard } from '@/guards/roles.guard';
 import { Roles } from '@/decorators/roles.decorator';
@@ -166,6 +167,54 @@ export class RoleController {
     return this.roleService.removePermissions(
       id,
       dto.permissionIds,
+      req.user.tenantId ?? undefined,
+    );
+  }
+
+  /**
+   * Assigns users to a role.
+   */
+  @Post(':id/users')
+  @ApiOperation({ summary: 'Assign users to a role' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBody({ type: AssignUsersDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Users assigned successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Role not found.' })
+  assignUsers(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AssignUsersDto,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<Role> {
+    return this.roleService.assignUsers(
+      id,
+      dto.userIds,
+      req.user.tenantId ?? undefined,
+    );
+  }
+
+  /**
+   * Removes a user from a role.
+   */
+  @Delete(':id/users/:userId')
+  @ApiOperation({ summary: 'Remove a user from a role' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'userId', type: Number })
+  @ApiResponse({
+    status: 200,
+    description: 'User removed successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Role not found.' })
+  removeUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<void> {
+    return this.roleService.removeUser(
+      id,
+      userId,
       req.user.tenantId ?? undefined,
     );
   }
