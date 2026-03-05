@@ -1,7 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseApi } from './baseApi';
 
 export interface Role {
-  id: string;
+  id: number;
   name: string;
   code: string;
   description: string;
@@ -21,17 +21,7 @@ export interface Permission {
   isActive: boolean;
 }
 
-export const rolesApi = createApi({
-  reducerPath: 'rolesApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL,
-    prepareHeaders: (headers) => {
-      // Inherit logic from authApi.ts
-      return headers;
-    },
-    credentials: 'include',
-  }),
-  tagTypes: ['Role', 'Permission', 'User'],
+export const rolesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getRoles: builder.query<Role[], void>({
       query: () => '/system/roles',
@@ -43,7 +33,7 @@ export const rolesApi = createApi({
             ]
           : [{ type: 'Role', id: 'LIST' }],
     }),
-    getRole: builder.query<Role, string>({
+    getRole: builder.query<Role, number>({
       query: (id) => `/system/roles/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Role', id }],
     }),
@@ -63,7 +53,7 @@ export const rolesApi = createApi({
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: 'Role', id }],
     }),
-    deleteRole: builder.mutation<void, string>({
+    deleteRole: builder.mutation<void, number>({
       query: (id) => ({
         url: `/system/roles/${id}`,
         method: 'DELETE',
@@ -74,23 +64,29 @@ export const rolesApi = createApi({
       query: () => '/system/permissions',
       providesTags: [{ type: 'Permission', id: 'LIST' }],
     }),
-    assignPermissions: builder.mutation<Role, { roleId: string; permissionIds: number[] }>({
+    assignPermissions: builder.mutation<Role, { roleId: number; permissionIds: number[] }>({
       query: ({ roleId, permissionIds }) => ({
         url: `/system/roles/${roleId}/permissions`,
         method: 'POST',
         body: { permissionIds },
       }),
-      invalidatesTags: (_result, _error, { roleId }) => [{ type: 'Role', id: roleId }],
+      invalidatesTags: (_result, _error, { roleId }) => [
+        { type: 'Role', id: roleId },
+        { type: 'Role', id: 'LIST' },
+      ],
     }),
-    removePermissions: builder.mutation<Role, { roleId: string; permissionIds: number[] }>({
+    removePermissions: builder.mutation<Role, { roleId: number; permissionIds: number[] }>({
       query: ({ roleId, permissionIds }) => ({
         url: `/system/roles/${roleId}/permissions`,
         method: 'DELETE',
         body: { permissionIds },
       }),
-      invalidatesTags: (_result, _error, { roleId }) => [{ type: 'Role', id: roleId }],
+      invalidatesTags: (_result, _error, { roleId }) => [
+        { type: 'Role', id: roleId },
+        { type: 'Role', id: 'LIST' },
+      ],
     }),
-    assignUsers: builder.mutation<Role, { roleId: string; userIds: number[] }>({
+    assignUsers: builder.mutation<Role, { roleId: number; userIds: number[] }>({
       query: ({ roleId, userIds }) => ({
         url: `/system/roles/${roleId}/users`,
         method: 'POST',
@@ -101,7 +97,7 @@ export const rolesApi = createApi({
         { type: 'User', id: 'LIST' },
       ],
     }),
-    removeUserFromRole: builder.mutation<void, { roleId: string; userId: number }>({
+    removeUserFromRole: builder.mutation<void, { roleId: number; userId: number }>({
       query: ({ roleId, userId }) => ({
         url: `/system/roles/${roleId}/users/${userId}`,
         method: 'DELETE',

@@ -25,8 +25,8 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { AssignPermissionsDto } from './dto/assign-permissions.dto';
 import { AssignUsersDto } from './dto/assign-users.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
-import { RolesGuard } from '@/guards/roles.guard';
-import { Roles } from '@/decorators/roles.decorator';
+import { PermissionsGuard } from '@/guards/permissions.guard';
+import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 import { Role } from '@/entities/system/role.entity';
 import { User } from '@/entities/system/user.entity';
 
@@ -38,12 +38,11 @@ interface AuthenticatedRequest extends Request {
  * Controller for managing Role resources.
  *
  * Provides CRUD endpoints and permission assignment.
- * Access is restricted to users with ADMIN role.
+ * Access is controlled via slug-based permissions (system.role.view / system.role.manage).
  */
 @ApiTags('Roles')
 @ApiBearerAuth()
-@UseGuards(AuthenticatedGuard, RolesGuard)
-@Roles('ADMIN')
+@UseGuards(AuthenticatedGuard, PermissionsGuard)
 @Controller('system/roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
@@ -52,6 +51,7 @@ export class RoleController {
    * Lists all roles.
    */
   @Get()
+  @RequirePermissions('system.role.view')
   @ApiOperation({ summary: 'List all roles' })
   @ApiResponse({ status: 200, description: 'Returns all roles.' })
   findAll(@Req() req: AuthenticatedRequest): Promise<Role[]> {
@@ -62,6 +62,7 @@ export class RoleController {
    * Gets a role by ID with its permissions.
    */
   @Get(':id')
+  @RequirePermissions('system.role.view')
   @ApiOperation({ summary: 'Get role by ID with permissions' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
@@ -80,6 +81,7 @@ export class RoleController {
    * Creates a new role.
    */
   @Post()
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Create a new role' })
   @ApiBody({ type: CreateRoleDto })
   @ApiResponse({ status: 201, description: 'Role created successfully.' })
@@ -95,6 +97,7 @@ export class RoleController {
    * Updates an existing role.
    */
   @Patch(':id')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Update a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateRoleDto })
@@ -112,6 +115,7 @@ export class RoleController {
    * Soft deletes a role.
    */
   @Delete(':id')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Delete a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({ status: 200, description: 'Role deleted successfully.' })
@@ -127,6 +131,7 @@ export class RoleController {
    * Assigns permissions to a role.
    */
   @Post(':id/permissions')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Assign permissions to a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: AssignPermissionsDto })
@@ -151,6 +156,7 @@ export class RoleController {
    * Removes permissions from a role.
    */
   @Delete(':id/permissions')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Remove permissions from a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: AssignPermissionsDto })
@@ -175,6 +181,7 @@ export class RoleController {
    * Assigns users to a role.
    */
   @Post(':id/users')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Assign users to a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: AssignUsersDto })
@@ -199,6 +206,7 @@ export class RoleController {
    * Removes a user from a role.
    */
   @Delete(':id/users/:userId')
+  @RequirePermissions('system.role.manage')
   @ApiOperation({ summary: 'Remove a user from a role' })
   @ApiParam({ name: 'id', type: Number })
   @ApiParam({ name: 'userId', type: Number })

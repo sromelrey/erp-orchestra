@@ -9,6 +9,8 @@ import {
 import { CommonEntity } from '../common.entity';
 import { Tenant } from './tenant.entity';
 import { RoleStatus } from '@/types/enums';
+import { UserRole } from './user-role.entity';
+import { RolePermission } from './role-permission.entity';
 
 @Entity({ name: 'roles', schema: 'system' })
 @Index(['code'], { unique: true, where: 'deleted_at IS NULL' })
@@ -42,8 +44,8 @@ export class Role extends CommonEntity {
 
   // Relationships
   @OneToMany('UserRole', 'role')
-  userRoles!: import('./user-role.entity').UserRole[];
+  userRoles!: UserRole[];
 
   @OneToMany('RolePermission', 'role')
-  rolePermissions!: import('./role-permission.entity').RolePermission[];
+  rolePermissions!: RolePermission[];
 }

@@ -19,7 +19,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   const [assignUsers] = useAssignUsersMutation();
   const [removeUserFromRole] = useRemoveUserFromRoleMutation();
   
-  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+  const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize selected roles from user
@@ -28,11 +28,11 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
       const roleIds = user.userRoles
         .map((ur) => ur.role?.id)
         .filter((id): id is number => id !== undefined);
-      setSelectedRoleIds(roleIds.map(String));
+      setSelectedRoleIds(roleIds);
     }
   }, [user]);
 
-  const handleToggle = (roleId: string) => {
+  const handleToggle = (roleId: number) => {
     setSelectedRoleIds((prev) =>
       prev.includes(roleId)
         ? prev.filter((id) => id !== roleId)
@@ -43,7 +43,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const currentRoleIds = user.userRoles?.map((ur) => String(ur.role?.id)) || [];
+      const currentRoleIds = user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || [];
       
       // Roles to add
       const rolesToAdd = selectedRoleIds.filter((id) => !currentRoleIds.includes(id));
@@ -77,7 +77,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   };
 
   const hasChanges = () => {
-    const currentIds = user.userRoles?.map((ur) => String(ur.role?.id)) || [];
+    const currentIds = user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || [];
     if (currentIds.length !== selectedRoleIds.length) return true;
     return !currentIds.every((id) => selectedRoleIds.includes(id));
   };

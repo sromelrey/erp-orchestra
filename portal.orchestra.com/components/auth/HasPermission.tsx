@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUserPermissions, selectIsAuthenticated } from '@/store/slices/authSlice';
+import { selectUserPermissions, selectIsAuthenticated, selectIsInitialized } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 
 interface HasPermissionProps {
@@ -49,8 +49,15 @@ export function HasPermission({
 }: HasPermissionProps) {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isInitialized = useSelector(selectIsInitialized);
   const userPermissions = useSelector(selectUserPermissions);
   
+  // Wait for the AuthInit /auth/me call to complete before evaluating permissions.
+  // Without this, full-page refreshes instantly fail because Redux starts empty.
+  if (!isInitialized) {
+    return null; // Or a subtle loading spinner if preferred
+  }
+
   // TODO: Add selectTenantFeatures to authSlice once plan/modules are synchronized from backend
   // For now, we focus on permission gating as the primary shield
   const hasFeatureAccess = true; // Placeholder for future feature-gating logic
