@@ -9,7 +9,8 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
-import { RequirePermission } from '@/decorators/permission.decorator';
+import { PermissionsGuard } from '@/guards/permissions.guard';
+import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 import { SessionService } from './session.service';
 import { User } from '@/entities/system/user.entity';
 
@@ -20,14 +21,18 @@ interface AuthenticatedRequest extends Request {
 /**
  * Controller for managing user sessions.
  *
- * This controller provides endpoints for administrative operations
- * on sessions, including listing active sessions, retrieving session
- * details, and managing session lifecycle.
+ * Provides two tiers of access:
+ * - "My Sessions" endpoints: Any authenticated user can view/revoke their own sessions.
+ * - Admin endpoints: Require `system.session.view` / `system.session.manage` permissions.
  */
 @Controller('sessions')
 @UseGuards(AuthenticatedGuard)
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
+
+  // ──────────────────────────────────────────────
+  // "My Sessions" — Any authenticated user
+  // ──────────────────────────────────────────────
 
   /**
    * Retrieves all active sessions for the current user.
@@ -43,7 +48,7 @@ export class SessionController {
     // Mark current session
     return sessions.map((s) => ({
       ...s,
-      current: s.id === req.sessionID, // req.sessionID is standard in express-session/connect-typeorm
+      current: s.id === req.sessionID,
     }));
   }
 
@@ -75,13 +80,18 @@ export class SessionController {
     return { revoked: true };
   }
 
+  // ──────────────────────────────────────────────
+  // Admin endpoints — Require session permissions
+  // ──────────────────────────────────────────────
+
   /**
    * Retrieves all active sessions with basic information.
    *
    * @returns Array of all session records
    */
   @Get()
-  @RequirePermission('session-admin', 'read')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.view')
   async getSessions() {
     return await this.sessionService.findAll();
   }
@@ -92,7 +102,8 @@ export class SessionController {
    * @returns Array of sessions with user details
    */
   @Get('details')
-  @RequirePermission('session-admin', 'read')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.view')
   async getSessionsWithDetails() {
     return await this.sessionService.findAllWithDetails();
   }
@@ -104,7 +115,8 @@ export class SessionController {
    * @returns Session with user details
    */
   @Get(':id')
-  @RequirePermission('session-admin', 'read')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.view')
   async getSessionDetails(@Param('id') id: string) {
     return await this.sessionService.findOneWithDetails(id);
   }
@@ -116,7 +128,8 @@ export class SessionController {
    * @returns Array of roles the session's user belongs to
    */
   @Get(':id/roles')
-  @RequirePermission('session-admin', 'read')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.view')
   async getSessionRoles(@Param('id') id: string) {
     return await this.sessionService.getSessionRoles(id);
   }
@@ -128,7 +141,8 @@ export class SessionController {
    * @returns Object indicating if the session is valid
    */
   @Get(':id/validate')
-  @RequirePermission('session-admin', 'read')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.view')
   async validateSession(@Param('id') id: string) {
     const isValid = await this.sessionService.validateSession(id);
     return { valid: isValid };
@@ -140,7 +154,8 @@ export class SessionController {
    * @returns Object confirming the operation was completed
    */
   @Delete()
-  @RequirePermission('session-admin', 'delete')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.manage')
   async deleteAll() {
     await this.sessionService.removeAll();
     return { deleted: true };
@@ -153,7 +168,8 @@ export class SessionController {
    * @returns Object confirming the operation was completed
    */
   @Delete('user/:userId')
-  @RequirePermission('session-admin', 'delete')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions('system.session.manage')
   async deleteUserSessions(@Param('userId') userId: string) {
     await this.sessionService.removeUserSessions(parseInt(userId, 10));
     return { deleted: true };

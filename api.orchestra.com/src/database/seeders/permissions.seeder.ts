@@ -101,6 +101,21 @@ export const PermissionsSeeder: Seeder = {
           slug: 'system.permission.view',
           name: 'View Permissions',
         },
+        // System - Session
+        {
+          module: 'system',
+          resource: 'session',
+          action: 'view',
+          slug: 'system.session.view',
+          name: 'View Sessions',
+        },
+        {
+          module: 'system',
+          resource: 'session',
+          action: 'manage',
+          slug: 'system.session.manage',
+          name: 'Manage Sessions',
+        },
       ];
 
       for (const perm of permissions) {

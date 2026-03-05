@@ -1,11 +1,13 @@
 import { LucideIcon } from "lucide-react";
 
 export interface MenuItem {
-    label: string;
-    icon: LucideIcon;
-    menu_code: string;
-    href?: string;
-    description?: string;
-    children?: MenuItem[];
-    role?: string;
+  label: string;
+  href?: string;
+  icon?: any;
+  description?: string;
+  menu_code: string;
+  permission?: string;
+  feature?: string;
+  children?: MenuItem[];
+  role?: string;
 }
