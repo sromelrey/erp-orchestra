@@ -14,6 +14,8 @@ export function AuthInit({ children }: { children: React.ReactNode }) {
       if (isSuccess && data) {
         dispatch(initialize({ user: data.user || data }));
       } else if (isError) {
+        // Clear the stale authentication cookie if the session check fails
+        document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
         dispatch(initialize({ user: null }));
       }
     }

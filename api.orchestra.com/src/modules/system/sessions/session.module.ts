@@ -5,6 +5,7 @@ import { Session } from '@/entities/system/session.entity';
 import { User } from '@/entities/system/user.entity';
 import { UserRole } from '@/entities/system/user-role.entity';
 import { SessionController } from './session.controller';
+import { PermissionModule } from '@/modules/system/permissions/permission.module';
 
 /**
  * Module for managing user sessions in the application.
@@ -14,7 +15,10 @@ import { SessionController } from './session.controller';
  * roles.
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([Session, User, UserRole])],
+  imports: [
+    TypeOrmModule.forFeature([Session, User, UserRole]),
+    PermissionModule,
+  ],
   providers: [SessionService],
   controllers: [SessionController],
   exports: [SessionService],

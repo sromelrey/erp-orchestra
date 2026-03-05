@@ -21,6 +21,9 @@ import {
 import { CUSTOMER_PORTAL_MENU_ITEMS } from "./sidebar.config"
 import { useLogout } from "../../hooks/useLogout"
 import { LogOut, ChevronRight } from "lucide-react"
+import { useSelector } from "react-redux"
+import { selectUserPermissions, selectCurrentUser } from "@/store/slices/authSlice"
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,8 +32,36 @@ import {
 
 export function AppSidebar() {
   const pathname = usePathname()
-  // Assuming useLogout hook exists and returns { logout }
   const { logout } = useLogout()
+  const permissions = useSelector(selectUserPermissions)
+  const user = useSelector(selectCurrentUser)
+  const isSystemAdmin = user?.isSystemAdmin
+
+  // Filter menu items based on permissions (System Admins see everything)
+  const filteredItems = React.useMemo(() => {
+    return CUSTOMER_PORTAL_MENU_ITEMS.map(item => {
+      // 1. Check parent permission
+      const hasParentAccess = isSystemAdmin || !item.permission || permissions.includes(item.permission)
+      
+      // 2. Filter children if they exist
+      if (item.children) {
+        const visibleChildren = item.children.filter(child => 
+          isSystemAdmin || !child.permission || permissions.includes(child.permission)
+        )
+        
+        // Return item with filtered children if it should be visible
+        if (visibleChildren.length > 0) {
+          return { ...item, children: visibleChildren }
+        }
+        
+        // If parent has no visible children and no direct href, hide it
+        if (!item.href) return null
+      }
+
+      // 3. For items without children (or only parent fallback), check parent access
+      return hasParentAccess ? item : null
+    }).filter((item): item is NonNullable<typeof item> => item !== null)
+  }, [permissions, isSystemAdmin])
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -51,7 +82,7 @@ export function AppSidebar() {
           <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {CUSTOMER_PORTAL_MENU_ITEMS.map((item) => {
+              {filteredItems.map((item) => {
                 const isActive = pathname === item.href || (item.children?.some(child => pathname === child.href))
                 
                 if (item.children) {
@@ -75,7 +106,7 @@ export function AppSidebar() {
                             {item.children.map((subItem) => (
                               <SidebarMenuSubItem key={subItem.menu_code}>
                                 <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                                  <Link href={subItem.href}>
+                                  <Link href={subItem.href || "#"}>
                                     <span>{subItem.label}</span>
                                   </Link>
                                 </SidebarMenuSubButton>

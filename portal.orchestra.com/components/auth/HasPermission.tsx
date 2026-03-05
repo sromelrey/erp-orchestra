@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUserPermissions, selectIsAuthenticated, selectIsInitialized } from '@/store/slices/authSlice';
+import { selectUserPermissions, selectIsAuthenticated, selectIsInitialized, selectCurrentUser } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 
 interface HasPermissionProps {
@@ -51,11 +51,17 @@ export function HasPermission({
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isInitialized = useSelector(selectIsInitialized);
   const userPermissions = useSelector(selectUserPermissions);
+  const user = useSelector(selectCurrentUser);
   
   // Wait for the AuthInit /auth/me call to complete before evaluating permissions.
   // Without this, full-page refreshes instantly fail because Redux starts empty.
   if (!isInitialized) {
     return null; // Or a subtle loading spinner if preferred
+  }
+
+  // System admins bypass all permission checks (matches backend PermissionsGuard)
+  if (user?.isSystemAdmin) {
+    return <>{children}</>;
   }
 
   // TODO: Add selectTenantFeatures to authSlice once plan/modules are synchronized from backend
@@ -69,10 +75,18 @@ export function HasPermission({
   const hasAccess = isAuthenticated && hasFeatureAccess && hasPermissionAccess;
 
   if (!hasAccess) {
+    // If they don't have access because they aren't logged in at all, always go to login
+    if (!isAuthenticated) {
+      router.push('/login');
+      return null;
+    }
+    
+    // If they are logged in but lack the specific permission, go to the specified redirect path
     if (redirectTo) {
       router.push(redirectTo);
       return null;
     }
+    
     return <>{fallback}</>;
   }
 

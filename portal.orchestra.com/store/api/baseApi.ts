@@ -15,6 +15,6 @@ export const baseApi = createApi({
     },
     credentials: 'include',
   }),
-  tagTypes: ['User', 'Role', 'Permission'],
+  tagTypes: ['User', 'Role', 'Permission', 'Session'],
   endpoints: () => ({}), // Endpoints will be injected by feature-specific files
 });

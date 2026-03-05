@@ -102,7 +102,7 @@ export class SessionService {
         if (user) {
           enrichedSessions.push({
             id: session.id,
-            expiredAt: new Date(session.expiredAt),
+            expiredAt: new Date(Number(session.expiredAt)),
             user,
           });
         }
@@ -147,7 +147,7 @@ export class SessionService {
       if (user) {
         return {
           id: session.id,
-          expiredAt: new Date(session.expiredAt),
+          expiredAt: new Date(Number(session.expiredAt)),
           user,
         };
       }
@@ -234,7 +234,7 @@ export class SessionService {
    * @param sessionId - ID of the session to revoke
    */
   async revokeSession(sessionId: string) {
-    await this.repository.delete(sessionId);
+    await this.repository.softDelete(sessionId);
   }
 
   /**
@@ -270,7 +270,7 @@ export class SessionService {
         // We will return basic info.
         userSessions.push({
           id: session.id,
-          expiredAt: new Date(session.expiredAt),
+          expiredAt: new Date(Number(session.expiredAt)),
           current: false, // Calculated by controller or caller
         });
       }
@@ -299,7 +299,7 @@ export class SessionService {
     for (const session of sessions) {
       const sessionData = parseSessionData(session.json);
       if (sessionData?.passport?.user === userId) {
-        await this.repository.delete(session.id);
+        await this.repository.softDelete(session.id);
       }
     }
   }
