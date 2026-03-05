@@ -1,5 +1,7 @@
 import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { User } from './user.entity';
+import { Permission } from './permission.entity';
 
 /**
  * UserPermission entity for direct user-level permission overrides.
@@ -19,7 +21,7 @@ export class UserPermission extends CommonEntity {
 
   @ManyToOne('User', 'userPermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user!: import('./user.entity').User;
+  user!: User;
 
   @Column({ name: 'permission_id', type: 'int' })
   @Index()
@@ -27,7 +29,7 @@ export class UserPermission extends CommonEntity {
 
   @ManyToOne('Permission', 'userPermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'permission_id' })
-  permission!: import('./permission.entity').Permission;
+  permission!: Permission;
 
   @Column({
     type: 'varchar',

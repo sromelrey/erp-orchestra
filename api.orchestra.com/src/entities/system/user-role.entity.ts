@@ -1,5 +1,7 @@
 import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { User } from './user.entity';
+import { Role } from './role.entity';
 
 @Entity({ name: 'user_roles', schema: 'system' })
 @Index(['userId', 'roleId'], { unique: true, where: 'deleted_at IS NULL' })
@@ -10,7 +12,7 @@ export class UserRole extends CommonEntity {
 
   @ManyToOne('User', 'userRoles', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user!: import('./user.entity').User;
+  user!: User;
 
   @Column({ name: 'role_id', type: 'int' })
   @Index()
@@ -18,7 +20,7 @@ export class UserRole extends CommonEntity {
 
   @ManyToOne('Role', 'userRoles', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
-  role!: import('./role.entity').Role;
+  role!: Role;
 
   @Column({
     name: 'assigned_at',

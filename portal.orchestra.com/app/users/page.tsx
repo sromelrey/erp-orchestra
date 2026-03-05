@@ -26,8 +26,14 @@ export default function UsersPage() {
   const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
 
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
+
+  // Derive the selected user from the live RTK Query cache.
+  const selectedUser = useMemo(
+    () => users.find((u) => u.id === selectedUserId) ?? null,
+    [users, selectedUserId]
+  );
 
   const stats = [
     {
@@ -75,7 +81,7 @@ export default function UsersPage() {
   };
 
   const handleManageRoles = (user: User) => {
-    setSelectedUser(user);
+    setSelectedUserId(user.id);
     setIsRoleDialogOpen(true);
   };
 

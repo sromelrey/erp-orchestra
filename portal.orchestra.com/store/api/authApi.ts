@@ -1,16 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { baseApi } from './baseApi';
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL,
-    prepareHeaders: (headers) => {
-      // Headers can be added here, like authorization tokens if using Bearer
-      return headers;
-    },
-    credentials: 'include',
-  }),
-  tagTypes: ['User'],
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<any, any>({
       query: (credentials) => ({

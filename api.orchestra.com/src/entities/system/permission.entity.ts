@@ -1,5 +1,8 @@
 import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { RolePermission } from './role-permission.entity';
+import { UserPermission } from './user-permission.entity';
+import { Menu } from './menu.entity';
 
 @Entity({ name: 'permissions', schema: 'system' })
 @Index(['slug'], { unique: true, where: 'deleted_at IS NULL' })
@@ -30,11 +33,11 @@ export class Permission extends CommonEntity {
 
   // Relationships
   @OneToMany('RolePermission', 'permission')
-  rolePermissions!: import('./role-permission.entity').RolePermission[];
+  rolePermissions!: RolePermission[];
 
   @OneToMany('UserPermission', 'permission')
-  userPermissions!: import('./user-permission.entity').UserPermission[];
+  userPermissions!: UserPermission[];
 
   @OneToMany('Menu', 'permission')
-  menus!: import('./menu.entity').Menu[];
+  menus!: Menu[];
 }

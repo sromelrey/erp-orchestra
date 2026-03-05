@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { EntityManager } from "@/components/entity-manager";
 import { columns as baseColumns } from "./column";
 import { roleFormFields } from "./form-fields";
-import { Shield, Settings } from "lucide-react";
+import { Shield, Settings, Users } from "lucide-react";
 import {
   useGetRolesQuery,
   useCreateRoleMutation,
@@ -14,6 +14,7 @@ import {
 } from "@/store/api/rolesApi";
 import { toast } from "sonner";
 import { RoleDetailsPanel } from "@/components/roles/RoleDetailsPanel";
+import { AssignUsersPanel } from "@/components/roles/AssignUsersPanel";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
@@ -26,8 +27,17 @@ export default function RolesPage() {
   const [updateRole] = useUpdateRoleMutation();
   const [deleteRole] = useDeleteRoleMutation();
   
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
   const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const [isAssignUsersDialogOpen, setIsAssignUsersDialogOpen] = useState(false);
+
+  // Derive the selected role from the live RTK Query cache.
+  // This fixes the stale-state bug: after assignPermissions invalidates the cache
+  // and roles are re-fetched, selectedRole here will immediately reflect the newest data.
+  const selectedRole = useMemo(
+    () => roles.find((r) => r.id === selectedRoleId) ?? null,
+    [roles, selectedRoleId]
+  );
 
   const stats = [
     {
@@ -56,12 +66,12 @@ export default function RolesPage() {
 
   const handleUpdate = async (id: string | number, formData: any) => {
     try {
-      const role = roles.find((r) => r.id === String(id));
+      const role = roles.find((r) => r.id === Number(id));
       if (role?.isSystemRole) {
         toast.error("Cannot modify system roles");
         throw new Error("Cannot modify system roles");
       }
-      await updateRole({ id: String(id), ...formData }).unwrap();
+      await updateRole({ id: Number(id), ...formData }).unwrap();
       toast.success("Role updated successfully");
     } catch (error) {
       toast.error("Failed to update role");
@@ -71,12 +81,12 @@ export default function RolesPage() {
 
   const handleDelete = async (id: string | number) => {
     try {
-      const role = roles.find((r) => r.id === String(id));
+      const role = roles.find((r) => r.id === Number(id));
       if (role?.isSystemRole) {
         toast.error("Cannot delete system roles");
         throw new Error("Cannot delete system roles");
       }
-      await deleteRole(String(id)).unwrap();
+      await deleteRole(Number(id)).unwrap();
       toast.success("Role deleted successfully");
     } catch (error) {
       toast.error("Failed to delete role");
@@ -85,8 +95,13 @@ export default function RolesPage() {
   };
 
   const handleManagePermissions = (role: Role) => {
-    setSelectedRole(role);
+    setSelectedRoleId(role.id);
     setIsPermissionDialogOpen(true);
+  };
+
+  const handleAssignUsers = (role: Role) => {
+    setSelectedRoleId(role.id);
+    setIsAssignUsersDialogOpen(true);
   };
 
   // Add Manage Permissions column
@@ -98,15 +113,26 @@ export default function RolesPage() {
         className: "text-center",
         cell: (item: Role) => (
           <HasPermission permission="system.role.manage">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => handleManagePermissions(item)}
-            >
-              <Settings className="h-4 w-4" />
-              Permissions
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => handleManagePermissions(item)}
+              >
+                <Settings className="h-4 w-4" />
+                Permissions
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => handleAssignUsers(item)}
+              >
+                <Users className="h-4 w-4" />
+                Users
+              </Button>
+            </div>
           </HasPermission>
         ),
       },
@@ -145,6 +171,20 @@ export default function RolesPage() {
             <RoleDetailsPanel
               role={selectedRole}
               onClose={() => setIsPermissionDialogOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isAssignUsersDialogOpen} onOpenChange={setIsAssignUsersDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Assign Users to Role</DialogTitle>
+          </DialogHeader>
+          {selectedRole && (
+            <AssignUsersPanel
+              role={selectedRole}
+              onClose={() => setIsAssignUsersDialogOpen(false)}
             />
           )}
         </DialogContent>

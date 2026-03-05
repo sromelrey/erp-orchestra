@@ -15,20 +15,19 @@ import {
 } from '@nestjs/swagger';
 import { PermissionService } from './permission.service';
 import { CheckPermissionDto } from './dto/check-permission.dto';
-import { Roles } from '@/decorators/roles.decorator';
+import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
-import { RolesGuard } from '@/guards/roles.guard';
+import { PermissionsGuard } from '@/guards/permissions.guard';
 
 /**
  * Controller for managing Permission resources.
  *
  * Provides endpoints for listing permissions and checking user access.
- * Access is restricted to users with ADMIN role.
+ * Access is controlled via slug-based permissions (system.permission.view).
  */
 @ApiTags('Permissions')
 @ApiBearerAuth()
-@UseGuards(AuthenticatedGuard, RolesGuard)
-@Roles('ADMIN')
+@UseGuards(AuthenticatedGuard, PermissionsGuard)
 @Controller('system/permissions')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
@@ -39,6 +38,7 @@ export class PermissionController {
    * @returns List of all permissions
    */
   @Get()
+  @RequirePermissions('system.permission.view')
   @ApiOperation({ summary: 'List all permissions' })
   @ApiResponse({
     status: 200,
@@ -46,7 +46,7 @@ export class PermissionController {
   })
   @ApiResponse({
     status: 403,
-    description: 'Forbidden - Admin access required.',
+    description: 'Forbidden - Insufficient permissions.',
   })
   findAll() {
     return this.permissionService.findAll();

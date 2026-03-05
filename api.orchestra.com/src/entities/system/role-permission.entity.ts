@@ -1,5 +1,7 @@
 import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { Role } from './role.entity';
+import { Permission } from './permission.entity';
 
 @Entity({ name: 'role_permissions', schema: 'system' })
 @Index(['roleId', 'permissionId'], {
@@ -13,7 +15,7 @@ export class RolePermission extends CommonEntity {
 
   @ManyToOne('Role', 'rolePermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'role_id' })
-  role!: import('./role.entity').Role;
+  role!: Role;
 
   @Column({ name: 'permission_id', type: 'int' })
   @Index()
@@ -21,5 +23,5 @@ export class RolePermission extends CommonEntity {
 
   @ManyToOne('Permission', 'rolePermissions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'permission_id' })
-  permission!: import('./permission.entity').Permission;
+  permission!: Permission;
 }

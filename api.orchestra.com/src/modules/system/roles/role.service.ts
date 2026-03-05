@@ -4,6 +4,7 @@ import { Repository, In } from 'typeorm';
 import { Role } from '@/entities/system/role.entity';
 import { RolePermission } from '@/entities/system/role-permission.entity';
 import { Permission } from '@/entities/system/permission.entity';
+import { UserRole } from '@/entities/system/user-role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 
@@ -19,6 +20,8 @@ export class RoleService {
     private readonly rolePermissionRepository: Repository<RolePermission>,
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
   ) {}
 
   /**
@@ -30,6 +33,8 @@ export class RoleService {
   async findAll(tenantId?: number): Promise<Role[]> {
     const query = this.roleRepository
       .createQueryBuilder('role')
+      .leftJoinAndSelect('role.rolePermissions', 'rolePermissions')
+      .leftJoinAndSelect('rolePermissions.permission', 'permission')
       .where('role.tenantId = :tenantId OR role.tenantId IS NULL', {
         tenantId,
       });
@@ -135,19 +140,29 @@ export class RoleService {
       throw new NotFoundException('One or more permissions not found');
     }
 
-    // Create role-permission links (ignore duplicates)
-    for (const permissionId of permissionIds) {
-      const existing = await this.rolePermissionRepository.findOne({
-        where: { roleId, permissionId },
-      });
+    // 1. Get current permissions
+    const currentRolePermissions = await this.rolePermissionRepository.find({
+      where: { roleId },
+    });
+    const currentIds = currentRolePermissions.map((rp) => rp.permissionId);
 
-      if (!existing) {
-        const rolePermission = this.rolePermissionRepository.create({
-          roleId,
-          permissionId,
-        });
-        await this.rolePermissionRepository.save(rolePermission);
-      }
+    // 2. Identify permissions to remove (in DB but not in new list)
+    const idsToRemove = currentIds.filter((id) => !permissionIds.includes(id));
+    if (idsToRemove.length > 0) {
+      await this.rolePermissionRepository.delete({
+        roleId,
+        permissionId: In(idsToRemove),
+      });
+    }
+
+    // 3. Identify permissions to add (in new list but not in DB)
+    const idsToAdd = permissionIds.filter((id) => !currentIds.includes(id));
+    for (const permissionId of idsToAdd) {
+      const rolePermission = this.rolePermissionRepository.create({
+        roleId,
+        permissionId,
+      });
+      await this.rolePermissionRepository.save(rolePermission);
     }
 
     return this.findOne(roleId, tenantId);
@@ -192,16 +207,16 @@ export class RoleService {
 
     // Create user-role links (ignore duplicates)
     for (const userId of userIds) {
-      const existing = await this.roleRepository.manager
-        .getRepository('UserRole')
-        .findOne({
-          where: { userId, roleId },
-        });
+      const existing = await this.userRoleRepository.findOne({
+        where: { userId, roleId },
+      });
 
       if (!existing) {
-        await this.roleRepository.manager
-          .getRepository('UserRole')
-          .save({ userId, roleId });
+        const userRole = this.userRoleRepository.create({
+          userId,
+          roleId,
+        });
+        await this.userRoleRepository.save(userRole);
       }
     }
 
@@ -223,7 +238,7 @@ export class RoleService {
   ): Promise<void> {
     await this.findOne(roleId, tenantId); // Verify role exists and belongs to tenant
 
-    await this.roleRepository.manager.getRepository('UserRole').delete({
+    await this.userRoleRepository.delete({
       roleId,
       userId,
     });

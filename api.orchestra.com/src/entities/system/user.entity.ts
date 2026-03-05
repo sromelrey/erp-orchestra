@@ -9,6 +9,8 @@ import {
 import { CommonEntity } from '../common.entity';
 import { Status } from '@/types/enums';
 import { Tenant } from './tenant.entity';
+import { UserRole } from './user-role.entity';
+import { UserPermission } from './user-permission.entity';
 
 @Entity({ name: 'users', schema: 'system' })
 @Index(['email'], { unique: true, where: 'deleted_at IS NULL' })
@@ -56,8 +58,8 @@ export class User extends CommonEntity {
 
   // Relationships
   @OneToMany('UserRole', 'user')
-  userRoles!: import('./user-role.entity').UserRole[];
+  userRoles!: UserRole[];
 
   @OneToMany('UserPermission', 'user')
-  userPermissions!: import('./user-permission.entity').UserPermission[];
+  userPermissions!: UserPermission[];
 }
