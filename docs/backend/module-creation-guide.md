@@ -78,7 +78,7 @@ export class CreateProductDto {
 ```http
 ### Login (Establish Session)
 # @name adminLogin
-POST {{API_BASE_URL}}/auth/login
+POST {{API_BASE_URL}}/v1auth/login
 Content-Type: application/json
 
 {
@@ -87,11 +87,11 @@ Content-Type: application/json
 }
 
 ### List Resources
-GET {{API_BASE_URL}}/products
+GET {{API_BASE_URL}}/v1products
 Content-Type: application/json
 
 ### Create Resource
-POST {{API_BASE_URL}}/products
+POST {{API_BASE_URL}}/v1products
 Content-Type: application/json
 
 {

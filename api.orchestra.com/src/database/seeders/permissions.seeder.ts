@@ -63,6 +63,51 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.leave_request.approve',
           name: 'Approve Leave Requests',
         },
+        // HRIS - Branch
+        {
+          module: 'hris',
+          resource: 'branch',
+          action: 'view',
+          slug: 'hris.branch.view',
+          name: 'View Branches',
+        },
+        {
+          module: 'hris',
+          resource: 'branch',
+          action: 'manage',
+          slug: 'hris.branch.manage',
+          name: 'Manage Branches',
+        },
+        // HRIS - Department
+        {
+          module: 'hris',
+          resource: 'department',
+          action: 'view',
+          slug: 'hris.department.view',
+          name: 'View Departments',
+        },
+        {
+          module: 'hris',
+          resource: 'department',
+          action: 'manage',
+          slug: 'hris.department.manage',
+          name: 'Manage Departments',
+        },
+        // HRIS - Designation
+        {
+          module: 'hris',
+          resource: 'designation',
+          action: 'view',
+          slug: 'hris.designation.view',
+          name: 'View Designations',
+        },
+        {
+          module: 'hris',
+          resource: 'designation',
+          action: 'manage',
+          slug: 'hris.designation.manage',
+          name: 'Manage Designations',
+        },
         // System - Role
         {
           module: 'system',

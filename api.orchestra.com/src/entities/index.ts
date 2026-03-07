@@ -25,3 +25,8 @@ export * from './system/system-module.entity';
 export * from './inventory/material.entity';
 export * from './operations/bom.entity';
 export * from './operations/bom-item.entity';
+
+// * HRIS
+export * from './hris/branch.entity';
+export * from './hris/department.entity';
+export * from './hris/designation.entity';
