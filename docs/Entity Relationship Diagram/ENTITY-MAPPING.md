@@ -80,9 +80,24 @@ This table maps NestJS Entity classes to their corresponding database tables and
 | **Operations** | `OpsGoodsReceipt` | `operations.goods_receipts` | Recording incoming warehouse stock. |
 | **Finance** | `FinInvoice` | `finance.invoices` | Billing documents sent to customers. |
 | **Finance** | `FinAccountPayable` | `finance.accounts_payable` | Tracking money owed to vendors. |
+| **HRIS** | `HrisBranch` | `hris.branches` | Physical locations/branches of the company. |
+| **HRIS** | `HrisDepartment` | `hris.departments` | Organizational units within the company. |
+| **HRIS** | `HrisDesignation` | `hris.designations` | Job roles and levels within the company. |
 | **HRIS** | `HrisEmployee` | `hris.employees` | Master data for staff and people. |
-| **HRIS** | `HrisTimeSheet` | `hris.timesheets` | Records of hours worked by employees. |
-| **HRIS** | `HrisPayroll` | `hris.payroll_runs` | Calculated salary and tax records. |
+| **HRIS** | `HrisEmployeeJobHistory` | `hris.employee_job_history` | Historical records of roles, managers, and departments. |
+| **HRIS** | `HrisEmployeeDocument` | `hris.employee_documents` | Uploaded files and documents associated with the employee. |
+| **HRIS** | `HrisTimeEvent` | `hris.time_events` | Raw clock-in/out attendance logs. |
+| **HRIS** | `HrisPayPeriod` | `hris.pay_periods` | Defined periods for payroll and timesheet aggregation. |
+| **HRIS** | `HrisTimeSheet` | `hris.timesheets` | Aggregated attendance records per pay period. |
+| **HRIS** | `HrisTimeSheetDay` | `hris.timesheet_days` | Daily breakdown of regular and overtime hours. |
+| **HRIS** | `HrisTimeSheetAdjustment`| `hris.timesheet_adjustments`| Manual adjustments made to timesheet days. |
+| **HRIS** | `HrisTimeSheetAnomaly` | `hris.timesheet_anomalies` | System-flagged anomalies (e.g., missed clock-outs). |
+| **HRIS** | `HrisEmployeeCompensation`| `hris.employee_compensation`| Base salary, hourly, or daily rates for staff. |
+| **HRIS** | `HrisDeduction` | `hris.deductions` | Recurring or one-time deductions for employees. |
+| **HRIS** | `HrisPayslip` | `hris.payslips` | Generated payment slips per pay period. |
+| **HRIS** | `HrisPayslipItem` | `hris.payslip_items` | Line items within a payslip (earnings, taxes, deductions). |
+| **HRIS** | `HrisLeaveType` | `hris.leave_types` | Configurable leave categories (e.g., Vacation, Sick). |
+| **HRIS** | `HrisLeaveRequest` | `hris.leave_requests` | Applications filed by employees for time off.
 
 ### 3.1 Junction Tables
 

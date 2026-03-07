@@ -1,40 +1,10 @@
-# 📊 RBAC TABLE GRAPH (MARKDOWN)
+# Orchestra ERP Documentation
 
-This table graph shows **each RBAC table**, its **role in the system**, and **how it connects to others** — useful for **documentation, audits, and onboarding**.
+Welcome to the documentation suite for the Orchestra ERP system.
 
----
+## 📖 Navigation
 
-## 🧩 RBAC TABLE OVERVIEW
-
-| Table Name | Category | What It Does | Connected To |
-|----------|--------|-------------|-------------|
-| **users** | Identity | Stores all system users and login-related data | user_roles, user_permissions, rbac_audit_logs |
-| **roles** | Authorization | Defines job-based access bundles | user_roles, role_permissions |
-| **permissions** | Authorization | Defines all allowed actions in the system | role_permissions, user_permissions, menu_permissions |
-| **menus** | UI / Navigation | Defines system menus and navigation structure | menu_permissions, menus (self-reference) |
-| **menu_permissions** | UI Security | Controls which permissions are required to see a menu | menus, permissions |
-| **role_permissions** | Authorization Mapping | Assigns permissions to roles | roles, permissions |
-| **user_roles** | Authorization Mapping | Assigns roles to users per tenant | users, roles |
-| **user_permissions** | Authorization Override | Grants direct permissions to a user (exception-based) | users, permissions |
-| **rbac_audit_logs** | Security / Compliance | Logs all RBAC-related changes for auditing | users |
-
----
-
-## 🔗 RELATIONSHIP GRAPH (LOGICAL FLOW)
-
-```text
-users
- ├── user_roles
- │    └── roles
- │         └── role_permissions
- │              └── permissions
- │
- ├── user_permissions
- │    └── permissions
- │
- └── rbac_audit_logs
-
-permissions
- └── menu_permissions
-      └── menus
-           └── menus (parent-child hierarchy)
+- **[Project Roadmap](./PROJECT-ROADMAP.md)**: The high-level master plan, phases, and status of major business epics.
+- **[Entity Mapping](./ENTITY-MAPPING.md)**: Comprehensive mapping of functional business processes to technical NestJS entities and PostgreSQL tables.
+- **[Entity Relationship Diagrams (ERDs)](./Entity%20Relationship%20Diagram/README.md)**: The database schemas and relationships for core modules (RBAC, HRIS, etc.).
+- **[Epics](./epics/)**: Detailed, itemized feature plans and acceptance criteria per business domain.
