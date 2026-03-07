@@ -436,7 +436,7 @@ As a Tenant Admin, I want to create new users and assign them roles so that I ca
 
 ### 1. Login as Admin
 # @name adminLogin
-POST {{API_BASE_URL}}/auth/login
+POST {{API_BASE_URL}}/v1auth/login
 Content-Type: application/json
 
 {
@@ -447,13 +447,13 @@ Content-Type: application/json
 ###
 
 ### 2. List All Permissions
-GET {{API_BASE_URL}}/system/permissions
+GET {{API_BASE_URL}}/v1system/permissions
 Authorization: Bearer {{AUTH_TOKEN}}
 
 ###
 
 ### 3. Check Permission (Dev Utility)
-POST {{API_BASE_URL}}/system/permissions/check
+POST {{API_BASE_URL}}/v1system/permissions/check
 Authorization: Bearer {{AUTH_TOKEN}}
 Content-Type: application/json
 
@@ -464,7 +464,7 @@ Content-Type: application/json
 ###
 
 ### 4. Create Custom Role
-POST {{API_BASE_URL}}/system/roles
+POST {{API_BASE_URL}}/v1system/roles
 Authorization: Bearer {{AUTH_TOKEN}}
 Content-Type: application/json
 
@@ -477,7 +477,7 @@ Content-Type: application/json
 ###
 
 ### 5. Assign Permissions to Role
-POST {{API_BASE_URL}}/system/roles/{{roleId}}/permissions
+POST {{API_BASE_URL}}/v1system/roles/{{roleId}}/permissions
 Authorization: Bearer {{AUTH_TOKEN}}
 Content-Type: application/json
 
@@ -488,13 +488,13 @@ Content-Type: application/json
 ###
 
 ### 6. Get User Active Sessions
-GET {{API_BASE_URL}}/system/sessions
+GET {{API_BASE_URL}}/v1system/sessions
 Authorization: Bearer {{AUTH_TOKEN}}
 
 ###
 
 ### 7. Revoke Session
-DELETE {{API_BASE_URL}}/system/sessions/{{sessionId}}
+DELETE {{API_BASE_URL}}/v1system/sessions/{{sessionId}}
 Authorization: Bearer {{AUTH_TOKEN}}
 ```
 

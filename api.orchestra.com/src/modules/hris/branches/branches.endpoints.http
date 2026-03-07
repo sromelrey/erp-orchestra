@@ -1,0 +1,57 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List Branches (with Pagination)
+GET {{API_BASE_URL}}/v1/hris/branches?limit=10
+Content-Type: application/json
+
+###
+
+### List Branches (with Cursor)
+GET {{API_BASE_URL}}/v1/hris/branches?limit=5&cursor=1
+Content-Type: application/json
+
+###
+
+### Get Branch by ID
+GET {{API_BASE_URL}}/v1/hris/branches/2
+Content-Type: application/json
+
+###
+
+### Create New Branch
+POST {{API_BASE_URL}}/v1/hris/branches
+Content-Type: application/json
+
+{
+    "code": "CEB-01",
+    "name": "Main Office",
+    "address": "Cebu, Philippines",
+    "contactNumber": "+63-2-8123-4567",
+    "status": "Active"
+}
+
+###
+
+### Update Branch
+PATCH {{API_BASE_URL}}/v1/hris/branches/{{branchId}}
+Content-Type: application/json
+
+{
+    "status": "Inactive"
+}
+
+###
+
+### Delete Branch
+DELETE {{API_BASE_URL}}/v1/hris/branches/{{branchId}}
+Content-Type: application/json

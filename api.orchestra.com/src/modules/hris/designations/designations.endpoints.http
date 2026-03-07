@@ -1,0 +1,49 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List Designations (with Pagination)
+GET {{API_BASE_URL}}/v1/hris/designations?limit=10
+Content-Type: application/json
+
+###
+
+### Get Designation by ID
+GET{{API_BASE_URL}}/v1/hris/designations/{{designationId}}
+Content-Type: application/json
+
+###
+
+### Create New Designation
+POST {{API_BASE_URL}}/v1/hris/designations
+Content-Type: application/json
+
+{
+    "code": "MGR",
+    "name": "Manager",
+    "level": 3,
+    "description": "Manages the team and ensures smooth operations"
+}
+
+###
+
+### Update Designation
+PATCH{{API_BASE_URL}}/v1/hris/designations/{{designationId}}
+Content-Type: application/json
+
+{
+    "level": 4,
+    "description": "Updated duties"
+}
+
+###
+
+### Delete Designation
+DELETE{{API_BASE_URL}}/v1/hris/designations/{{designationId}}
+Content-Type: application/json

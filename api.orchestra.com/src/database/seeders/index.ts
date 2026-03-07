@@ -2,6 +2,7 @@ import { Seeder } from './seeder.config';
 import { SystemModulesSeeder } from './system-modules.seeder';
 import { AdminUserSeeder } from './admin-user.seeder';
 import { PlansSeeder } from './plans.seeder';
+import { TenantsSeeder } from './tenants.seeder';
 import { StandardRolesSeeder } from './standard-roles.seeder';
 import { PermissionsSeeder } from './permissions.seeder';
 
@@ -12,8 +13,8 @@ import { PermissionsSeeder } from './permissions.seeder';
 export const seeders: Seeder[] = [
   SystemModulesSeeder,
   PlansSeeder,
+  TenantsSeeder,
   PermissionsSeeder,
   StandardRolesSeeder,
   AdminUserSeeder,
-  // Add more seeders here in order of execution
 ];

@@ -1,6 +1,6 @@
 ### Login (Establish Session)
 # @name adminLogin
-POST {{API_BASE_URL}}/v1/auth/login
+POST {{API_BASE_URL}}/v1//auth/login
 Content-Type: application/json
 
 {
@@ -12,14 +12,14 @@ Content-Type: application/json
 
 ### List All Permissions (Admin Only)
 # Requires ADMIN role
-GET {{API_BASE_URL}}/v1/system/permissions
+GET {{API_BASE_URL}}/v1//system/permissions
 Content-Type: application/json
 
 ###
 
 ### Check Permission
 # Checks if current user has the specified permission
-POST {{API_BASE_URL}}/v1/system/permissions/check
+POST {{API_BASE_URL}}/v1//system/permissions/check
 Content-Type: application/json
 
 {
@@ -30,5 +30,5 @@ Content-Type: application/json
 
 ### Forbidden Test - Non-Admin Access (Expected: 403)
 # Use a token from a non-admin user to verify guard works
-# GET {{API_BASE_URL}}/system/permissions
+# GET {{API_BASE_URL}}/v1system/permissions
 # Authorization: Bearer {{nonAdminToken}}

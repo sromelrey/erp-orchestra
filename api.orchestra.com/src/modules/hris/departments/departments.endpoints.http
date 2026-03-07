@@ -1,0 +1,47 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List Departments (with Pagination)
+GET {{API_BASE_URL}}/v1/hris/departments?limit=10
+Content-Type: application/json
+
+###
+
+### Get Department by ID
+GET {{API_BASE_URL}}/v1/hris/departments/{{departmentId}}
+Content-Type: application/json
+
+###
+
+### Create New Department
+POST {{API_BASE_URL}}/v1/hris/departments
+Content-Type: application/json
+
+{
+    "code": "OPS",
+    "name": "Operations",
+    "description": "Responsible for all operations"
+}
+
+###
+
+### Update Department
+PATCH{{API_BASE_URL}}/v1/hris/departments/{{departmentId}}
+Content-Type: application/json
+
+{
+    "description": "Also handles IT infrastructure"
+}
+
+###
+
+### Delete Department
+DELETE{{API_BASE_URL}}/v1/hris/departments/{{departmentId}}
+Content-Type: application/json

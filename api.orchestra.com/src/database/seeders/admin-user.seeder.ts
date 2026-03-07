@@ -23,6 +23,14 @@ export const AdminUserSeeder: Seeder = {
       // ========================================
       // TASK 1: Seed Admin User
       // ========================================
+      // Get the 'system' tenant ID first
+      const systemTenant = await queryRunner.query(
+        `SELECT id FROM "system"."tenants" WHERE slug = $1`,
+        ['system'],
+      );
+
+      const tenantId = systemTenant.length > 0 ? systemTenant[0].id : null;
+
       let adminUserId: number;
       const existingUser = await queryRunner.query(
         `SELECT id FROM "system"."users" WHERE email = $1`,
@@ -31,6 +39,14 @@ export const AdminUserSeeder: Seeder = {
 
       if (existingUser.length > 0) {
         adminUserId = existingUser[0].id;
+
+        // If existing user has no tenant, update it
+        if (tenantId) {
+          await queryRunner.query(
+            `UPDATE "system"."users" SET "tenant_id" = $1 WHERE id = $2 AND "tenant_id" IS NULL`,
+            [tenantId, adminUserId],
+          );
+        }
         console.log('  ⏭️  Admin user already exists, reusing...');
       } else {
         // Hash the admin password
@@ -46,16 +62,18 @@ export const AdminUserSeeder: Seeder = {
             "first_name", 
             "last_name", 
             "is_system_admin", 
+            "tenant_id",
             "status",
             "created_at",
             "updated_at"
-          ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING id`,
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING id`,
           [
             'admin@orchestra.com',
             passwordHash,
             'System',
             'Administrator',
             true,
+            tenantId,
             'ACTIVE',
           ],
         );
