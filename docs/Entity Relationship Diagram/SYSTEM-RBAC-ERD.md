@@ -1,6 +1,8 @@
-# ERD System (Enterprise Grade)
+# ERD: Core System & RBAC
 
-This diagram represents the core system and RBAC (Role-Based Access Control) architecture.
+This document outlines the core system architecture, focusing on multi-tenancy (`tenants`/`companies`) and Role-Based Access Control (`users`, `roles`, `permissions`, `menus`).
+
+## 1. Database Schema (DBML)
 
 ```dbml
 title ERD System (Enterprise Grade)
@@ -108,4 +110,40 @@ role_permissions.permission_id > permissions.id
 
 menus.parent_id - menus.id
 menus.permission_id > permissions.id
+```
+
+## 2. RBAC Table Graph Overview
+
+This table graph shows **each RBAC table**, its **role in the system**, and **how it connects to others** — useful for **documentation, audits, and onboarding**.
+
+| Table Name | Category | What It Does | Connected To |
+|----------|--------|-------------|-------------|
+| **users** | Identity | Stores all system users and login-related data | user_roles, user_permissions, rbac_audit_logs |
+| **roles** | Authorization | Defines job-based access bundles | user_roles, role_permissions |
+| **permissions** | Authorization | Defines all allowed actions in the system | role_permissions, user_permissions, menu_permissions |
+| **menus** | UI / Navigation | Defines system menus and navigation structure | menu_permissions, menus (self-reference) |
+| **menu_permissions** | UI Security | Controls which permissions are required to see a menu | menus, permissions |
+| **role_permissions** | Authorization Mapping | Assigns permissions to roles | roles, permissions |
+| **user_roles** | Authorization Mapping | Assigns roles to users per tenant | users, roles |
+| **user_permissions** | Authorization Override | Grants direct permissions to a user (exception-based) | users, permissions |
+| **rbac_audit_logs** | Security / Compliance | Logs all RBAC-related changes for auditing | users |
+
+## 3. Relationship Graph (Logical Flow)
+
+```text
+users
+ ├── user_roles
+ │    └── roles
+ │         └── role_permissions
+ │              └── permissions
+ │
+ ├── user_permissions
+ │    └── permissions
+ │
+ └── rbac_audit_logs
+
+permissions
+ └── menu_permissions
+      └── menus
+           └── menus (parent-child hierarchy)
 ```
