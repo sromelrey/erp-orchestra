@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { Header } from "@/components/layout/Header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
-export default function UsersLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;

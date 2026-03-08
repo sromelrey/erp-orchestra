@@ -32,7 +32,7 @@ export function Sidebar() {
                   {item.children.map((child) => (
                     <Link
                       key={child.menu_code}
-                      href={child.href}
+                      href={child.href || "#"}
                       className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
                         pathname === child.href
                           ? "bg-primary/10 text-primary font-medium"
