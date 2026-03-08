@@ -38,11 +38,11 @@ Establish the foundational Human Resources Information System (HRIS). This epic 
 Create the database entities, seeders, and REST API endpoints for organizational configuration.
 
 **Tasks:**
-- [ ] Create `Department`, `Designation`, and `Branch` entities.
-- [ ] Add `tenant_id` to all entities for multi-tenant isolation.
-- [ ] Implement `CRUD` services and controllers for each entity.
-- [ ] Protect all endpoints using `PermissionsGuard` (e.g., `hris.department.manage`).
-- [ ] Update `permissions.seeder.ts` with new HRIS permission slugs.
+- [x] Create `Department`, `Designation`, and `Branch` entities.
+- [x] Add `tenant_id` to all entities for multi-tenant isolation.
+- [x] Implement `CRUD` services and controllers for each entity.
+- [x] Protect all endpoints using `PermissionsGuard` (e.g., `hris.department.manage`).
+- [x] Update `permissions.seeder.ts` with new HRIS permission slugs.
 
 ---
 

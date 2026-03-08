@@ -92,6 +92,7 @@ import { EntityManager, StatCard } from "@/components/entity-manager";
 import { columns } from "./column";
 import { formFields } from "./form-fields";
 import { Building2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function EntityPage() {
   const [data, setData] = useState([]); // Replace with API query hook
@@ -108,15 +109,30 @@ export default function EntityPage() {
 
   // CRUD Handlers
   const handleCreate = async (formData: any) => {
-    // Call API to create
+    try {
+      await createEntity(formData).unwrap();
+      toast.success("Entity created successfully");
+    } catch (error) {
+      toast.error("Failed to create entity");
+    }
   };
 
   const handleUpdate = async (id: string | number, formData: any) => {
-    // Call API to update
+    try {
+      await updateEntity({ id, body: formData }).unwrap();
+      toast.success("Entity updated successfully");
+    } catch (error) {
+      toast.error("Failed to update entity");
+    }
   };
 
   const handleDelete = async (id: string | number) => {
-    // Call API to delete
+    try {
+      await deleteEntity(id).unwrap();
+      toast.success("Entity deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete entity");
+    }
   };
 
   return (
@@ -147,3 +163,19 @@ export default function EntityPage() {
 1.  **Consistency**: All CRUD pages look and behave the same.
 2.  **Maintainability**: UI logic (EntityManager) is separated from Business logic (Page).
 3.  **Speed**: Adding a new entity page takes minutes—just define columns and fields.
+
+## 4. Sidebar Configuration (`sidebar.config.ts`)
+
+Once the pages are properly set up and secured with `PermissionGuard`, ensure they are accessible via the main sidebar navigation.
+
+Locate the `CUSTOMER_PORTAL_MENU_ITEMS` (or equivalent config array) and add your new entry linked to its respective route and icon:
+
+```tsx
+  {
+    label: "Entities",
+    href: "/hris/entities",
+    icon: Building2,
+    description: "Manage entities in your organization",
+    permission: "resource.entity.view" // Match your API/route guard
+  }
+```

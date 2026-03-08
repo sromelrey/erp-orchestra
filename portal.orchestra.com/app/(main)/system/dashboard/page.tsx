@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '../../store/slices/authSlice';
+import { selectCurrentUser } from '@/store/slices/authSlice';
 import { 
   Users, 
   Briefcase, 
