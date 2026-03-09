@@ -1,28 +1,5 @@
 import { baseApi } from './baseApi';
-
-export interface User {
-  id: number;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  avatarUrl?: string;
-  status: 'ACTIVE' | 'INACTIVE';
-  tenantId?: number;
-  userRoles?: Array<{
-    role?: {
-      id: number;
-      name: string;
-      code: string;
-    };
-  }>;
-}
-
-interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    nextCursor: string | number | null;
-  };
-}
+import { User, PaginatedResponse, CreateUserRequest, UpdateUserRequest } from '@/types';
 
 export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -41,7 +18,7 @@ export const usersApi = baseApi.injectEndpoints({
       query: (id) => `/users/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'User', id }],
     }),
-    createUser: builder.mutation<User, { email: string; password: string; firstName: string; lastName: string }>({
+    createUser: builder.mutation<User, CreateUserRequest>({
       query: (data) => ({
         url: '/users',
         method: 'POST',
@@ -49,7 +26,7 @@ export const usersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'User', id: 'LIST' }],
     }),
-    updateUser: builder.mutation<User, Partial<User> & { id: number }>({
+    updateUser: builder.mutation<User, UpdateUserRequest>({
       query: ({ id, ...patch }) => ({
         url: `/users/${id}`,
         method: 'PATCH',
@@ -74,4 +51,3 @@ export const {
   useUpdateUserMutation,
   useDeleteUserMutation,
 } = usersApi;
-

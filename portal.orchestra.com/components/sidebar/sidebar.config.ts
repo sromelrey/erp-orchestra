@@ -17,7 +17,7 @@ import {
 export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
   {
     label: "Dashboard",
-    href: "/system/dashboard",
+    href: "/system/system/dashboard",
     icon: LayoutDashboard,
     description: "Overview of your account activity",
     menu_code: 'CP-01'
@@ -90,6 +90,14 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         description: "Manage physical or logical locations",
         menu_code: 'CP-04-03',
         permission: "hris.branch.view"
+      },
+      {
+        label: "Employees",
+        href: "/hris/employees",
+        icon: Users,
+        description: "Manage organization staff and user accounts",
+        menu_code: 'CP-04-04',
+        permission: "hris.employee.view"
       },
     ]
   },

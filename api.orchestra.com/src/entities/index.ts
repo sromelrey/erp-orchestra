@@ -30,3 +30,4 @@ export * from './operations/bom-item.entity';
 export * from './hris/branch.entity';
 export * from './hris/department.entity';
 export * from './hris/designation.entity';
+export * from './hris/employee.entity';

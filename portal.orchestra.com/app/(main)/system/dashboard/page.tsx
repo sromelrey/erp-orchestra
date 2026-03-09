@@ -10,10 +10,30 @@ import {
   TrendingUp, 
   ArrowUpRight, 
   ArrowDownRight,
-  MoreHorizontal
+  MoreHorizontal,
+  LucideIcon
 } from 'lucide-react';
 
-const stats = [
+interface DashboardStat {
+  label: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+  icon: LucideIcon;
+  color: string;
+  bg: string;
+}
+
+interface ActivityItem {
+  user: string;
+  action: string;
+  target: string;
+  time: string;
+  avatar: string;
+  initial?: string;
+}
+
+const stats: DashboardStat[] = [
   {
     label: 'Total Employees',
     value: '1,284',
@@ -52,7 +72,7 @@ const stats = [
   },
 ];
 
-const activities = [
+const activities: ActivityItem[] = [
   {
     user: 'Sarah Smith',
     action: 'created a new project',
@@ -97,7 +117,7 @@ export default function DashboardPage() {
           {greeting}, {user?.firstName || 'Guest'}
         </h1>
         <p className="text-gray-500">
-          Here is what's happening in your workspace today.
+          Here is what&apos;s happening in your workspace today.
         </p>
       </div>
 
@@ -129,7 +149,7 @@ export default function DashboardPage() {
               <p className="mt-1 text-2xl font-bold text-gray-900">{stat.value}</p>
             </div>
             {/* Decorative background shape */}
-            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-gradient-to-br from-gray-50 to-gray-100 opacity-50 transition-transform group-hover:scale-110" />
+            <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-linear-to-br from-gray-50 to-gray-100 opacity-50 transition-transform group-hover:scale-110" />
           </div>
         ))}
       </div>
@@ -148,6 +168,7 @@ export default function DashboardPage() {
               <div key={index} className="flex items-start gap-4">
                 <div className="relative flex-none">
                    {activity.avatar ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img
                         src={activity.avatar}
                         alt={activity.user}

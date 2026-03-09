@@ -41,6 +41,13 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.employee.delete',
           name: 'Delete Employees',
         },
+        {
+          module: 'hris',
+          resource: 'employee',
+          action: 'manage',
+          slug: 'hris.employee.manage',
+          name: 'Manage Employees',
+        },
         // HRIS - Leave Request
         {
           module: 'hris',

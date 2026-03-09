@@ -1,8 +1,9 @@
 import { baseApi } from './baseApi';
+import { Branch, PaginatedResponse } from '@/types';
 
 export const branchesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getBranches: builder.query<any, { limit?: number; cursor?: string | number; [key: string]: any }>({
+    getBranches: builder.query<PaginatedResponse<Branch>, { limit?: number; cursor?: string | number; [key: string]: string | number | boolean | undefined }>({
       query: (params) => ({
         url: '/hris/branches',
         params,
@@ -10,12 +11,12 @@ export const branchesApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result && result.data
           ? [
-              ...result.data.map(({ id }: { id: string | number }) => ({ type: 'Branches' as const, id })),
+              ...result.data.map(({ id }) => ({ type: 'Branches' as const, id })),
               { type: 'Branches', id: 'LIST' },
             ]
           : [{ type: 'Branches', id: 'LIST' }],
     }),
-    createBranch: builder.mutation<any, any>({
+    createBranch: builder.mutation<Branch, Partial<Branch>>({
       query: (body) => ({
         url: '/hris/branches',
         method: 'POST',
@@ -23,11 +24,11 @@ export const branchesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Branches', id: 'LIST' }],
     }),
-    getBranchById: builder.query<any, string | number>({
+    getBranchById: builder.query<Branch, string | number>({
       query: (id) => `/hris/branches/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Branches', id }],
+      providesTags: (_result, _error, id) => [{ type: 'Branches', id }],
     }),
-    updateBranch: builder.mutation<any, { id: string | number; body: any }>({
+    updateBranch: builder.mutation<Branch, { id: string | number; body: Partial<Branch> }>({
       query: ({ id, body }) => ({
         url: `/hris/branches/${id}`,
         method: 'PATCH',

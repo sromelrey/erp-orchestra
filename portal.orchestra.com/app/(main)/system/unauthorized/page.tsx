@@ -29,7 +29,7 @@ export default function UnauthorizedPage() {
         </Button>
         
         <Button asChild className="gap-2">
-          <Link href="/dashboard">
+          <Link href="/system/dashboard">
             <Home size={18} />
             Return Home
           </Link>

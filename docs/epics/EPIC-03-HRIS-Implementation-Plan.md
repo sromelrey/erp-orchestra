@@ -4,7 +4,7 @@
 |-------|-------|
 | **Epic ID** | EPIC-03 |
 | **Epic Name** | HRIS Core & Employee Management |
-| **Status** | 📋 Planned |
+| **Status** | ✅ Completed |
 | **Priority** | High |
 | **Dependencies** | EPIC-01, EPIC-02 (RBAC & System Config) |
 
@@ -57,13 +57,13 @@ Create the database entities, seeders, and REST API endpoints for organizational
 Build the UI interfaces for HR administrators to configure the company structure. Let's utilize the established `EntityManager` pattern.
 
 **Tasks:**
-- [ ] Add "HR Settings" or "Organization" group to `sidebar.config.ts`.
-- [ ] Create RTK Query APIs: `departmentsApi.ts`, `designationsApi.ts`, `branchesApi.ts`.
-- [ ] Create UI management pages using `EntityManager`:
+- [x] Add "HR Settings" or "Organization" group to `sidebar.config.ts`.
+- [x] Create RTK Query APIs: `departmentsApi.ts`, `designationsApi.ts`, `branchesApi.ts`.
+- [x] Create UI management pages using `EntityManager`:
   - `app/hris/departments/page.tsx`
   - `app/hris/designations/page.tsx`
   - `app/hris/branches/page.tsx`
-- [ ] Protect routes using `<PermissionGuard>`.
+- [x] Protect routes using `<PermissionGuard>`.
 
 ---
 
@@ -78,15 +78,15 @@ Build the UI interfaces for HR administrators to configure the company structure
 Implement the core `Employee` profile that links a user account to their HR data, department, and designation.
 
 **Tasks:**
-- [ ] Create `Employee` entity with relationships:
+- [x] Create `Employee` entity with relationships:
   - `user_id` -> `SystemUser` (1-to-1)
   - `department_id` -> `Department`
   - `designation_id` -> `Designation`
   - `branch_id` -> `Branch`
   - `manager_id` -> `Employee` (Self-referential for reporting hierarchy)
-- [ ] Add core HR fields: `hire_date`, `employee_code`, `status`, `emergency_contact`, etc.
-- [ ] Implement `EmployeeService` with CRUD operations, ensuring tenant isolation.
-- [ ] Ensure that creating an Employee optionally creates the system `User` account simultaneously.
+- [x] Add core HR fields: `hire_date`, `employee_code`, `status`, `emergency_contact`, etc.
+- [x] Implement `EmployeeService` with CRUD operations, ensuring tenant isolation.
+- [x] Ensure that creating an Employee optionally creates the system `User` account simultaneously.
 
 ---
 
@@ -101,13 +101,13 @@ Implement the core `Employee` profile that links a user account to their HR data
 Provide a comprehensive interface for HR to manage staff members and view the company directory.
 
 **Tasks:**
-- [ ] Create `employeeApi.ts` in RTK Query.
-- [ ] Create the **Employee Directory** table view (`app/hris/employees/page.tsx`).
-- [ ] Create the **Add/Edit Employee Form**:
+- [x] Create `employeeApi.ts` in RTK Query.
+- [x] Create the **Employee Directory** table view (`app/hris/employees/page.tsx`).
+- [x] Create the **Add/Edit Employee Form**:
   - Personal Information section.
   - Job Information section (Dropdowns for Department, Designation, Manager).
   - System Access section (Toggle to auto-create user account and assign roles).
-- [ ] Create **Employee Profile View**: A detailed page showing the employee's full file.
+- [x] Create **Employee Profile View**: A detailed page showing the employee's full file.
 
 ---
 

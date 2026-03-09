@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils";
 
 interface FormRendererProps {
   fields: FormField[];
-  formData: Record<string, any>;
+  formData: Record<string, string | number | boolean | undefined>;
   formMode: FormMode | null;
-  onFieldChange: (name: string, value: any) => void;
+  onFieldChange: (name: string, value: string | number | boolean) => void;
 }
 
 export function FormRenderer({
@@ -57,7 +57,7 @@ export function FormRenderer({
         return (
           <textarea
             id={field.name}
-            value={value}
+            value={String(value)}
             onChange={(e) => onFieldChange(field.name, e.target.value)}
             placeholder={field.placeholder}
             disabled={isDisabled}
@@ -74,7 +74,7 @@ export function FormRenderer({
               <Input
                 id={field.name}
                 type={field.type}
-                value={value}
+                value={String(value)}
                 onChange={(e) => onFieldChange(field.name, e.target.value)}
                 placeholder={field.placeholder}
                 disabled={isDisabled}
@@ -93,7 +93,7 @@ export function FormRenderer({
           <Input
             id={field.name}
             type={field.type}
-            value={value}
+            value={String(value)}
             onChange={(e) => onFieldChange(field.name, e.target.value)}
             placeholder={field.placeholder}
             disabled={isDisabled}

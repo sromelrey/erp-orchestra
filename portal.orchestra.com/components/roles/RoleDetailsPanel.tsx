@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Role, Permission, useGetPermissionsQuery, useAssignPermissionsMutation } from '@/store/api/rolesApi';
+import { useState } from 'react';
+import { useGetPermissionsQuery, useAssignPermissionsMutation } from '@/store/api/rolesApi';
+import { Role } from '@/types';
 import { PermissionPicker } from './PermissionPicker';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,15 +18,9 @@ export function RoleDetailsPanel({ role, onClose }: RoleDetailsPanelProps) {
   const { data: permissions = [], isLoading: isLoadingPermissions } = useGetPermissionsQuery();
   const [assignPermissions, { isLoading: isAssigning }] = useAssignPermissionsMutation();
   
-  const [selectedPermissionIds, setSelectedPermissionIds] = useState<number[]>([]);
-
-  // Initialize selected permissions from role
-  useEffect(() => {
-    if (role.rolePermissions) {
-      const ids = role.rolePermissions.map((rp) => rp.permission.id);
-      setSelectedPermissionIds(ids);
-    }
-  }, [role]);
+  const [selectedPermissionIds, setSelectedPermissionIds] = useState<number[]>(
+    () => role.rolePermissions?.map((rp) => rp.permission.id) || []
+  );
 
   const handleSave = async () => {
     try {
@@ -35,7 +30,7 @@ export function RoleDetailsPanel({ role, onClose }: RoleDetailsPanelProps) {
       }).unwrap();
       toast.success('Permissions updated successfully');
       onClose?.();
-    } catch (error) {
+    } catch {
       toast.error('Failed to update permissions');
     }
   };

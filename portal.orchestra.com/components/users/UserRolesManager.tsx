@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { User } from '@/store/api/usersApi';
+import { useState } from 'react';
+import { User } from '@/types';
 import { useGetRolesQuery, useAssignUsersMutation, useRemoveUserFromRoleMutation } from '@/store/api/rolesApi';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -19,18 +19,10 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   const [assignUsers] = useAssignUsersMutation();
   const [removeUserFromRole] = useRemoveUserFromRoleMutation();
   
-  const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>([]);
+  const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>(
+    () => user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || []
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Initialize selected roles from user
-  useEffect(() => {
-    if (user.userRoles) {
-      const roleIds = user.userRoles
-        .map((ur) => ur.role?.id)
-        .filter((id): id is number => id !== undefined);
-      setSelectedRoleIds(roleIds);
-    }
-  }, [user]);
 
   const handleToggle = (roleId: number) => {
     setSelectedRoleIds((prev) =>
@@ -69,7 +61,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
 
       toast.success('User roles updated successfully');
       onClose?.();
-    } catch (error) {
+    } catch {
       toast.error('Failed to update user roles');
     } finally {
       setIsSubmitting(false);

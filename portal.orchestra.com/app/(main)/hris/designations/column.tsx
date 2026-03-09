@@ -1,6 +1,7 @@
 import { Column } from "@/components/ui/data-table";
+import { Designation } from "@/types";
 
-export const columns: Column<any>[] = [
+export const columns: Column<Designation>[] = [
   {
     header: "Designation",
     accessorKey: "name",
@@ -17,20 +18,26 @@ export const columns: Column<any>[] = [
     ),
   },
   {
-    header: "Level",
-    accessorKey: "level",
-    cell: (item) => (
-      <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-        {item.level ? `Level ${item.level}` : "Unspecified"}
-      </span>
-    ),
-  },
-  {
     header: "Description",
     accessorKey: "description",
     cell: (item) => (
       <span className="text-sm text-gray-500">
         {item.description || "-"}
+      </span>
+    ),
+  },
+  {
+    header: "Status",
+    accessorKey: "isActive",
+    cell: (item) => (
+      <span
+        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+          item.isActive
+            ? "bg-green-50 text-green-700 ring-green-600/20"
+            : "bg-gray-50 text-gray-700 ring-gray-600/10"
+        }`}
+      >
+        {item.isActive ? "Active" : "Inactive"}
       </span>
     ),
   },

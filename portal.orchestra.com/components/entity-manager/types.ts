@@ -15,7 +15,7 @@ export interface FormField {
   placeholder?: string;
   required?: boolean;
   options?: FormFieldOption[]; // For select fields
-  defaultValue?: any;
+  defaultValue?: string | number | boolean;
   disabled?: boolean;
   suffix?: ReactNode; // For custom suffixes like ".orchestra.com"
   description?: string; // Helper text below the field
@@ -47,8 +47,8 @@ export interface EntityManagerProps<T> {
   getFormDescription?: (mode: FormMode, item?: T) => string;
   
   // CRUD handlers
-  onCreate?: (data: any) => void | Promise<void>;
-  onUpdate?: (id: string | number, data: any) => void | Promise<void>;
+  onCreate?: (data: Partial<T>) => void | Promise<void>;
+  onUpdate?: (id: string | number, data: Partial<T>) => void | Promise<void>;
   onDelete?: (id: string | number) => void | Promise<void>;
   onView?: (item: T) => void;
   

@@ -1,12 +1,8 @@
 import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Eye, Edit, Trash2 } from "lucide-react";
-import { Column } from "@/components/ui/data-table";
 import { EntityManagerProps, FormMode } from "./types";
 
-export function useEntityManager<T extends Record<string, any>>({
+export function useEntityManager<T>({
   data,
-  columns,
   entityName,
   entityNamePlural,
   keyExtractor,
@@ -17,14 +13,11 @@ export function useEntityManager<T extends Record<string, any>>({
   onUpdate,
   onDelete,
   onView,
-  showViewButton,
-  showEditButton,
-  showDeleteButton,
 }: EntityManagerProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [formMode, setFormMode] = useState<FormMode | null>(null);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Partial<T> | Record<string, unknown>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const plural = entityNamePlural || `${entityName}s`;
@@ -34,7 +27,7 @@ export function useEntityManager<T extends Record<string, any>>({
     if (!searchQuery) return data;
     const query = searchQuery.toLowerCase();
     return data.filter((item) =>
-      Object.values(item).some(
+      Object.values(item as object).some(
         (value) =>
           typeof value === "string" && value.toLowerCase().includes(query)
       )
@@ -47,9 +40,10 @@ export function useEntityManager<T extends Record<string, any>>({
     setSelectedItem(null);
     setFormData(
       formFields.reduce((acc, field) => {
-        acc[field.name] = field.defaultValue ?? "";
-        return acc;
-      }, {} as Record<string, any>)
+        const record = acc as Record<string, unknown>;
+        record[field.name] = field.defaultValue ?? "";
+        return record as Partial<T>;
+      }, {} as Partial<T>)
     );
   };
 
@@ -80,10 +74,10 @@ export function useEntityManager<T extends Record<string, any>>({
     setIsSubmitting(true);
     try {
       if (formMode === "create" && onCreate) {
-        await onCreate(formData);
+        await onCreate(formData as Partial<T>);
       } else if (formMode === "edit" && onUpdate && selectedItem) {
         const id = keyExtractor(selectedItem);
-        await onUpdate(id, formData);
+        await onUpdate(id, formData as Partial<T>);
       }
       setFormMode(null);
     } finally {
@@ -91,7 +85,7 @@ export function useEntityManager<T extends Record<string, any>>({
     }
   };
 
-  const handleFieldChange = (name: string, value: any) => {
+  const handleFieldChange = (name: string, value: string | number | boolean) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 

@@ -12,6 +12,7 @@ import {
 } from "@/store/api/branchesApi";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { toast } from "sonner";
+import { Branch } from "@/types";
 
 export default function BranchesPage() {
   const { data: response, isLoading } = useGetBranchesQuery({});
@@ -20,7 +21,7 @@ export default function BranchesPage() {
   const [deleteBranch] = useDeleteBranchMutation();
 
   const data = response?.data || [];
-  const activeCount = data.filter((d: any) => d.status === 'Active' || d.status === 'active').length;
+  const activeCount = data.filter((d) => d.isActive).length;
 
   const stats: StatCard[] = [
     {
@@ -37,20 +38,20 @@ export default function BranchesPage() {
     }
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<Branch>) => {
     try {
       await createBranch(formData).unwrap();
       toast.success("Branch created successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to create branch");
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<Branch>) => {
     try {
       await updateBranch({ id, body: formData }).unwrap();
       toast.success("Branch updated successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update branch");
     }
   };
@@ -59,7 +60,7 @@ export default function BranchesPage() {
     try {
       await deleteBranch(id).unwrap();
       toast.success("Branch deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete branch");
     }
   };
