@@ -22,8 +22,8 @@ export interface AdminSession {
     email: string;
     firstName: string;
     lastName: string;
-    status: string;
-    tenantId: number | null;
+    status: 'ACTIVE' | 'INACTIVE';
+    tenantId?: number;
     isSystemAdmin: boolean;
   };
 }

@@ -12,7 +12,7 @@ export function AuthInit({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isLoading) {
       if (isSuccess && data) {
-        dispatch(initialize({ user: data.user || data }));
+        dispatch(initialize({ user: data }));
       } else if (isError) {
         // Clear the stale authentication cookie if the session check fails
         document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';

@@ -1,6 +1,4 @@
-'use client';
-
-import React from 'react';
+import Image from 'next/image';
 import { Bell, Search, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../store/slices/authSlice';
@@ -42,9 +40,14 @@ export function Header() {
               {user?.tenantId ? `Tenant #${user.tenantId}` : 'System Admin'}
             </p>
           </div>
-          <div className="h-9 w-9 overflow-hidden rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold border border-indigo-200">
+          <div className="h-9 w-9 overflow-hidden rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold border border-indigo-200 relative">
              {user?.avatarUrl ? (
-                <img src={user.avatarUrl} alt="User" className="h-full w-full object-cover" />
+                <Image 
+                  src={user.avatarUrl} 
+                  alt="User Avatar" 
+                  fill 
+                  className="object-cover" 
+                />
              ) : (
                 <User className="h-5 w-5" />
              )}

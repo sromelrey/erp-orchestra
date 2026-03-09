@@ -4,6 +4,7 @@ export const toast = {
   success: (message: string) => {
     sonnerToast.success(message);
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: (message: string | any) => {
     let errorMessage = "An unexpected error occurred.";
 

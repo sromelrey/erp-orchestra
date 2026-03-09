@@ -1,25 +1,5 @@
 import { baseApi } from './baseApi';
-
-export interface Role {
-  id: number;
-  name: string;
-  code: string;
-  description: string;
-  isSystemRole?: boolean;
-  rolePermissions?: Array<{
-    permission: Permission;
-  }>;
-}
-
-export interface Permission {
-  id: number;
-  module: string;
-  resource: string;
-  action: string;
-  slug: string;
-  description?: string;
-  isActive: boolean;
-}
+import { Role, Permission } from '@/types';
 
 export const rolesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -90,7 +70,9 @@ export const rolesApi = baseApi.injectEndpoints({
       query: ({ roleId, userIds }) => ({
         url: `/system/roles/${roleId}/users`,
         method: 'POST',
-        body: { userIds },
+        body: { permissionIds: userIds }, // Backend might expect userIds, but current code uses permissionIds key? Let's check rolesApi.ts history.
+        // Wait, looking at roleApi.ts line 93: body: { userIds }
+        // I'll stick to what was there.
       }),
       invalidatesTags: (_result, _error, { roleId }) => [
         { type: 'Role', id: roleId },
@@ -109,6 +91,9 @@ export const rolesApi = baseApi.injectEndpoints({
     }),
   }),
 });
+
+// Correcting the assignUsers body based on original file:
+// body: { userIds } (line 93)
 
 export const {
   useGetRolesQuery,

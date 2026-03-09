@@ -12,6 +12,7 @@ import {
 } from "@/store/api/departmentsApi";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { toast } from "sonner";
+import { Department } from "@/types";
 
 export default function DepartmentsPage() {
   const { data: response, isLoading } = useGetDepartmentsQuery({});
@@ -20,7 +21,7 @@ export default function DepartmentsPage() {
   const [deleteDepartment] = useDeleteDepartmentMutation();
 
   const data = response?.data || [];
-  const activeCount = data.length; // Departments don't have is_active on backend yet
+  const activeCount = data.filter(d => d.isActive).length;
 
   const stats: StatCard[] = [
     {
@@ -37,23 +38,23 @@ export default function DepartmentsPage() {
     }
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<Department> & { is_active?: boolean | string }) => {
     try {
       // is_active is dropped because the backend CreateDepartmentDto does not accept it
       delete formData.is_active;
       await createDepartment(formData).unwrap();
       toast.success("Department created successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to create department");
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<Department> & { is_active?: boolean | string }) => {
     try {
       delete formData.is_active;
       await updateDepartment({ id, body: formData }).unwrap();
       toast.success("Department updated successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update department");
     }
   };
@@ -62,7 +63,7 @@ export default function DepartmentsPage() {
     try {
       await deleteDepartment(id).unwrap();
       toast.success("Department deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete department");
     }
   };

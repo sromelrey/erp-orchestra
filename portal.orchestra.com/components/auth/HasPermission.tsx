@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectUserPermissions, selectIsAuthenticated, selectIsInitialized, selectCurrentUser } from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
 
+
 interface HasPermissionProps {
   /**
    * The permission slug to check (e.g., 'hris.employee.create').
@@ -42,7 +43,6 @@ interface HasPermissionProps {
  */
 export function HasPermission({
   permission,
-  feature,
   children,
   fallback = null,
   redirectTo,

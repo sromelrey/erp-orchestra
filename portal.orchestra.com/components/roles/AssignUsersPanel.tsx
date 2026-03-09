@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useGetUsersQuery, User } from '@/store/api/usersApi';
-import { useAssignUsersMutation, Role } from '@/store/api/rolesApi';
+import { useGetUsersQuery } from '@/store/api/usersApi';
+import { useAssignUsersMutation } from '@/store/api/rolesApi';
+import { Role } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -85,7 +86,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
       toast.success(`${selectedUserIds.length} user(s) assigned to "${role.name}" successfully`);
       setSelectedUserIds([]);
       onClose?.();
-    } catch (error) {
+    } catch {
       toast.error('Failed to assign users');
     }
   };

@@ -1,6 +1,7 @@
 import { Column } from "@/components/ui/data-table";
+import { Department } from "@/types";
 
-export const columns: Column<any>[] = [
+export const columns: Column<Department>[] = [
   {
     header: "Department Name",
     accessorKey: "name",
@@ -26,11 +27,17 @@ export const columns: Column<any>[] = [
     ),
   },
   {
-    header: "Created",
-    accessorKey: "created_at",
+    header: "Status",
+    accessorKey: "isActive",
     cell: (item) => (
-      <span className="text-sm text-gray-500">
-        {item.created_at ? new Date(item.created_at).toLocaleDateString() : "-"}
+      <span
+        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
+          item.isActive
+            ? "bg-green-50 text-green-700 ring-green-600/20"
+            : "bg-gray-50 text-gray-700 ring-gray-600/10"
+        }`}
+      >
+        {item.isActive ? "Active" : "Inactive"}
       </span>
     ),
   },

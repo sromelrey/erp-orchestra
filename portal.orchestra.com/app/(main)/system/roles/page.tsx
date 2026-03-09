@@ -10,7 +10,6 @@ import {
   useCreateRoleMutation,
   useUpdateRoleMutation,
   useDeleteRoleMutation,
-  Role,
 } from "@/store/api/rolesApi";
 import { toast } from "sonner";
 import { RoleDetailsPanel } from "@/components/roles/RoleDetailsPanel";
@@ -20,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { HasPermission } from "@/components/auth/HasPermission";
+import { Role } from "@/types";
 
 export default function RolesPage() {
   const { data: roles = [], isLoading } = useGetRolesQuery();
@@ -32,8 +32,6 @@ export default function RolesPage() {
   const [isAssignUsersDialogOpen, setIsAssignUsersDialogOpen] = useState(false);
 
   // Derive the selected role from the live RTK Query cache.
-  // This fixes the stale-state bug: after assignPermissions invalidates the cache
-  // and roles are re-fetched, selectedRole here will immediately reflect the newest data.
   const selectedRole = useMemo(
     () => roles.find((r) => r.id === selectedRoleId) ?? null,
     [roles, selectedRoleId]
@@ -54,9 +52,9 @@ export default function RolesPage() {
     },
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<Role>) => {
     try {
-      await createRole(formData).unwrap();
+      await createRole(formData as Omit<Role, "id">).unwrap();
       toast.success("Role created successfully");
     } catch (error) {
       toast.error("Failed to create role");
@@ -64,7 +62,7 @@ export default function RolesPage() {
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<Role>) => {
     try {
       const role = roles.find((r) => r.id === Number(id));
       if (role?.isSystemRole) {
@@ -105,7 +103,7 @@ export default function RolesPage() {
   };
 
   // Add Manage Permissions column
-  const columns: Column<any>[] = useMemo(() => {
+  const columns: Column<Role>[] = useMemo(() => {
     return [
       ...baseColumns,
       {
@@ -169,6 +167,7 @@ export default function RolesPage() {
           </DialogHeader>
           {selectedRole && (
             <RoleDetailsPanel
+              key={selectedRole.id}
               role={selectedRole}
               onClose={() => setIsPermissionDialogOpen(false)}
             />
@@ -183,6 +182,7 @@ export default function RolesPage() {
           </DialogHeader>
           {selectedRole && (
             <AssignUsersPanel
+              key={selectedRole.id}
               role={selectedRole}
               onClose={() => setIsAssignUsersDialogOpen(false)}
             />

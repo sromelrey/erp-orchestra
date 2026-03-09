@@ -12,6 +12,7 @@ import {
 } from "@/store/api/designationsApi";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { toast } from "sonner";
+import { Designation } from "@/types";
 
 export default function DesignationsPage() {
   const { data: response, isLoading } = useGetDesignationsQuery({});
@@ -20,7 +21,7 @@ export default function DesignationsPage() {
   const [deleteDesignation] = useDeleteDesignationMutation();
 
   const data = response?.data || [];
-  const activeCount = data.length; // is_active is dropped on backend
+  const activeCount = data.filter(d => d.isActive).length;
 
   const stats: StatCard[] = [
     {
@@ -37,33 +38,33 @@ export default function DesignationsPage() {
     }
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<Designation> & { is_active?: boolean | string; level?: string | number }) => {
     try {
-      delete formData.is_active;
+      delete formData.isActive; // In case it's passed from form
       // Parse level to integer if it exists
       if (formData.level !== undefined && formData.level !== '') {
-        formData.level = parseInt(formData.level, 10);
+        formData.level = typeof formData.level === 'string' ? parseInt(formData.level, 10) : formData.level;
       } else {
         delete formData.level; // remove if empty string
       }
       await createDesignation(formData).unwrap();
       toast.success("Designation created successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to create designation");
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<Designation> & { is_active?: boolean | string; level?: string | number }) => {
     try {
-      delete formData.is_active;
+      delete formData.isActive;
       if (formData.level !== undefined && formData.level !== '') {
-        formData.level = parseInt(formData.level, 10);
+        formData.level = typeof formData.level === 'string' ? parseInt(formData.level, 10) : formData.level;
       } else {
         delete formData.level;
       }
       await updateDesignation({ id, body: formData }).unwrap();
       toast.success("Designation updated successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to update designation");
     }
   };
@@ -72,7 +73,7 @@ export default function DesignationsPage() {
     try {
       await deleteDesignation(id).unwrap();
       toast.success("Designation deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete designation");
     }
   };

@@ -1,8 +1,9 @@
 import { Column } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Shield } from "lucide-react";
+import { Role } from "@/types";
 
-export const columns: Column<any>[] = [
+export const columns: Column<Role>[] = [
   {
     header: "Role Name",
     accessorKey: "name",
@@ -34,7 +35,6 @@ export const columns: Column<any>[] = [
   },
   {
     header: "Permissions",
-    accessorKey: "permissions",
     cell: (item) => (
       <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
         {item.rolePermissions?.length || 0} permissions

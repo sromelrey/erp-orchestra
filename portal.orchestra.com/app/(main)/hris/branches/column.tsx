@@ -1,6 +1,8 @@
 import { Column } from "@/components/ui/data-table";
+import { Badge } from "@/components/ui/badge";
+import { Branch } from "@/types";
 
-export const columns: Column<any>[] = [
+export const columns: Column<Branch>[] = [
   {
     header: "Branch",
     accessorKey: "name",
@@ -26,27 +28,27 @@ export const columns: Column<any>[] = [
     ),
   },
   {
-    header: "Contact Number",
-    accessorKey: "contactNumber",
+    header: "Phone",
+    accessorKey: "phone",
     cell: (item) => (
       <span className="text-sm text-gray-500">
-        {item.contactNumber || item.contact_number || "-"}
+        {item.phone || "-"}
       </span>
     ),
   },
   {
     header: "Status",
-    accessorKey: "status",
+    accessorKey: "isActive",
     cell: (item) => (
-      <span
-        className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${
-          item.status === 'Active' || item.status === 'active'
-            ? "bg-green-50 text-green-700 ring-green-600/20"
-            : "bg-red-50 text-red-700 ring-red-600/10"
-        }`}
+      <Badge 
+        variant="outline" 
+        className={item.isActive 
+          ? "bg-green-50 text-green-700 border-green-200" 
+          : "bg-gray-50 text-gray-700 border-gray-200"
+        }
       >
-        {item.status || "Inactive"}
-      </span>
+        {item.isActive ? 'Active' : 'Inactive'}
+      </Badge>
     ),
   },
 ];

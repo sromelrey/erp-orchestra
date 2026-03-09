@@ -25,7 +25,7 @@ export function Sidebar() {
             return (
               <div key={item.menu_code} className="mb-4">
                 <div className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-muted-foreground">
-                  <item.icon className="w-4 h-4" />
+                  {item.icon && <item.icon className="w-4 h-4" />}
                   {item.label}
                 </div>
                 <div className="mt-1 space-y-1">
@@ -59,7 +59,7 @@ export function Sidebar() {
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
-                <item.icon className="w-4 h-4" />
+                {item.icon && <item.icon className="w-4 h-4" />}
                 {item.label}
               </Link>
             );

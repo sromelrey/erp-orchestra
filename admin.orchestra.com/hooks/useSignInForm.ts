@@ -82,7 +82,7 @@ export const useSignInForm = () => {
       document.cookie = `user_role=${role}; path=/; max-age=86400; SameSite=Lax`;
       
       dispatch(setCredentials({ user: result.user }));
-      router.push('/dashboard');
+      router.push('/system/dashboard');
     } catch (err) {
       // Error handled by useEffect
       console.error('Failed to log in:', err);

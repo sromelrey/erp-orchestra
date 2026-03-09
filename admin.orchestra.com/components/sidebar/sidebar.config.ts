@@ -14,7 +14,7 @@ import {
 export const SUPER_ADMIN_MENU_ITEMS = [
   {
     label: "Dashboard",
-    href: "/dashboard",
+    href: "/system/dashboard",
     icon: LayoutDashboard,
     description: "Overview of system health, active clients, revenue, usage metrics",
     menu_code:'SA-01'

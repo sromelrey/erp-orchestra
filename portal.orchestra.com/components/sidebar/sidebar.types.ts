@@ -1,9 +1,9 @@
-import { LucideIcon } from "lucide-react";
+import React from "react";
 
 export interface MenuItem {
   label: string;
   href?: string;
-  icon?: any;
+  icon?: React.ElementType;
   description?: string;
   menu_code: string;
   permission?: string;

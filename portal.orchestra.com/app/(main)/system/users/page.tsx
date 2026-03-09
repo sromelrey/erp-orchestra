@@ -10,7 +10,6 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
-  User,
 } from "@/store/api/usersApi";
 import { toast } from "sonner";
 import { UserRolesManager } from "@/components/users/UserRolesManager";
@@ -19,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { HasPermission } from "@/components/auth/HasPermission";
+import { User, CreateUserRequest, UpdateUserRequest } from "@/types";
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
@@ -44,15 +44,15 @@ export default function UsersPage() {
     },
     {
       label: "Active Users",
-      value: users.filter((u: any) => u.isActive).length,
+      value: users.filter((u: User) => u.status === 'ACTIVE').length,
       icon: UsersIcon,
       color: "bg-green-500/10 text-green-600",
     },
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<User>) => {
     try {
-      await createUser(formData).unwrap();
+      await createUser(formData as unknown as CreateUserRequest).unwrap();
       toast.success("User created successfully");
     } catch (error) {
       toast.error("Failed to create user");
@@ -60,9 +60,9 @@ export default function UsersPage() {
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<User>) => {
     try {
-      await updateUser({ id: String(id), ...formData }).unwrap();
+      await updateUser({ id: Number(id), ...(formData as unknown as Omit<UpdateUserRequest, 'id'>) }).unwrap();
       toast.success("User updated successfully");
     } catch (error) {
       toast.error("Failed to update user");
@@ -86,7 +86,7 @@ export default function UsersPage() {
   };
 
   // Add Manage Roles column
-  const columns: Column<any>[] = useMemo(() => {
+  const columns: Column<User>[] = useMemo(() => {
     return [
       ...baseColumns,
       {
@@ -139,6 +139,7 @@ export default function UsersPage() {
           </DialogHeader>
           {selectedUser && (
             <UserRolesManager
+              key={selectedUser.id}
               user={selectedUser}
               onClose={() => setIsRoleDialogOpen(false)}
             />

@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from '../store/api/authApi';
 import { setCredentials, setAuthError, selectAuthError } from '../store/slices/authSlice';
+import { AuthResponse } from '@/types';
 
 export const useSignInForm = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
   const authError = useSelector(selectAuthError);
   
@@ -23,7 +22,7 @@ export const useSignInForm = () => {
   useEffect(() => {
     if (rtkError) {
       if ('data' in rtkError) {
-        const errorData = rtkError.data as any;
+        const errorData = rtkError.data as { message?: string };
         dispatch(setAuthError(errorData.message || 'Login failed'));
       } else {
         dispatch(setAuthError('An unexpected error occurred'));
@@ -75,19 +74,18 @@ export const useSignInForm = () => {
     if (!validate()) return;
 
     try {
-      const result = await login(formData).unwrap();
+      const result: AuthResponse = await login(formData).unwrap();
       console.log('[Login] API Response:', result);
       
       // Set role cookie for middleware to use
       const role = result.roles?.[0] || 'ADMIN';
       console.log('[Login] Setting cookie with role:', role);
       document.cookie = `user_role=${role}; path=/; max-age=86400; SameSite=Lax`;
-      console.log('[Login] Cookie after set:', document.cookie);
       
       dispatch(setCredentials({ user: result }));
-      console.log('[Login] Redirecting to /dashboard...');
+      console.log('[Login] Redirecting to /system/dashboard...');
       // Use hard navigation to ensure middleware can read the new cookie
-      window.location.href = '/dashboard';
+      window.location.href = '/system/dashboard';
     } catch (err) {
       // Error handled by useEffect
       console.error('Failed to log in:', err);

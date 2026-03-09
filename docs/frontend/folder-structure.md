@@ -15,7 +15,7 @@ The Admin Portal follows a standard Next.js 16 (App Router) structure with organ
 ### `app/`
 Routes are organized by feature:
 - `app/(auth)/login/`: Authentication-related routes.
-- `app/dashboard/`: The main application dashboard.
+- `app/system/dashboard/`: The main application dashboard.
 - `layout.tsx`: Root layout for the application.
 
 ### `components/`

@@ -9,6 +9,7 @@ import { HasPermission } from '@/components/auth/HasPermission';
 import {
   useGetAllSessionsQuery,
   useRevokeUserSessionsMutation,
+  AdminSession,
 } from '@/store/api/sessionsApi';
 import {
   Users,
@@ -49,7 +50,7 @@ function formatExpiry(dateStr: string): string {
 function AdminSessionsContent() {
   const router = useRouter();
   const currentUser = useSelector(selectCurrentUser);
-  const { data: sessions, isLoading, isError } = useGetAllSessionsQuery();
+  const { data: sessions = [], isLoading, isError } = useGetAllSessionsQuery();
   const [revokeUserSessions] = useRevokeUserSessionsMutation();
   
   // Track which user is currently being revoked to show row-specific loading state
@@ -62,8 +63,8 @@ function AdminSessionsContent() {
     const grouped = new Map<
       number,
       {
-        user: (typeof sessions)[0]['user'];
-        sessions: typeof sessions;
+        user: AdminSession['user'];
+        sessions: AdminSession[];
       }
     >();
 
@@ -80,7 +81,7 @@ function AdminSessionsContent() {
     }
 
     return Array.from(grouped.values()).sort((a, b) =>
-      a.user.lastName.localeCompare(b.user.lastName),
+      (a.user.lastName || '').localeCompare(b.user.lastName || ''),
     );
   }, [sessions]);
 
@@ -88,7 +89,7 @@ function AdminSessionsContent() {
   const stats = [
     {
       label: "Total Active Sessions",
-      value: sessions?.length || 0,
+      value: sessions.length,
       icon: Activity,
       color: "bg-primary/10 text-primary",
     },
