@@ -10,6 +10,8 @@ import {
   LeaveRequestStatus,
 } from '@/entities/hris/leave-request.entity';
 import { Employee } from '@/entities/hris/employee.entity';
+import { LeaveType } from '@/entities/hris/leave-type.entity';
+import { TimeEvent, TimeEventType } from '@/entities/hris/time-event.entity';
 import {
   CreateLeaveRequestDto,
   UpdateLeaveRequestStatusDto,
@@ -22,6 +24,10 @@ export class LeaveRequestsService {
     private readonly leaveRequestRepository: Repository<LeaveRequest>,
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
+    @InjectRepository(LeaveType)
+    private readonly leaveTypeRepository: Repository<LeaveType>,
+    @InjectRepository(TimeEvent)
+    private readonly timeEventRepository: Repository<TimeEvent>,
   ) {}
 
   async create(dto: CreateLeaveRequestDto, tenantId: number, userId: number) {
@@ -31,6 +37,59 @@ export class LeaveRequestsService {
 
     if (!employee) {
       throw new NotFoundException('Employee profile not found for this user.');
+    }
+
+    const leaveType = await this.leaveTypeRepository.findOne({
+      where: { id: dto.leaveTypeId, tenantId },
+    });
+
+    if (!leaveType) {
+      throw new NotFoundException('Leave type not found.');
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(dto.startDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    const diffInTime = startDate.getTime() - today.getTime();
+    const diffInDays = Math.round(diffInTime / (1000 * 3600 * 24));
+
+    // 1. Check same day filing
+    if (diffInDays === 0 && !leaveType.allowSameDay) {
+      throw new BadRequestException('Filing leave for today is not allowed.');
+    }
+
+    // 2. Check past dates
+    if (diffInDays < 0 && !leaveType.allowPastDates) {
+      throw new BadRequestException(
+        'Filing leave for past dates is not allowed.',
+      );
+    }
+
+    // 3. Check min days advance
+    if (diffInDays >= 0 && diffInDays < leaveType.minDaysAdvance) {
+      throw new BadRequestException(
+        `This leave type requires at least ${leaveType.minDaysAdvance} days advance notice.`,
+      );
+    }
+
+    // 4. Case: Cannot file leave if they are already present today (clocked in)
+    if (diffInDays === 0) {
+      const lastEvent = await this.timeEventRepository.findOne({
+        where: {
+          employeeId: employee.id,
+          tenantId,
+        },
+        order: { timestamp: 'DESC' },
+      });
+
+      if (lastEvent && lastEvent.type === TimeEventType.CLOCK_IN) {
+        throw new BadRequestException(
+          'You cannot file a leave for today because you are already clocked in as present.',
+        );
+      }
     }
 
     const leaveRequest = this.leaveRequestRepository.create({

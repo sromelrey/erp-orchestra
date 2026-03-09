@@ -20,6 +20,21 @@ export class CreateLeaveTypeDto {
   @IsOptional()
   @IsNumber()
   defaultDaysPerYear?: number;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsNumber()
+  minDaysAdvance?: number;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  allowPastDates?: boolean;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  allowSameDay?: boolean;
 }
 
 export class UpdateLeaveTypeDto extends CreateLeaveTypeDto {}

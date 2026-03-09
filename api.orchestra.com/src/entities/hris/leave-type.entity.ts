@@ -18,4 +18,13 @@ export class LeaveType extends CommonEntity {
 
   @Column({ name: 'default_days_per_year', type: 'int', default: 0 })
   defaultDaysPerYear: number;
+
+  @Column({ name: 'min_days_advance', type: 'int', default: 0 })
+  minDaysAdvance: number;
+
+  @Column({ name: 'allow_past_dates', type: 'boolean', default: true })
+  allowPastDates: boolean;
+
+  @Column({ name: 'allow_same_day', type: 'boolean', default: true })
+  allowSameDay: boolean;
 }

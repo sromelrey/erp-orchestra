@@ -31,4 +31,32 @@ export const formFields: FormField[] = [
     required: true,
     defaultValue: 15,
   },
+  {
+    name: 'minDaysAdvance',
+    label: 'Days Advance Notice Required',
+    type: 'number',
+    required: true,
+    defaultValue: 0,
+    placeholder: 'e.g. 3 for 3 days advance'
+  },
+  {
+    name: 'allowPastDates',
+    label: 'Allow Past Dates?',
+    type: 'select',
+    options: [
+      { label: 'Yes', value: 'true' },
+      { label: 'No', value: 'false' },
+    ],
+    defaultValue: 'true',
+  },
+  {
+    name: 'allowSameDay',
+    label: 'Allow Filing Today?',
+    type: 'select',
+    options: [
+      { label: 'Yes', value: 'true' },
+      { label: 'No', value: 'false' },
+    ],
+    defaultValue: 'true',
+  },
 ];

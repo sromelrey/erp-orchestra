@@ -8,4 +8,13 @@ export const columns: Column<any>[] = [
     cell: (item: any) => (item.isPaid ? 'Yes' : 'No') 
   },
   { header: 'Default Days', accessorKey: 'defaultDaysPerYear' },
+  { header: 'Advance Notice', accessorKey: 'minDaysAdvance' },
+  { 
+    header: 'Allow Past', 
+    cell: (item: any) => (item.allowPastDates ? 'Yes' : 'No') 
+  },
+  { 
+    header: 'Allow Today', 
+    cell: (item: any) => (item.allowSameDay ? 'Yes' : 'No') 
+  },
 ];

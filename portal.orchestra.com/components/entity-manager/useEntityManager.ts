@@ -73,11 +73,56 @@ export function useEntityManager<T>({
   const handleFormSubmit = async () => {
     setIsSubmitting(true);
     try {
+      // 1. Clean the data (strip metadata and cast types)
+      const cleanedData: Record<string, any> = {};
+      const metadataFields = [
+        "id",
+        "createdAt",
+        "updatedAt",
+        "deletedAt",
+        "createdBy",
+        "updatedBy",
+        "deletedBy",
+        "tenantId",
+      ];
+
+      formFields.forEach((field) => {
+        const rawValue = (formData as any)[field.name];
+
+        if (rawValue !== undefined && rawValue !== null) {
+          // Priority 1: Explicit valueType
+          if (field.valueType === "number") {
+            cleanedData[field.name] = rawValue === "" ? null : Number(rawValue);
+          } else if (field.valueType === "boolean") {
+            cleanedData[field.name] = rawValue === "true" || rawValue === true;
+          } else if (field.valueType === "string") {
+            cleanedData[field.name] = String(rawValue);
+          }
+          // Priority 2: Inferred from field.type (Backward compatibility)
+          else if (field.type === "number") {
+            cleanedData[field.name] = rawValue === "" ? null : Number(rawValue);
+          } else if (field.type === "select") {
+            // Handle numeric strings in selects automatically if they look like IDs
+            if (typeof rawValue === "string" && /^\d+$/.test(rawValue)) {
+              cleanedData[field.name] = Number(rawValue);
+            } else if (rawValue === "true") {
+              cleanedData[field.name] = true;
+            } else if (rawValue === "false") {
+              cleanedData[field.name] = false;
+            } else {
+              cleanedData[field.name] = rawValue;
+            }
+          } else {
+            cleanedData[field.name] = rawValue;
+          }
+        }
+      });
+
       if (formMode === "create" && onCreate) {
-        await onCreate(formData as Partial<T>);
+        await onCreate(cleanedData as Partial<T>);
       } else if (formMode === "edit" && onUpdate && selectedItem) {
         const id = keyExtractor(selectedItem);
-        await onUpdate(id, formData as Partial<T>);
+        await onUpdate(id, cleanedData as Partial<T>);
       }
       setFormMode(null);
     } finally {

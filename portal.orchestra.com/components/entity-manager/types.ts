@@ -20,6 +20,7 @@ export interface FormField {
   suffix?: ReactNode; // For custom suffixes like ".orchestra.com"
   description?: string; // Helper text below the field
   width?: "full" | "half";
+  valueType?: "string" | "number" | "boolean";
 }
 
 export interface StatCard {

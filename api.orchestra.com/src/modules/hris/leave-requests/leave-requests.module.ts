@@ -5,9 +5,12 @@ import { LeaveRequestsController } from './leave-requests.controller';
 import { LeaveRequest } from '@/entities/hris/leave-request.entity';
 import { Employee } from '@/entities/hris/employee.entity';
 import { LeaveType } from '@/entities/hris/leave-type.entity';
+import { TimeEvent } from '@/entities/hris/time-event.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LeaveRequest, Employee, LeaveType])],
+  imports: [
+    TypeOrmModule.forFeature([LeaveRequest, Employee, LeaveType, TimeEvent]),
+  ],
   controllers: [LeaveRequestsController],
   providers: [LeaveRequestsService],
 })
