@@ -70,9 +70,7 @@ export const rolesApi = baseApi.injectEndpoints({
       query: ({ roleId, userIds }) => ({
         url: `/system/roles/${roleId}/users`,
         method: 'POST',
-        body: { permissionIds: userIds }, // Backend might expect userIds, but current code uses permissionIds key? Let's check rolesApi.ts history.
-        // Wait, looking at roleApi.ts line 93: body: { userIds }
-        // I'll stick to what was there.
+        body: { userIds }, 
       }),
       invalidatesTags: (_result, _error, { roleId }) => [
         { type: 'Role', id: roleId },

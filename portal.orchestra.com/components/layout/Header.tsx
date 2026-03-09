@@ -8,7 +8,7 @@ export function Header() {
   const user = useSelector(selectCurrentUser);
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-white px-6 shadow-sm sticky top-0 z-10 w-full">
+    <header className="flex h-16 items-center justify-between bg-white px-6 shadow-sm sticky top-0 z-10 w-full">
       <div className="flex items-center gap-4">
         <SidebarTrigger />
         {/* Search Bar */}

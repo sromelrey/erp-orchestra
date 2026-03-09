@@ -31,7 +31,14 @@ export const columns: Column<Role>[] = [
   {
     header: "Description",
     accessorKey: "description",
-    cell: (item) => <span className="text-sm text-gray-600">{item.description || 'No description'}</span>,
+    cell: (item) => (
+      <div 
+        className="max-w-[300px] truncate text-sm text-gray-600" 
+        title={item.description || 'No description'}
+      >
+        {item.description || 'No description'}
+      </div>
+    ),
   },
   {
     header: "Permissions",
