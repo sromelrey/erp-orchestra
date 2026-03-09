@@ -11,7 +11,11 @@ import {
   Building2, 
   Briefcase, 
   MapPin, 
-  Network
+  Network,
+  Clock,
+  Calendar,
+  CheckCircle2,
+  Settings
 } from "lucide-react";
 
 export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
@@ -98,6 +102,53 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         description: "Manage organization staff and user accounts",
         menu_code: 'CP-04-04',
         permission: "hris.employee.view"
+      },
+    ]
+  },
+  {
+    label: "HR Management",
+    icon: Briefcase,
+    description: "Attendance and Leave Management",
+    menu_code: 'CP-05',
+    children: [
+      {
+        label: "Overview",
+        href: "/hris",
+        icon: LayoutDashboard,
+        description: "HRIS summary and quick actions",
+        menu_code: 'CP-05-01',
+      },
+      {
+        label: "Attendance",
+        href: "/hris/attendance",
+        icon: Clock,
+        description: "Daily time logs and clock-in",
+        menu_code: 'CP-05-02',
+        permission: "hris.attendance.log"
+      },
+      {
+        label: "My Leaves",
+        href: "/hris/my-leaves",
+        icon: Calendar,
+        description: "Apply for and track leaves",
+        menu_code: 'CP-05-03',
+        permission: "hris.leave.request"
+      },
+      {
+        label: "Leave Approval",
+        href: "/hris/leave-requests",
+        icon: CheckCircle2,
+        description: "Review leave applications",
+        menu_code: 'CP-05-04',
+        permission: "hris.leave.manage"
+      },
+      {
+        label: "Leave Types",
+        href: "/hris/leave-types",
+        icon: Settings,
+        description: "Configure leave policies",
+        menu_code: 'CP-05-05',
+        permission: "hris.leave_type.manage"
       },
     ]
   },

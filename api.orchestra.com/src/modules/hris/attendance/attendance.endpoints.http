@@ -1,0 +1,44 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### Get Current Attendance Status
+GET {{API_BASE_URL}}/v1/hris/attendance/status
+Content-Type: application/json
+
+###
+
+### Clock In
+POST {{API_BASE_URL}}/v1/hris/attendance/clock-in
+Content-Type: application/json
+
+{
+    "location": {
+        "lat": 10.3157,
+        "lng": 123.8854,
+        "accuracy": 15
+    },
+    "deviceInfo": "Chrome on Windows 11"
+}
+
+###
+
+### Clock Out
+POST {{API_BASE_URL}}/v1/hris/attendance/clock-out
+Content-Type: application/json
+
+{
+    "location": {
+        "lat": 10.3157,
+        "lng": 123.8854,
+        "accuracy": 10
+    },
+    "deviceInfo": "Chrome on Windows 11"
+}
