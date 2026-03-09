@@ -22,13 +22,7 @@ export default function LeaveTypesPage() {
 
   const handleCreate = async (formData: any) => {
     try {
-      const payload = {
-        ...formData,
-        isPaid: formData.isPaid === 'true',
-        defaultDaysPerYear: Number(formData.defaultDaysPerYear),
-      };
-
-      await createLeaveType(payload).unwrap();
+      await createLeaveType(formData).unwrap();
       toast.success('Leave type created successfully');
     } catch (err: any) {
       toast.error(err.data?.message || 'Failed to create leave type');
@@ -37,13 +31,7 @@ export default function LeaveTypesPage() {
 
   const handleUpdate = async (id: string | number, formData: any) => {
     try {
-      const payload = {
-        ...formData,
-        isPaid: formData.isPaid === 'true',
-        defaultDaysPerYear: Number(formData.defaultDaysPerYear),
-      };
-
-      await updateLeaveType({ id: Number(id), data: payload }).unwrap();
+      await updateLeaveType({ id: Number(id), data: formData }).unwrap();
       toast.success('Leave type updated successfully');
     } catch (err: any) {
       toast.error(err.data?.message || 'Failed to update leave type');

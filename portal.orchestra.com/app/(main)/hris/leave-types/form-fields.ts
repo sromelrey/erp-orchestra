@@ -18,6 +18,7 @@ export const formFields: FormField[] = [
     name: 'isPaid',
     label: 'Paid Leave',
     type: 'select',
+    valueType: 'boolean',
     options: [
       { label: 'Yes', value: 'true' },
       { label: 'No', value: 'false' },
@@ -43,6 +44,7 @@ export const formFields: FormField[] = [
     name: 'allowPastDates',
     label: 'Allow Past Dates?',
     type: 'select',
+    valueType: 'boolean',
     options: [
       { label: 'Yes', value: 'true' },
       { label: 'No', value: 'false' },
@@ -53,6 +55,7 @@ export const formFields: FormField[] = [
     name: 'allowSameDay',
     label: 'Allow Filing Today?',
     type: 'select',
+    valueType: 'boolean',
     options: [
       { label: 'Yes', value: 'true' },
       { label: 'No', value: 'false' },

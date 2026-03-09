@@ -4,7 +4,7 @@
 |-------|-------|
 | **Epic ID** | EPIC-04 |
 | **Epic Name** | HRIS Attendance, Leave & Payroll |
-| **Status** | 📋 Planned |
+| **Status** | � Implementing |
 | **Priority** | High |
 | **Dependencies** | EPIC-01, EPIC-02, EPIC-03 (HRIS Core) |
 
@@ -39,11 +39,11 @@ To provide comprehensive time tracking, leave management, and automated payroll 
 Implement the backend entities and frontend portal for employees to log time and request leaves, and for HR to configure them.
 
 **Tasks:**
-- [ ] Create `TimeEvent`, `LeaveType`, and `LeaveRequest` entities.
-- [ ] Develop API endpoints for employees to clock in/out (recording timestamp, IP, device).
-- [ ] Build the **Time Clock** UI component for the employee dashboard.
-- [ ] Implement robust leave balance calculation and approval workflows for Managers.
-- [ ] Create UI management pages for HR to define `LeaveTypes` and review `LeaveRequests`.
+- [x] Create `TimeEvent`, `LeaveType`, and `LeaveRequest` entities.
+- [x] Develop API endpoints for employees to clock in/out (recording timestamp, IP, device).
+- [x] Build the **Time Clock** UI component for the employee dashboard.
+- [x] Implement robust leave balance calculation and approval workflows for Managers.
+- [x] Create UI management pages for HR to define `LeaveTypes` and review `LeaveRequests`.
 
 ---
 
