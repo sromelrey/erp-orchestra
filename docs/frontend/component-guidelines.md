@@ -15,6 +15,7 @@
 ## Shared UI
 - Use Lucide React for consistent iconography.
 - Use Tailwind CSS for styling.
+- **SearchableSelect**: Use this component for all dropdowns that may contain more than 10 items (e.g., entity lookups).
 - Follow the design system defined in `index.css`.
 
 ## Props
