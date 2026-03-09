@@ -1,0 +1,50 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Leave Requests (Admin/Manager)
+GET {{API_BASE_URL}}/v1/hris/leave-requests
+Content-Type: application/json
+
+###
+
+### List My Leave Requests
+GET {{API_BASE_URL}}/v1/hris/leave-requests/my-requests
+Content-Type: application/json
+
+###
+
+### Get Leave Request by ID
+GET {{API_BASE_URL}}/v1/hris/leave-requests/1
+Content-Type: application/json
+
+###
+
+### Submit New Leave Request
+POST {{API_BASE_URL}}/v1/hris/leave-requests
+Content-Type: application/json
+
+{
+    "leaveTypeId": 1,
+    "startDate": "2026-04-01",
+    "endDate": "2026-04-05",
+    "reason": "Family gathering"
+}
+
+###
+
+### Approve/Reject Leave Request
+PATCH {{API_BASE_URL}}/v1/hris/leave-requests/1/status
+Content-Type: application/json
+
+{
+    "status": "APPROVED",
+    "comment": "Approved by HR"
+}
