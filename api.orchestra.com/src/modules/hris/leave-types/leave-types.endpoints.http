@@ -1,0 +1,49 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List Leave Types
+GET {{API_BASE_URL}}/v1/hris/leave-types
+Content-Type: application/json
+
+###
+
+### Get Leave Type by ID
+GET {{API_BASE_URL}}/v1/hris/leave-types/1
+Content-Type: application/json
+
+###
+
+### Create New Leave Type
+POST {{API_BASE_URL}}/v1/hris/leave-types
+Content-Type: application/json
+
+{
+    "name": "Sick Leave",
+    "description": "Medical related leaves",
+    "isPaid": true,
+    "defaultDaysPerYear": 10
+}
+
+###
+
+### Update Leave Type
+PATCH {{API_BASE_URL}}/v1/hris/leave-types/1
+Content-Type: application/json
+
+{
+    "defaultDaysPerYear": 12
+}
+
+###
+
+### Delete Leave Type
+DELETE {{API_BASE_URL}}/v1/hris/leave-types/1
+Content-Type: application/json

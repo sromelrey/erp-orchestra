@@ -39,6 +39,7 @@ Before submitting code, ensure you've followed:
 - [ ] **Naming Conventions** - Files, classes, methods, and database objects follow standards
 - [ ] **Import Rules** - No nested relative imports, use absolute paths
 - [ ] **API Standards** - Endpoints follow RESTful principles
+- [ ] **Endpoint Testing** - `.endpoints.http` file created within the module folder
 - [ ] **Testing** - Appropriate test coverage for new features
 - [ ] **Documentation** - Update relevant documentation for changes
 

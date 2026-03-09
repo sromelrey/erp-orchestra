@@ -10,15 +10,15 @@ The `EntityManager` is a "battery-included" component that handles:
 - **State Management**: Handling modal states, loading states, and error handling.
 - **Statistics**: Displaying summary cards.
 
-## File Structure Pattern
+## File Structure Pattern (Mandatory)
 
-For each entity (e.g., `tenants`, `users`, `products`), follow this file structure:
+For every entity managed via `EntityManager`, you **must** separate the configuration from the implementation. Defining columns or form fields directly inside `page.tsx` is prohibited.
 
 ```
 app/(main)/[entity-name]/
-├── page.tsx          # Main entry point using EntityManager
-├── column.tsx        # DataTable column definitions
-└── form-fields.ts    # Form field configurations
+├── page.tsx          # Main entry point (Composition only)
+├── column.tsx        # Mandatory: DataTable column definitions
+└── form-fields.ts    # Mandatory: Form field configurations
 ```
 
 ---

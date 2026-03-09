@@ -135,7 +135,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 border-t">
+      <SidebarFooter className="p-4 shadow-[0_-1px_2px_0_rgba(0,0,0,0.05)]">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton 

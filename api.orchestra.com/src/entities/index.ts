@@ -31,3 +31,6 @@ export * from './hris/branch.entity';
 export * from './hris/department.entity';
 export * from './hris/designation.entity';
 export * from './hris/employee.entity';
+export * from './hris/time-event.entity';
+export * from './hris/leave-type.entity';
+export * from './hris/leave-request.entity';

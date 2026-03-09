@@ -48,27 +48,43 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.employee.manage',
           name: 'Manage Employees',
         },
-        // HRIS - Leave Request
+        // HRIS - Attendance
         {
           module: 'hris',
-          resource: 'leave_request',
+          resource: 'attendance',
+          action: 'log',
+          slug: 'hris.attendance.log',
+          name: 'Log Attendance',
+        },
+        {
+          module: 'hris',
+          resource: 'attendance',
           action: 'view',
-          slug: 'hris.leave_request.view',
-          name: 'View Leave Requests',
+          slug: 'hris.attendance.view',
+          name: 'View Attendance',
+        },
+        // HRIS - Leave
+        {
+          module: 'hris',
+          resource: 'leave',
+          action: 'request',
+          slug: 'hris.leave.request',
+          name: 'Request Leave',
         },
         {
           module: 'hris',
-          resource: 'leave_request',
-          action: 'create',
-          slug: 'hris.leave_request.create',
-          name: 'Create Leave Requests',
+          resource: 'leave',
+          action: 'manage',
+          slug: 'hris.leave.manage',
+          name: 'Manage Leaves',
         },
+        // HRIS - Leave Type
         {
           module: 'hris',
-          resource: 'leave_request',
-          action: 'approve',
-          slug: 'hris.leave_request.approve',
-          name: 'Approve Leave Requests',
+          resource: 'leave_type',
+          action: 'manage',
+          slug: 'hris.leave_type.manage',
+          name: 'Manage Leave Types',
         },
         // HRIS - Branch
         {

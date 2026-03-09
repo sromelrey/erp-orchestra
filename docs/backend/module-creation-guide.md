@@ -73,12 +73,14 @@ export class CreateProductDto {
 }
 ```
 
-## 4. HTTP Client Examples
+## 4. Endpoint Testing (.http file)
 
+Every module **MUST** include an `.endpoints.http` file within its folder (e.g., `products.endpoints.http`). This file serves as both live documentation and a tool for developers to quickly test endpoints without a frontend.
+
+### Template
 ```http
 ### Login (Establish Session)
-# @name adminLogin
-POST {{API_BASE_URL}}/v1auth/login
+POST {{API_BASE_URL}}/v1/auth/login
 Content-Type: application/json
 
 {
@@ -86,18 +88,27 @@ Content-Type: application/json
     "password": "{{TEST_USER_PASSWORD}}"
 }
 
-### List Resources
-GET {{API_BASE_URL}}/v1products
+###
+
+### List [Resource Name]
+GET {{API_BASE_URL}}/v1/[resource-path]
 Content-Type: application/json
 
-### Create Resource
-POST {{API_BASE_URL}}/v1products
+###
+
+### Create [Resource Name]
+POST {{API_BASE_URL}}/v1/[resource-path]
 Content-Type: application/json
 
 {
-    "name": "New Product"
+    "property": "value"
 }
 ```
+
+### Benefits
+-   **Immediate Testing**: Verify backend logic before UI is ready.
+-   **Regression Testing**: Easily rerun standard scenarios.
+-   **Project Portability**: New team members can understand the API shape immediately.
 
 ## 5. Service Template
 

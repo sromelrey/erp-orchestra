@@ -1,0 +1,56 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List Employees (with Pagination)
+GET {{API_BASE_URL}}/v1/hris/employees?limit=10
+Content-Type: application/json
+
+###
+
+### Get Employee by ID
+GET {{API_BASE_URL}}/v1/hris/employees/1
+Content-Type: application/json
+
+###
+
+### Create New Employee
+POST {{API_BASE_URL}}/v1/hris/employees
+Content-Type: application/json
+
+{
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "employeeCode": "EMP-002",
+    "email": "jane.smith@example.com",
+    "phone": "+639123456789",
+    "hireDate": "2024-02-01",
+    "departmentId": 1,
+    "designationId": 1,
+    "branchId": 1,
+    "status": "Active",
+    "createUserAccount": true
+}
+
+###
+
+### Update Employee
+PATCH {{API_BASE_URL}}/v1/hris/employees/1
+Content-Type: application/json
+
+{
+    "phone": "+639998887766"
+}
+
+###
+
+### Delete Employee
+DELETE {{API_BASE_URL}}/v1/hris/employees/1
+Content-Type: application/json
