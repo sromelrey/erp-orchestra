@@ -20,9 +20,52 @@ import {
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+import { DataTable, Column } from '@/components/ui/data-table';
+
 export default function HRISOverviewPage() {
   const { data: myRequests } = useGetMyLeaveRequestsQuery();
   const { data: employees } = useGetEmployeesQuery({});
+
+  const dashboardLeaveColumns: Column<any>[] = [
+    {
+      header: 'Staff',
+      cell: (req) => (
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px]">
+            {req.employee?.firstName?.[0]}{req.employee?.lastName?.[0]}
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-xs truncate max-w-[150px]" title={`${req.employee?.firstName} ${req.employee?.lastName}`}>
+              {req.employee?.firstName} {req.employee?.lastName}
+            </span>
+            <span className="text-[10px] text-muted-foreground truncate max-w-[150px]" title={req.leaveType?.name}>
+              {req.leaveType?.name}
+            </span>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: 'Dates',
+      cell: (req) => (
+        <span className="text-xs font-medium text-gray-500">
+          {format(new Date(req.startDate), 'MMM d')} - {format(new Date(req.endDate), 'MMM d')}
+        </span>
+      )
+    },
+    {
+       header: 'Status',
+       className: 'text-right',
+       cell: (req) => (
+         <Badge 
+            variant={req.status === 'PENDING' ? 'secondary' : 'default'}
+            className="font-bold text-[10px] px-2 py-0 h-5"
+         >
+            {req.status}
+         </Badge>
+       )
+    }
+  ];
 
   const stats = [
     { label: 'Total Employees', value: employees?.meta?.nextCursor ? '50+' : (employees?.data?.length || 0), icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
@@ -100,7 +143,7 @@ export default function HRISOverviewPage() {
 
         {/* Right Column: Key Lists */}
         <div className="lg:col-span-2 space-y-8">
-           <Card className="border-none shadow-xl border border-border/50">
+           <Card className="border-none shadow-xl border border-border/50 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between border-b border-border/10 pb-4">
                  <div>
                     <CardTitle className="text-xl font-bold tracking-tight">Recent Leave Requests</CardTitle>
@@ -112,27 +155,12 @@ export default function HRISOverviewPage() {
               </CardHeader>
               <CardContent className="p-0">
                  {myRequests && myRequests.length > 0 ? (
-                   <div className="divide-y divide-border/10">
-                      {myRequests.slice(0, 5).map((req) => (
-                        <div key={req.id} className="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                           <div className="flex items-center gap-4">
-                              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                                 {req.employee?.firstName?.[0]}{req.employee?.lastName?.[0]}
-                              </div>
-                              <div>
-                                 <p className="font-bold text-sm">{req.leaveType?.name}</p>
-                                 <p className="text-xs text-muted-foreground">{format(new Date(req.startDate), 'MMM d')} - {format(new Date(req.endDate), 'MMM d')}</p>
-                              </div>
-                           </div>
-                           <Badge 
-                              variant={req.status === 'PENDING' ? 'secondary' : 'default'}
-                              className="font-bold"
-                           >
-                              {req.status}
-                           </Badge>
-                        </div>
-                      ))}
-                   </div>
+                   <DataTable
+                      columns={dashboardLeaveColumns}
+                      data={myRequests.slice(0, 5)}
+                      keyExtractor={(req) => req.id}
+                      emptyMessage="No recent leave requests."
+                   />
                  ) : (
                    <div className="p-12 text-center flex flex-col items-center gap-3">
                       <div className="h-16 w-16 rounded-full bg-muted/30 flex items-center justify-center">
