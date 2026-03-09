@@ -67,6 +67,10 @@ export const formFields: FormField[] = [
     required: true,
   },
   {
+    /* 
+       NOTE: The "select" type uses a SearchableSelect component by default.
+       This is mandatory for fields expected to have long lists (e.g., Employees, Departments).
+    */
     name: "status",
     label: "Status",
     type: "select",

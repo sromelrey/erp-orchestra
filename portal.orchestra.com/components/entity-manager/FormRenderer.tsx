@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { FormField, FormMode } from "./types";
 import { cn } from "@/lib/utils";
 
@@ -30,28 +31,13 @@ export function FormRenderer({
     switch (field.type) {
       case "select":
         return (
-          <Select
-            value={String(value || field.defaultValue || "")} // Handle initial value
+          <SearchableSelect
+            options={field.options as any || []}
+            value={String(value || field.defaultValue || "")}
             onValueChange={(val) => onFieldChange(field.name, val)}
             disabled={isDisabled}
-          >
-            <SelectTrigger
-              id={field.name}
-              className={cn(
-                "w-full h-11 rounded-xl bg-white/50 border-input shadow-sm transition-all duration-200 hover:bg-white hover:border-gray-300 focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                isDisabled && "bg-gray-50 text-gray-500 opacity-100"
-              )}
-            >
-              <SelectValue placeholder="Select an option" />
-            </SelectTrigger>
-            <SelectContent>
-              {field.options?.map((opt) => (
-                <SelectItem key={opt.value} value={String(opt.value)}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder={field.placeholder || "Select an option..."}
+          />
         );
       case "textarea":
         return (
