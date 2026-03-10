@@ -9,7 +9,7 @@ import { AttendanceService } from './attendance.service';
 import { CreateTimeEventDto } from './dto/create-time-event.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { TimeEvent } from '@/entities/hris/time-event.entity';
+import { TimeEvent } from '@/entities';
 
 import { Request as ExpressRequest } from 'express';
 

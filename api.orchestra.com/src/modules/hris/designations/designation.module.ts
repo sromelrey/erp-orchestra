@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DesignationController } from './designation.controller';
 import { DesignationService } from './designation.service';
-import { Designation } from '@/entities/hris/designation.entity';
+import { Designation } from '@/entities';
 import { PermissionModule } from '../../system/permissions/permission.module';
 
 @Module({

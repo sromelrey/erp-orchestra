@@ -1,0 +1,60 @@
+@API_BASE_URL = http://localhost:4000/v1
+@TEST_USERNAME = admin@orchestra.com
+@TEST_USER_PASSWORD = admin123
+
+### Login (Establish Session)
+# @name login
+POST {{API_BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+@authToken = {{login.response.body.accessToken}}
+
+### --- TIMESHEETS ---
+
+### Batch Generate Timesheets
+# This will scan TimeEvents and aggregate them into daily sheets
+POST {{API_BASE_URL}}/hris/timesheets/generate
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "payPeriodId": 1
+}
+
+###
+
+### List Timesheets for Period
+GET {{API_BASE_URL}}/hris/timesheets?payPeriodId=1
+Authorization: Bearer {{authToken}}
+
+###
+
+### Get Aggregation Summary
+GET {{API_BASE_URL}}/hris/timesheets/summary?payPeriodId=1
+Authorization: Bearer {{authToken}}
+
+###
+
+### Get Single Timesheet Details (Daily Breakdown)
+# Use a valid UUID from the List response above
+@timesheetId = REPLACE_WITH_UUID
+GET {{API_BASE_URL}}/hris/timesheets/{{timesheetId}}
+Authorization: Bearer {{authToken}}
+
+###
+
+### Approve Timesheet (State Machine)
+PATCH {{API_BASE_URL}}/hris/timesheets/{{timesheetId}}/status
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "status": "APPROVED"
+}

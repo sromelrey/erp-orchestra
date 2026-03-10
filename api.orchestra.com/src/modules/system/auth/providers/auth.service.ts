@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 import { SessionService } from '@/modules/system/sessions/session.service';
 
 /**

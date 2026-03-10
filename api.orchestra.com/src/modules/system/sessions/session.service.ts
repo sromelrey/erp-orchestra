@@ -2,9 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Session } from '@/entities/system/session.entity';
-import { User } from '@/entities/system/user.entity';
-import { UserRole } from '@/entities/system/user-role.entity';
+import { Session, User, UserRole } from '@/entities';
 import { Status } from '@/types/enums';
 
 /**

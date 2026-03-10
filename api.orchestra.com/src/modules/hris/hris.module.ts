@@ -7,6 +7,8 @@ import { EmployeesModule } from './employees/employees.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { LeaveTypesModule } from './leave-types/leave-types.module';
 import { LeaveRequestsModule } from './leave-requests/leave-requests.module';
+import { PayPeriodsModule } from './pay-periods/pay-periods.module';
+import { TimesheetsModule } from './timesheets/timesheets.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { LeaveRequestsModule } from './leave-requests/leave-requests.module';
     AttendanceModule,
     LeaveTypesModule,
     LeaveRequestsModule,
+    PayPeriodsModule,
+    TimesheetsModule,
   ],
 })
 export class HrisModule {}

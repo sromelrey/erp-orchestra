@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 
 import { LoginGuard } from '@/guards/login.guard';
 import { AuthService } from './providers/auth.service';

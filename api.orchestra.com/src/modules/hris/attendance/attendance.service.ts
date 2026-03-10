@@ -5,8 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
-import { TimeEvent, TimeEventType } from '@/entities/hris/time-event.entity';
-import { Employee } from '@/entities/hris/employee.entity';
+import { TimeEvent, TimeEventType, Employee } from '@/entities';
 import { CreateTimeEventDto } from './dto/create-time-event.dto';
 
 @Injectable()

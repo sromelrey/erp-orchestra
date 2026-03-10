@@ -2,10 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LeaveRequestsService } from './leave-requests.service';
 import { LeaveRequestsController } from './leave-requests.controller';
-import { LeaveRequest } from '@/entities/hris/leave-request.entity';
-import { Employee } from '@/entities/hris/employee.entity';
-import { LeaveType } from '@/entities/hris/leave-type.entity';
-import { TimeEvent } from '@/entities/hris/time-event.entity';
+import { LeaveRequest, Employee, LeaveType, TimeEvent } from '@/entities';
 
 @Module({
   imports: [

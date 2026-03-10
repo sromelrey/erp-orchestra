@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsEnum,
 } from 'class-validator';
-import { LeaveRequestStatus } from '@/entities/hris/leave-request.entity';
+import { LeaveRequestStatus } from '@/entities';
 
 export class CreateLeaveRequestDto {
   @ApiProperty({ example: 1 })

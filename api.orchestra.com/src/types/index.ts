@@ -1,4 +1,4 @@
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 
 export * from './email.type';
 

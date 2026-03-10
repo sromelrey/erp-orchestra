@@ -12,7 +12,7 @@ import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 import { SessionService } from './session.service';
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 
 interface AuthenticatedRequest extends Request {
   user: User;

@@ -27,8 +27,7 @@ import { CursorPaginationDto } from '@/common/dto/cursor-pagination.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { Employee } from '@/entities/hris/employee.entity';
-import { User } from '@/entities/system/user.entity';
+import { Employee, User } from '@/entities';
 import { PaginatedResult } from '@/types';
 
 interface AuthenticatedRequest extends Request {
