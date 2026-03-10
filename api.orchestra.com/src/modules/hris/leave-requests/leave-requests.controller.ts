@@ -22,7 +22,7 @@ import {
 } from './dto/leave-request.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { LeaveRequest } from '@/entities/hris/leave-request.entity';
+import { LeaveRequest } from '@/entities';
 import { Request as ExpressRequest } from 'express';
 
 interface AuthenticatedRequest extends ExpressRequest {

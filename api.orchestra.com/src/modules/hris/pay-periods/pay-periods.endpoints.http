@@ -1,0 +1,37 @@
+@API_BASE_URL = http://localhost:4000/v1
+@TEST_USERNAME = admin@orchestra.com
+@TEST_USER_PASSWORD = admin123
+
+### Login (Establish Session)
+# @name login
+POST {{API_BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+@authToken = {{login.response.body.accessToken}}
+
+### --- PAY PERIODS ---
+
+### List Pay Periods
+GET {{API_BASE_URL}}/hris/pay-periods
+Authorization: Bearer {{authToken}}
+
+###
+
+### Create Pay Period
+POST {{API_BASE_URL}}/hris/pay-periods
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "March 2026 - First Half",
+    "startDate": "2026-03-01",
+    "endDate": "2026-03-15",
+    "status": "OPEN"
+}

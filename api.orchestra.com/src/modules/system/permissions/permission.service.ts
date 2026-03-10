@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Permission } from '@/entities/system/permission.entity';
-import { RolePermission } from '@/entities/system/role-permission.entity';
-import { UserRole } from '@/entities/system/user-role.entity';
+import { Permission, RolePermission, UserRole } from '@/entities';
 
 /**
  * Service responsible for permission management and access control.

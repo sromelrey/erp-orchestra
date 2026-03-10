@@ -65,7 +65,9 @@ export function applyMiddlewares(app: INestApplication) {
     );
     next();
   });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   app.use(passport.initialize());
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   app.use(passport.session());
   app.use((req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     if (req.user && !req.principal) {

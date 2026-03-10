@@ -131,6 +131,36 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.designation.manage',
           name: 'Manage Designations',
         },
+        // HRIS - Payroll (Pay Periods)
+        {
+          module: 'hris',
+          resource: 'payroll',
+          action: 'view',
+          slug: 'hris.payroll.view',
+          name: 'View Pay Periods',
+        },
+        {
+          module: 'hris',
+          resource: 'payroll',
+          action: 'manage',
+          slug: 'hris.payroll.manage',
+          name: 'Manage Pay Periods',
+        },
+        // HRIS - Timesheet
+        {
+          module: 'hris',
+          resource: 'timesheet',
+          action: 'view',
+          slug: 'hris.timesheet.view',
+          name: 'View Timesheets',
+        },
+        {
+          module: 'hris',
+          resource: 'timesheet',
+          action: 'manage',
+          slug: 'hris.timesheet.manage',
+          name: 'Manage Timesheets',
+        },
         // System - Role
         {
           module: 'system',

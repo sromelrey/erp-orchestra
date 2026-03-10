@@ -8,10 +8,11 @@ import { Repository, IsNull } from 'typeorm';
 import {
   LeaveRequest,
   LeaveRequestStatus,
-} from '@/entities/hris/leave-request.entity';
-import { Employee } from '@/entities/hris/employee.entity';
-import { LeaveType } from '@/entities/hris/leave-type.entity';
-import { TimeEvent, TimeEventType } from '@/entities/hris/time-event.entity';
+  Employee,
+  LeaveType,
+  TimeEvent,
+  TimeEventType,
+} from '@/entities';
 import {
   CreateLeaveRequestDto,
   UpdateLeaveRequestStatusDto,

@@ -12,7 +12,7 @@ import {
 } from '@/decorators/require-access.decorator';
 import { TenantsService } from '@/modules/system/tenants/tenants.service';
 import { PermissionService } from '@/modules/system/permissions/permission.service';
-import { User } from '@/entities/system/user.entity';
+import { User } from '@/entities';
 
 interface AuthenticatedRequest extends Request {
   user: User;

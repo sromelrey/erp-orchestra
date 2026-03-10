@@ -6,8 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Employee } from '@/entities/hris/employee.entity';
-import { User } from '@/entities/system/user.entity';
+import { Employee, User } from '@/entities';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { CursorPaginationDto } from '@/common/dto/cursor-pagination.dto';

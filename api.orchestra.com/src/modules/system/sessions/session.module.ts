@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SessionService } from './session.service';
-import { Session } from '@/entities/system/session.entity';
-import { User } from '@/entities/system/user.entity';
-import { UserRole } from '@/entities/system/user-role.entity';
+import { Session, User, UserRole } from '@/entities';
 import { SessionController } from './session.controller';
 import { PermissionModule } from '@/modules/system/permissions/permission.module';
 

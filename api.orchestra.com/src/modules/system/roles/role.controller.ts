@@ -27,8 +27,7 @@ import { AssignUsersDto } from './dto/assign-users.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { Role } from '@/entities/system/role.entity';
-import { User } from '@/entities/system/user.entity';
+import { Role, User } from '@/entities';
 
 interface AuthenticatedRequest extends Request {
   user: User;

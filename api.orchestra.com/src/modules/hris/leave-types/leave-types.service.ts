@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { LeaveType } from '@/entities/hris/leave-type.entity';
+import { LeaveType } from '@/entities';
 import { CreateLeaveTypeDto, UpdateLeaveTypeDto } from './dto/leave-type.dto';
 
 @Injectable()

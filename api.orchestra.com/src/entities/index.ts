@@ -34,3 +34,6 @@ export * from './hris/employee.entity';
 export * from './hris/time-event.entity';
 export * from './hris/leave-type.entity';
 export * from './hris/leave-request.entity';
+export * from './hris/pay-period.entity';
+export * from './hris/timesheet.entity';
+export * from './hris/timesheet-day.entity';

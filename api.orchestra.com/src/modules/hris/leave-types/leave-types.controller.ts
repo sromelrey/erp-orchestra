@@ -19,7 +19,7 @@ import { LeaveTypesService } from './leave-types.service';
 import { CreateLeaveTypeDto, UpdateLeaveTypeDto } from './dto/leave-type.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { LeaveType } from '@/entities/hris/leave-type.entity';
+import { LeaveType } from '@/entities';
 import { Request as ExpressRequest } from 'express';
 
 interface AuthenticatedRequest extends ExpressRequest {

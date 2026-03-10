@@ -1,7 +1,7 @@
 import { SessionOptions } from 'express-session';
 import { TypeormStore } from 'connect-typeorm';
 import { Repository } from 'typeorm';
-import { Session } from '@/entities/system/session.entity';
+import { Session } from '@/entities';
 
 export function getSessionConfig({
   cookieSecret,
