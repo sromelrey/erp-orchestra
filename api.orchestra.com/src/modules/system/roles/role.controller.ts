@@ -27,11 +27,8 @@ import { AssignUsersDto } from './dto/assign-users.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { Role, User } from '@/entities';
-
-interface AuthenticatedRequest extends Request {
-  user: User;
-}
+import { Role } from '@/entities';
+import { AuthenticatedRequest } from '@/types/authenticated-request';
 
 /**
  * Controller for managing Role resources.

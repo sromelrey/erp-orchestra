@@ -1,0 +1,105 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List Employee Compensation
+GET {{API_BASE_URL}}/v1/hris/employees/1/compensation
+Content-Type: application/json
+###
+
+### Create Employee Compensation
+POST {{API_BASE_URL}}/v1/hris/employees/1/compensation
+Content-Type: application/json
+{
+    "baseSalary": 75000,
+    "hourlyRate": 36.5,
+    "overtimeRate": 1.5,
+    "effectiveDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "currency": "USD",
+    "paymentFrequency": "monthly",
+    "changeReason": "Annual salary review"
+}
+
+###
+
+### Update Employee Compensation
+PUT {{API_BASE_URL}}/v1/hris/employees/1/compensation/1
+Content-Type: application/json
+{
+    "baseSalary": 78000,
+    "effectiveDate": "2024-01-01",
+    "changeReason": "Mid-year adjustment"
+}
+
+###
+
+### Delete Employee Compensation
+DELETE {{API_BASE_URL}}/v1/hris/employees/1/compensation/1
+Content-Type: application/json
+ 
+###
+
+### Calculate Total Compensation for Date
+GET {{API_BASE_URL}}/v1/hris/employees/1/compensation/calculate/2024-06-15
+Content-Type: application/json
+ 
+###
+
+### Get Compensation History
+GET {{API_BASE_URL}}/v1/hris/employees/1/compensation/history
+Content-Type: application/json
+ 
+###
+
+### List Employee Deductions
+GET {{API_BASE_URL}}/v1/hris/employees/1/deductions
+Content-Type: application/json
+ 
+###
+
+### Create Employee Deduction
+POST {{API_BASE_URL}}/v1/hris/employees/1/deductions
+Content-Type: application/json
+ 
+{
+    "name": "Health Insurance",
+    "type": "fixed",
+    "amount": 250.00,
+    "frequency": "monthly",
+    "effectiveDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "description": "Company-sponsored health insurance premium"
+}
+
+###
+
+### Update Employee Deduction
+PUT {{API_BASE_URL}}/v1/hris/employees/1/deductions/1
+Content-Type: application/json
+ 
+{
+    "amount": 275.00,
+    "description": "Updated premium amount"
+}
+
+###
+
+### Delete Employee Deduction
+DELETE {{API_BASE_URL}}/v1/hris/employees/1/deductions/1
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+### Calculate Total Deductions for Date
+GET {{API_BASE_URL}}/v1/hris/employees/1/deductions/calculate/2024-06-15
+Content-Type: application/json
+ 

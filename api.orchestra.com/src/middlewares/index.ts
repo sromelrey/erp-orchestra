@@ -13,9 +13,7 @@ import { Request, Response, NextFunction } from 'express';
 /**
  * Request with session and user information
  */
-interface AuthenticatedRequest extends Request {
-  principal?: Express.User;
-}
+import { AuthenticatedRequest } from '@/types/authenticated-request';
 
 /**
  * Applies all necessary middlewares to the NestJS application.
