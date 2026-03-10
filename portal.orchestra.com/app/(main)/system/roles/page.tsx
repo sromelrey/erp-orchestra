@@ -160,22 +160,30 @@ export default function RolesPage() {
         }}
       />
 
-      <Dialog open={isPermissionDialogOpen} onOpenChange={setIsPermissionDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
+      <Dialog
+        open={isPermissionDialogOpen}
+        onOpenChange={setIsPermissionDialogOpen}
+      >
+        <DialogContent className="min-w-[80vw] max-h-[90vh] p-0 overflow-hidden">
+          <DialogHeader className="px-6 py-4 border-b">
             <DialogTitle>Manage Role Permissions</DialogTitle>
           </DialogHeader>
           {selectedRole && (
-            <RoleDetailsPanel
-              key={selectedRole.id}
-              role={selectedRole}
-              onClose={() => setIsPermissionDialogOpen(false)}
-            />
+            <div className="h-[calc(90vh-8rem)] overflow-hidden">
+              <RoleDetailsPanel
+                key={selectedRole.id}
+                role={selectedRole}
+                onClose={() => setIsPermissionDialogOpen(false)}
+              />
+            </div>
           )}
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isAssignUsersDialogOpen} onOpenChange={setIsAssignUsersDialogOpen}>
+      <Dialog
+        open={isAssignUsersDialogOpen}
+        onOpenChange={setIsAssignUsersDialogOpen}
+      >
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Assign Users to Role</DialogTitle>

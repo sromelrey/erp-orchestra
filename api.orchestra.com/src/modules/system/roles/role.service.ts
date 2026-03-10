@@ -126,41 +126,33 @@ export class RoleService {
     permissionIds: number[],
     tenantId?: number,
   ): Promise<Role> {
-    await this.findOne(roleId, tenantId); // Validate role exists and belongs to tenant
+    const uniquePermissionIds = Array.from(new Set(permissionIds));
 
-    // Validate permissions exist
-    const permissions = await this.permissionRepository.find({
-      where: { id: In(permissionIds) },
+    await this.roleRepository.manager.transaction(async (manager) => {
+      await this.findOne(roleId, tenantId); // Validate role exists and belongs to tenant
+
+      if (uniquePermissionIds.length > 0) {
+        const permissions = await manager.getRepository(Permission).find({
+          where: { id: In(uniquePermissionIds) },
+          select: ['id'],
+        });
+
+        if (permissions.length !== uniquePermissionIds.length) {
+          throw new NotFoundException('One or more permissions not found');
+        }
+      }
+
+      await manager.getRepository(RolePermission).delete({ roleId });
+
+      if (uniquePermissionIds.length > 0) {
+        await manager.getRepository(RolePermission).insert(
+          uniquePermissionIds.map((permissionId) => ({
+            roleId,
+            permissionId,
+          })),
+        );
+      }
     });
-
-    if (permissions.length !== permissionIds.length) {
-      throw new NotFoundException('One or more permissions not found');
-    }
-
-    // 1. Get current permissions
-    const currentRolePermissions = await this.rolePermissionRepository.find({
-      where: { roleId },
-    });
-    const currentIds = currentRolePermissions.map((rp) => rp.permissionId);
-
-    // 2. Identify permissions to remove (in DB but not in new list)
-    const idsToRemove = currentIds.filter((id) => !permissionIds.includes(id));
-    if (idsToRemove.length > 0) {
-      await this.rolePermissionRepository.delete({
-        roleId,
-        permissionId: In(idsToRemove),
-      });
-    }
-
-    // 3. Identify permissions to add (in new list but not in DB)
-    const idsToAdd = permissionIds.filter((id) => !currentIds.includes(id));
-    for (const permissionId of idsToAdd) {
-      const rolePermission = this.rolePermissionRepository.create({
-        roleId,
-        permissionId,
-      });
-      await this.rolePermissionRepository.save(rolePermission);
-    }
 
     return this.findOne(roleId, tenantId);
   }
