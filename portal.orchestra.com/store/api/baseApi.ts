@@ -27,6 +27,8 @@ export const baseApi = createApi({
     'Attendance',
     'LeaveTypes',
     'LeaveRequests',
+    'PayPeriods',
+    'Timesheets',
   ],
   endpoints: () => ({}), // Endpoints will be injected by feature-specific files
 });

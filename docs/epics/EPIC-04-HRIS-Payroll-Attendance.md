@@ -58,11 +58,11 @@ Implement the backend entities and frontend portal for employees to log time and
 Build the engine that converts raw attendance data and approved leaves into structured, daily timesheets ready for payroll.
 
 **Tasks:**
-- [ ] Create `PayPeriod`, `Timesheet`, `TimesheetDay`, `TimesheetAdjustment`, and `TimesheetAnomaly` entities.
+- [x] Create `PayPeriod`, `Timesheet`, `TimesheetDay`, `TimesheetAdjustment`, and `TimesheetAnomaly` entities.
 - [ ] Develop a chron/service worker to automatically generate `Timesheets` at the end of a `PayPeriod`.
-- [ ] Implement logic to automatically flag anomalies (e.g., missing clock-out).
-- [ ] Build the **Timesheet Review UI** for managers to view, adjust, and approve employee timesheets.
-- [ ] Enforce strict state machine constraints (Draft -> Pending Review -> Approved -> Locked).
+- [x] Implement logic to automatically flag anomalies (e.g., missing clock-out).
+- [x] Build the **Timesheet Review UI** for managers to view, adjust, and approve employee timesheets.
+- [x] Enforce strict state machine constraints (Draft -> Pending Review -> Approved -> Locked).
 
 ---
 

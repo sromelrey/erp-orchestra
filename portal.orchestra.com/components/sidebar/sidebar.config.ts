@@ -127,11 +127,27 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         permission: "hris.attendance.log"
       },
       {
+        label: "Timesheets",
+        href: "/hris/timesheets",
+        icon: LayoutDashboard,
+        description: "Aggregate logs and review hours",
+        menu_code: 'CP-05-03',
+        permission: "hris.timesheet.view"
+      },
+      {
+        label: "Pay Periods",
+        href: "/hris/pay-periods",
+        icon: Calendar,
+        description: "Manage payroll cycles",
+        menu_code: 'CP-05-04',
+        permission: "hris.payroll.view"
+      },
+      {
         label: "My Leaves",
         href: "/hris/my-leaves",
         icon: Calendar,
         description: "Apply for and track leaves",
-        menu_code: 'CP-05-03',
+        menu_code: 'CP-05-05',
         permission: "hris.leave.request"
       },
       {
@@ -139,7 +155,7 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         href: "/hris/leave-requests",
         icon: CheckCircle2,
         description: "Review leave applications",
-        menu_code: 'CP-05-04',
+        menu_code: 'CP-05-06',
         permission: "hris.leave.manage"
       },
       {
@@ -147,7 +163,7 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         href: "/hris/leave-types",
         icon: Settings,
         description: "Configure leave policies",
-        menu_code: 'CP-05-05',
+        menu_code: 'CP-05-07',
         permission: "hris.leave_type.manage"
       },
     ]
