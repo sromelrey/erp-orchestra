@@ -16,33 +16,44 @@ nest g resource modules/products
 
 ## 2. Controller Template ("The Gold Standard")
 
-After generation, immediately add Swagger decorators.
+After generation, immediately add Swagger decorators and security guards.
 
 ```typescript
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'; // [!] Import Swagger
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger'; // [!] Import Swagger
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from '@/entities/product.entity';
+import { AuthenticatedGuard } from '@/guards/authenticated.guard';
+import { PermissionsGuard } from '@/guards/permissions.guard';
+import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 
 @ApiTags('Products') // [!] Required: Grouping
+@ApiBearerAuth() // [!] Required: Bearer token authentication
+@UseGuards(AuthenticatedGuard, PermissionsGuard) // [!] Required: Security guards
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @RequirePermissions('products.create') // [!] Required: Permission check
   @ApiOperation({ summary: 'Create a new product' }) // [!] Required
   @ApiResponse({ status: 201, description: 'Product created successfully.', type: Product }) // [!] Required
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' }) // [!] Recommended: Auth error
+  @ApiResponse({ status: 403, description: 'Forbidden.' }) // [!] Recommended: Permission error
   @ApiBody({ type: CreateProductDto })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
   @Get()
+  @RequirePermissions('products.view') // [!] Required: Permission check
   @ApiOperation({ summary: 'Retrieve all products' })
   @ApiResponse({ status: 200, description: 'List of products.', type: [Product] })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' }) // [!] Recommended: Auth error
+  @ApiResponse({ status: 403, description: 'Forbidden.' }) // [!] Recommended: Permission error
   findAll() {
     return this.productsService.findAll();
   }

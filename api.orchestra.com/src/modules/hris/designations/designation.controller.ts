@@ -27,12 +27,9 @@ import { CursorPaginationDto } from '@/common/dto/cursor-pagination.dto';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
-import { Designation, User } from '@/entities';
+import { Designation } from '@/entities';
 import { PaginatedResult } from '@/types';
-
-interface AuthenticatedRequest extends Request {
-  user: User;
-}
+import { AuthenticatedRequest } from '@/types/authenticated-request';
 
 /**
  * Controller for managing Designation resources.

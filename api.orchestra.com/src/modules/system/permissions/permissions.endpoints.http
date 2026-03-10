@@ -1,6 +1,6 @@
 ### Login (Establish Session)
 # @name adminLogin
-POST {{API_BASE_URL}}/v1//auth/login
+POST {{API_BASE_URL}}/v1/auth/login
 Content-Type: application/json
 
 {
@@ -12,18 +12,74 @@ Content-Type: application/json
 
 ### List All Permissions (Admin Only)
 # Requires ADMIN role
-GET {{API_BASE_URL}}/v1//system/permissions
+GET {{API_BASE_URL}}/v1/system/permissions
 Content-Type: application/json
+
+###
+
+### Create Compensation Permissions (Admin Only)
+# Creates the compensation permissions if they don't exist
+POST {{API_BASE_URL}}/v1/system/permissions
+Content-Type: application/json
+{
+    "name": "View Compensation",
+    "slug": "hris.compensation.view",
+    "module": "hris"
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/system/permissions
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+{
+    "name": "Manage Compensation",
+    "slug": "hris.compensation.manage",
+    "module": "hris",
+    "isActive": true
+}
+
+###
+
+### List All Roles (Admin Only)
+GET {{API_BASE_URL}}/v1/system/roles
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+###
+
+### Assign Permissions to Admin Role (Admin Only)
+# First find the admin role ID and permission IDs from the list endpoints above
+POST {{API_BASE_URL}}/v1/system/roles/1/permissions
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+{
+    "permissionIds": [COMP_VIEW_PERMISSION_ID, COMP_MANAGE_PERMISSION_ID]
+}
 
 ###
 
 ### Check Permission
 # Checks if current user has the specified permission
-POST {{API_BASE_URL}}/v1//system/permissions/check
+POST {{API_BASE_URL}}/v1/system/permissions/check
 Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
 
 {
-    "permission": "hris.employee.view"
+    "permission": "hris.compensation.manage"
+}
+
+###
+
+### Check View Permission
+POST {{API_BASE_URL}}/v1/system/permissions/check
+Content-Type: application/json
+Authorization: Bearer {{AUTH_TOKEN}}
+
+{
+    "permission": "hris.compensation.view"
 }
 
 ###

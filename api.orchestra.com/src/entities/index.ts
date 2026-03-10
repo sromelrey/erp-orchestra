@@ -37,3 +37,6 @@ export * from './hris/leave-request.entity';
 export * from './hris/pay-period.entity';
 export * from './hris/timesheet.entity';
 export * from './hris/timesheet-day.entity';
+export * from './hris/employee-compensation.entity';
+export * from './hris/employee-deduction.entity';
+export * from './hris/compensation-history.entity';

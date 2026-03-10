@@ -30,10 +30,7 @@ import { PermissionsGuard } from '@/guards/permissions.guard';
 import { RolesGuard } from '@/guards/roles.guard';
 import { RequirePermissions } from '@/decorators/require-permissions.decorator';
 import { Roles } from '@/decorators/roles.decorator';
-
-interface AuthenticatedRequest extends Request {
-  user: User;
-}
+import { AuthenticatedRequest } from '@/types/authenticated-request';
 
 @ApiTags('Users')
 @ApiBearerAuth()
