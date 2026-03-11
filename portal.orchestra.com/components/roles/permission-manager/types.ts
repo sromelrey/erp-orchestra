@@ -1,9 +1,14 @@
 import { Permission, Role } from "@/types";
 
 export interface PermissionManagerProps {
-  role: Role;
+  title: string;
+  subtitle?: string;
+  description?: string;
   allPermissions: Permission[];
+  initialSelectedPermissions?: string[]; // array of slugs
+  onSave: (selectedSlugs: string[]) => Promise<void>;
   onClose?: () => void;
+  isSaving?: boolean;
 }
 
 export interface PermissionFilters {

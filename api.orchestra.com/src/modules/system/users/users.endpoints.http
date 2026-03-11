@@ -46,3 +46,70 @@ Authorization: Bearer {{adminLogin.response.body.accessToken}}
 DELETE {{API_BASE_URL}}/v1//users/{{userId}}
 Content-Type: application/json
 Authorization: Bearer {{adminLogin.response.body.accessToken}}
+
+###
+
+### Get User Permissions
+# @name getUserPermissions
+GET {{API_BASE_URL}}/v1/users/{{userId}}/permissions
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+###
+
+### Assign User Permissions (GRANT)
+# @name assignPermissions
+POST {{API_BASE_URL}}/v1/users/{{userId}}/permissions
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [1, 2, 3],
+    "type": "GRANT",
+    "expiresAt": "2025-12-31T23:59:59Z"
+}
+
+###
+
+### Assign User Permissions (DENY Override)
+# @name denyPermissions
+POST {{API_BASE_URL}}/v1/users/{{userId}}/permissions
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [4],
+    "type": "DENY"
+}
+
+###
+
+### Get Effective Permissions (Combined Role + User GRANT - User DENY)
+# @name getEffectivePermissions
+GET {{API_BASE_URL}}/v1/users/{{userId}}/permissions/effective
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+###
+
+### Remove Specific User Permissions
+# @name removePermissions
+DELETE {{API_BASE_URL}}/v1/users/{{userId}}/permissions
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [1]
+}
+
+###
+
+### Clear All User Permissions
+# @name clearAllPermissions
+DELETE {{API_BASE_URL}}/v1/users/{{userId}}/permissions
+Authorization: Bearer {{adminLogin.response.body.accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": []
+}

@@ -41,15 +41,16 @@ import { useAssignPermissionsMutation } from "@/store/api/rolesApi";
  * ```
  */
 export function PermissionManager({
-  role,
+  title,
+  subtitle,
+  description,
   allPermissions,
+  initialSelectedPermissions = [],
+  onSave,
   onClose,
+  isSaving = false,
 }: PermissionManagerProps) {
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-
-  // API mutation for saving permissions
-  const [assignPermissions, { isLoading: isSaving }] =
-    useAssignPermissionsMutation();
 
   // Use the permission matrix hook for state management
   const {
@@ -61,7 +62,7 @@ export function PermissionManager({
     handleTogglePermission,
     handleBulkSelect,
     handleBulkClear,
-  } = usePermissionMatrix(role, allPermissions);
+  } = usePermissionMatrix(initialSelectedPermissions, allPermissions);
 
   const handleClose = () => {
     setIsSheetOpen(false);
@@ -69,30 +70,10 @@ export function PermissionManager({
   };
 
   const handleSave = async () => {
-    if (!role?.id) {
-      toast.error("Role ID is required to save permissions");
-      return;
-    }
-
     try {
-      // Convert selected permission slugs to permission IDs
-      const selectedPermissionIds = Array.from(selectedPermissions)
-        .map((slug) => {
-          const permission = allPermissions.find((p) => p.slug === slug);
-          return permission?.id;
-        })
-        .filter((id): id is number => id !== undefined);
-
-      await assignPermissions({
-        roleId: role.id,
-        permissionIds: selectedPermissionIds,
-      }).unwrap();
-
-      toast.success(`Permissions updated for ${role.name}`);
-      onClose?.();
+      await onSave(Array.from(selectedPermissions));
     } catch (error) {
       console.error("Failed to save permissions:", error);
-      toast.error("Failed to save permissions. Please try again.");
     }
   };
 
@@ -103,7 +84,7 @@ export function PermissionManager({
         <SheetContent className="w-full min-w-[800px] max-w-[90vw] overflow-hidden">
           <SheetHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <SheetTitle>Manage Permissions - {role?.name}</SheetTitle>
+              <SheetTitle>{title}</SheetTitle>
               <Button
                 variant="ghost"
                 size="sm"
@@ -115,7 +96,9 @@ export function PermissionManager({
           </SheetHeader>
 
           <PermissionMatrixContent
-            role={role}
+            title={title}
+            subtitle={subtitle}
+            description={description}
             allPermissions={allPermissions}
             groupedPermissions={groupedPermissions}
             selectedPermissions={selectedPermissions}
@@ -136,7 +119,9 @@ export function PermissionManager({
       <div className="hidden lg:flex h-full w-full">
         <div className="flex-1 min-h-0 overflow-hidden">
           <PermissionMatrixContent
-            role={role}
+            title={title}
+            subtitle={subtitle}
+            description={description}
             allPermissions={allPermissions}
             groupedPermissions={groupedPermissions}
             selectedPermissions={selectedPermissions}
@@ -160,7 +145,9 @@ export function PermissionManager({
  * PermissionMatrixContent - Shared content component for both sheet and desktop views
  */
 interface PermissionMatrixContentProps {
-  role: Role | undefined;
+  title: string;
+  subtitle?: string;
+  description?: string;
   allPermissions: Permission[];
   groupedPermissions: Record<
     string,
@@ -186,7 +173,9 @@ interface PermissionMatrixContentProps {
 }
 
 function PermissionMatrixContent({
-  role,
+  title,
+  subtitle,
+  description,
   allPermissions,
   groupedPermissions,
   selectedPermissions,
@@ -207,20 +196,20 @@ function PermissionMatrixContent({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <h2 className="text-xl font-bold tracking-tight">
-              Manage Permissions
+              {title}
             </h2>
             <div className="flex items-center gap-2">
               <span className="text-lg font-medium text-foreground">
-                {role?.name}
+                {subtitle}
               </span>
               <span className="text-muted-foreground">•</span>
               <p className="text-sm text-muted-foreground">
                 {permissionStats.enabled} of {permissionStats.total} enabled
               </p>
             </div>
-            {role?.description && (
+            {description && (
               <p className="text-sm text-muted-foreground max-w-2xl line-clamp-2">
-                {role.description}
+                {description}
               </p>
             )}
           </div>

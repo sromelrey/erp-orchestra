@@ -1,9 +1,10 @@
 'use client';
 
-import { useGetPermissionsQuery } from "@/store/api/rolesApi";
+import { useGetPermissionsQuery, useAssignPermissionsMutation } from "@/store/api/rolesApi";
 import { Role } from '@/types';
 import { PermissionManager } from "@/components/roles/permission-manager";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import { Loader2, ShieldCheck } from 'lucide-react';
 
 interface RoleDetailsPanelProps {
@@ -13,7 +14,26 @@ interface RoleDetailsPanelProps {
 
 export function RoleDetailsPanel({ role, onClose }: RoleDetailsPanelProps) {
   const { data: allPermissions = [], isLoading: isLoadingPermissions } = useGetPermissionsQuery();
-  
+  const [assignPermissions, { isLoading: isSaving }] = useAssignPermissionsMutation();
+
+  const handleSave = async (selectedSlugs: string[]) => {
+    try {
+      const selectedPermissionIds = selectedSlugs
+        .map((slug) => allPermissions.find((p) => p.slug === slug)?.id)
+        .filter((id): id is number => id !== undefined);
+
+      await assignPermissions({
+        roleId: role.id,
+        permissionIds: selectedPermissionIds,
+      }).unwrap();
+
+      toast.success(`Permissions updated for ${role.name}`);
+    } catch (error) {
+      toast.error("Failed to save permissions");
+      throw error;
+    }
+  };
+
   if (isLoadingPermissions) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -31,13 +51,17 @@ export function RoleDetailsPanel({ role, onClose }: RoleDetailsPanelProps) {
       {!role.isSystemRole && (
         <div className="flex-1 overflow-hidden">
           <PermissionManager 
-            role={role} 
+            title="Manage Role Permissions"
+            subtitle={role.name}
+            description={role.description}
             allPermissions={allPermissions}
+            initialSelectedPermissions={role.rolePermissions?.map(rp => rp.permission.slug)}
+            onSave={handleSave}
+            isSaving={isSaving}
             onClose={onClose} 
           />
         </div>
       )}
-
 
       {/* System Role Permissions - Scrollable */}
       {role.isSystemRole && (
