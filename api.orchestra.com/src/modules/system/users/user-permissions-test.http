@@ -1,0 +1,223 @@
+### User Permission Management API Tests
+
+# @name baseUrl = http://localhost:3000/v1
+
+### Admin Login
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@orchestra.com",
+    "password": "admin123"
+}
+
+### Set auth token for subsequent requests
+@accessToken = {{adminLogin.response.body.accessToken}}
+
+### Get All Permissions
+# @name getPermissions
+GET {{baseUrl}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### Store a permission ID for testing
+@permissionId = {{getPermissions.response.body.data[0].id}}
+
+### Get All Users
+# @name getUsers
+GET {{baseUrl}}/users
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+### Store a user ID for testing
+@userId = {{getUsers.response.body.data[0].id}}
+
+### Get User Permissions
+# @name getUserPermissions
+GET {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+
+### Assign User Permissions (GRANT)
+# @name assignGrantPermissions
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "GRANT",
+    "expiresAt": "2025-12-31T23:59:59Z"
+}
+
+###
+
+### Assign User Permissions (DENY Override)
+# @name assignDenyPermissions
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "DENY"
+}
+
+###
+
+### Assign Multiple User Permissions
+# @name assignMultiplePermissions
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}, 2, 3],
+    "type": "GRANT",
+    "expiresAt": "2025-12-31T23:59:59Z"
+}
+
+###
+
+### Get Effective Permissions (Combined Role + User GRANT - User DENY)
+# @name getEffectivePermissions
+GET {{baseUrl}}/users/{{userId}}/permissions/effective
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+
+### Remove Specific User Permissions
+# @name removeSpecificPermissions
+DELETE {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}]
+}
+
+###
+
+### Clear All User Permissions
+# @name clearAllPermissions
+DELETE {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": []
+}
+
+###
+
+### Test Error Scenarios
+
+### Test Invalid User ID
+# @name invalidUserId
+POST {{baseUrl}}/users/99999/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "GRANT"
+}
+
+###
+
+### Test Invalid Permission IDs
+# @name invalidPermissionIds
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [99999, 99998],
+    "type": "GRANT"
+}
+
+###
+
+### Test Invalid Permission Type
+# @name invalidPermissionType
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "INVALID"
+}
+
+###
+
+### Test Past Expiration Date
+# @name pastExpirationDate
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "GRANT",
+    "expiresAt": "2020-01-01T00:00:00Z"
+}
+
+###
+
+### Test Unauthorized Access
+# @name unauthorizedAccess
+POST {{baseUrl}}/users/{{userId}}/permissions
+Content-Type: application/json
+
+{
+    "permissionIds": [{{permissionId}}],
+    "type": "GRANT"
+}
+
+###
+
+### Performance Test - Bulk Assignment (50 permissions)
+# @name bulkAssignmentTest
+POST {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50],
+    "type": "GRANT"
+}
+
+###
+
+### Verify User Permissions After Bulk Assignment
+# @name verifyBulkAssignment
+GET {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###
+
+### Performance Test - Bulk Removal (50 permissions)
+# @name bulkRemovalTest
+DELETE {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "permissionIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50]
+}
+
+###
+
+### Final Verification - All Permissions Cleared
+# @name finalVerification
+GET {{baseUrl}}/users/{{userId}}/permissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+###

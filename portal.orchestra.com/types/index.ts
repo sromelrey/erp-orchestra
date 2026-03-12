@@ -33,11 +33,12 @@ export interface User {
   firstName?: string;
   lastName?: string;
   avatarUrl?: string;
-  status: 'ACTIVE' | 'INACTIVE';
+  status: "ACTIVE" | "INACTIVE";
   tenantId?: number;
   userRoles?: Array<{
     role?: Role;
   }>;
+  userPermissions?: UserPermission[];
 }
 
 export interface CreateUserRequest {
@@ -51,6 +52,16 @@ export interface CreateUserRequest {
 export interface UpdateUserRequest extends Partial<Omit<User, 'id'>> {
   id: number;
   password?: string;
+}
+
+export interface UserPermission {
+  id: number;
+  userId: number;
+  permissionId: number;
+  type: "GRANT" | "DENY";
+  expiresAt?: string;
+  grantedAt: string;
+  permission: Permission;
 }
 
 export interface Branch {

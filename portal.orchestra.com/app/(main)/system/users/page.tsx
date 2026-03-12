@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { EntityManager } from "@/components/entity-manager";
 import { columns as baseColumns } from "./column";
 import { userFormFields } from "./form-fields";
-import { Users as UsersIcon, UserCog } from "lucide-react";
+import { Users as UsersIcon, UserCog, Shield } from "lucide-react";
 import {
   useGetUsersQuery,
   useCreateUserMutation,
@@ -13,12 +13,14 @@ import {
 } from "@/store/api/usersApi";
 import { toast } from "sonner";
 import { UserRolesManager } from "@/components/users/UserRolesManager";
+import { UserPermissionManager } from "@/components/users/UserPermissionManager";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Column } from "@/components/ui/data-table";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { HasPermission } from "@/components/auth/HasPermission";
 import { User, CreateUserRequest, UpdateUserRequest } from "@/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
@@ -28,6 +30,7 @@ export default function UsersPage() {
 
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
+  const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
 
   // Derive the selected user from the live RTK Query cache.
   const selectedUser = useMemo(
@@ -85,7 +88,12 @@ export default function UsersPage() {
     setIsRoleDialogOpen(true);
   };
 
-  // Add Manage Roles column
+  const handleManagePermissions = (user: User) => {
+    setSelectedUserId(user.id);
+    setIsPermissionDialogOpen(true);
+  };
+
+  // Add Manage Roles and Permissions columns
   const columns: Column<User>[] = useMemo(() => {
     return [
       ...baseColumns,
@@ -94,15 +102,26 @@ export default function UsersPage() {
         className: "text-center",
         cell: (item: User) => (
           <HasPermission permission="system.user.manage">
-            <Button
-              variant="outline"
-              size="sm"
-              className="gap-2"
-              onClick={() => handleManageRoles(item)}
-            >
-              <UserCog className="h-4 w-4" />
-              Roles
-            </Button>
+            <div className="flex gap-2 justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => handleManageRoles(item)}
+              >
+                <UserCog className="h-4 w-4" />
+                Roles
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => handleManagePermissions(item)}
+              >
+                <Shield className="h-4 w-4" />
+                Permissions
+              </Button>
+            </div>
           </HasPermission>
         ),
       },
@@ -142,6 +161,24 @@ export default function UsersPage() {
               key={selectedUser.id}
               user={selectedUser}
               onClose={() => setIsRoleDialogOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isPermissionDialogOpen}
+        onOpenChange={setIsPermissionDialogOpen}
+      >
+        <DialogContent className="min-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Manage User Permissions</DialogTitle>
+          </DialogHeader>
+          {selectedUser && (
+            <UserPermissionManager
+              key={selectedUser.id}
+              user={selectedUser}
+              onClose={() => setIsPermissionDialogOpen(false)}
             />
           )}
         </DialogContent>

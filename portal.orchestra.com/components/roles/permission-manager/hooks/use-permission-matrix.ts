@@ -28,7 +28,10 @@ export interface PermissionStats {
   byModule: Record<string, number>;
 }
 
-export function usePermissionMatrix(role?: Role, allPermissions: Permission[] = []) {
+export function usePermissionMatrix(
+  initialSelectedSlugs: string[] = [],
+  allPermissions: Permission[] = [],
+) {
   // State for selected permissions
   const [selectedPermissions, setSelectedPermissions] = React.useState<
     Set<string>
@@ -74,15 +77,12 @@ export function usePermissionMatrix(role?: Role, allPermissions: Permission[] = 
     return sortedGroups;
   }, [allPermissions]);
 
-  // Initialize selected permissions from role
+  // Initialize selected permissions from initial slugs
   React.useEffect(() => {
-    if (role?.rolePermissions) {
-      // Find all permissions that are assigned to this role
-      const enabledPermissions = role.rolePermissions
-        .map(({ permission }) => permission.slug);
-      setSelectedPermissions(new Set(enabledPermissions));
+    if (initialSelectedSlugs) {
+      setSelectedPermissions(new Set(initialSelectedSlugs));
     }
-  }, [role?.rolePermissions]);
+  }, [initialSelectedSlugs]);
 
   // Calculate permission statistics
   const permissionStats = React.useMemo((): PermissionStats => {
