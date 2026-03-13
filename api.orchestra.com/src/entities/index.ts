@@ -3,6 +3,7 @@ export * from './common.entity';
 // * Auth
 export * from './system/user.entity';
 export * from './system/session.entity';
+export * from './system/job-execution-log.entity';
 
 // * Role Base Access Control
 export * from './system/role.entity';

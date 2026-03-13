@@ -7,6 +7,12 @@ export enum TimesheetStatus {
   LOCKED = 'LOCKED',
 }
 
+export enum JobExecutionStatus {
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+  PARTIAL = "PARTIAL",
+}
+
 export interface TimesheetDay {
   id: number;
   date: string;
@@ -39,35 +45,75 @@ export interface TimesheetSummary {
   anomalies: number;
 }
 
+export interface JobExecutionLog {
+  id: number;
+  jobName: string;
+  metadata: Record<string, unknown>;
+  status: JobExecutionStatus;
+  errorMessage: string | null;
+  processedCount: number;
+  errorCount: number;
+  startedAt: string;
+  completedAt: string;
+  tenantId: number;
+  createdAt: string;
+}
+
 export const timesheetsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTimesheets: builder.query<Timesheet[], { payPeriodId: number }>({
       query: ({ payPeriodId }) => `/hris/timesheets?payPeriodId=${payPeriodId}`,
-      providesTags: ['Timesheets'],
+      providesTags: ["Timesheets"],
     }),
-    getTimesheetSummary: builder.query<TimesheetSummary, { payPeriodId: number }>({
-      query: ({ payPeriodId }) => `/hris/timesheets/summary?payPeriodId=${payPeriodId}`,
-      providesTags: ['Timesheets'],
+    getTimesheetSummary: builder.query<
+      TimesheetSummary,
+      { payPeriodId: number }
+    >({
+      query: ({ payPeriodId }) =>
+        `/hris/timesheets/summary?payPeriodId=${payPeriodId}`,
+      providesTags: ["Timesheets"],
     }),
     getTimesheet: builder.query<Timesheet, string>({
       query: (id) => `/hris/timesheets/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Timesheets' as const, id }],
+      providesTags: (result, error, id) => [
+        { type: "Timesheets" as const, id },
+      ],
     }),
-    generateTimesheets: builder.mutation<{ generated: number }, { payPeriodId: number }>({
+    generateTimesheets: builder.mutation<
+      { generated: number },
+      { payPeriodId: number }
+    >({
       query: (body) => ({
-        url: '/hris/timesheets/generate',
-        method: 'POST',
+        url: "/hris/timesheets/generate",
+        method: "POST",
         body,
       }),
-      invalidatesTags: ['Timesheets'],
+      invalidatesTags: ["Timesheets"],
     }),
-    updateTimesheetStatus: builder.mutation<Timesheet, { id: string; status: TimesheetStatus }>({
+    updateTimesheetStatus: builder.mutation<
+      Timesheet,
+      { id: string; status: TimesheetStatus }
+    >({
       query: ({ id, status }) => ({
         url: `/hris/timesheets/${id}/status`,
-        method: 'PATCH',
+        method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: (result, error, { id }) => ['Timesheets', { type: 'Timesheets' as const, id }],
+      invalidatesTags: (result, error, { id }) => [
+        "Timesheets",
+        { type: "Timesheets" as const, id },
+      ],
+    }),
+    getJobStatus: builder.query<JobExecutionLog[], void>({
+      query: () => "/hris/timesheets/job-status",
+      providesTags: ["Timesheets"],
+    }),
+    triggerCron: builder.mutation<void, void>({
+      query: () => ({
+        url: "/hris/timesheets/trigger-cron",
+        method: "POST",
+      }),
+      invalidatesTags: ["Timesheets"],
     }),
   }),
 });
@@ -78,4 +124,6 @@ export const {
   useGetTimesheetQuery,
   useGenerateTimesheetsMutation,
   useUpdateTimesheetStatusMutation,
+  useGetJobStatusQuery,
+  useTriggerCronMutation,
 } = timesheetsApi;

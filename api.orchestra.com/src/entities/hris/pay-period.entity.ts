@@ -15,6 +15,7 @@ export enum PayPeriodStatus {
   OPEN = 'OPEN',
   PROCESSING = 'PROCESSING',
   CLOSED = 'CLOSED',
+  PROCESSED = 'PROCESSED',
 }
 
 @Entity('pay_periods', { schema: 'hris' })
@@ -53,4 +54,16 @@ export class PayPeriod {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Column({ type: 'timestamp', name: 'processed_at', nullable: true })
+  processedAt: Date;
+
+  @Column({ type: 'int', name: 'processing_attempts', default: 0 })
+  processingAttempts: number;
+
+  @Column({ type: 'text', name: 'last_processing_error', nullable: true })
+  lastProcessingError: string;
+
+  @Column({ type: 'timestamp', name: 'processing_started_at', nullable: true })
+  processingStartedAt: Date;
 }

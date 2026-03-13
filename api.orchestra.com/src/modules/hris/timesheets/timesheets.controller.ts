@@ -18,6 +18,7 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { TimesheetsService } from './timesheets.service';
+import { TimesheetGenerationService } from './timesheet-generation.service';
 import { GenerateTimesheetsDto } from './dto/generate-timesheets.dto';
 import { UpdateTimesheetStatusDto } from './dto/update-timesheet-status.dto';
 import { Timesheet } from '@/entities';
@@ -37,7 +38,10 @@ interface AuthenticatedRequest extends ExpressRequest {
 @UseGuards(AuthenticatedGuard)
 @Controller('hris/timesheets')
 export class TimesheetsController {
-  constructor(private readonly timesheetsService: TimesheetsService) {}
+  constructor(
+    private readonly timesheetsService: TimesheetsService,
+    private readonly timesheetGenerationService: TimesheetGenerationService,
+  ) {}
 
   @Post('generate')
   @RequireAccess({ feature: 'HRIS', permission: 'hris.timesheet.manage' })
@@ -49,11 +53,27 @@ export class TimesheetsController {
     description: 'Timesheets generated successfully.',
   })
   @ApiBody({ type: GenerateTimesheetsDto })
-  generate(
+  async generate(
     @Body() generateDto: GenerateTimesheetsDto,
     @Req() req: AuthenticatedRequest,
   ) {
     return this.timesheetsService.generate(generateDto, req.user.tenantId);
+  }
+
+  @Get('job-status')
+  @RequireAccess({ feature: 'HRIS', permission: 'hris.timesheet.view' })
+  @ApiOperation({ summary: 'Get recent job execution status' })
+  async getJobStatus(@Req() req: AuthenticatedRequest) {
+    return this.timesheetGenerationService.getRecentJobStatus(
+      req.user.tenantId,
+    );
+  }
+
+  @Post('trigger-cron')
+  @RequireAccess({ feature: 'HRIS', permission: 'hris.timesheet.manage' })
+  @ApiOperation({ summary: 'Manually trigger timesheet generation' })
+  async triggerManualGeneration() {
+    return this.timesheetGenerationService.processEndedPayPeriods();
   }
 
   @Get()
