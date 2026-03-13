@@ -7,37 +7,33 @@ This document serves as the high-level roadmap for the Orchestra ERP system, det
 ## 🏗️ Phase 1: System Foundation & Security
 *The core plumbing of the application. Everything built here is required for the business modules to function securely.*
 
-### ✅ EPIC-01: Backend RBAC & Advanced Session Management
+### ✅ EPIC-01: Role-Based Access Control (RBAC)
 - **Status**: Completed
-- **Focus**: Identity, Authorization, and JWT Security.
+- **Focus**: Complete RBAC system with frontend integration.
 - **Key Features**:
-  - `User`, `Role`, and `Permission` entities.
-  - Slug-based endpoints protection (`@RequirePermissions`).
-  - Strict Tenant-Scoped data isolation.
-  - Active Session tracking and remote revocation (Hard/Soft session destruction).
+  - ✅ Backend RBAC: Entities, guards, decorators, and APIs
+  - ✅ Frontend RBAC: Permission hooks, guards, UI components
+  - ✅ Advanced Permission Management: Modern SaaS-style interface
+  - ✅ Session Management: Device tracking and revocation
+  - ✅ Multi-Tenant Support: Tenant-scoped user/role management
+  - ✅ Double-Gating Security: Feature + permission access control
+  - 📋 Future: Navigation menu integration (low priority)
 
-### ✅ EPIC-02: Frontend RBAC & Portal Layout
-- **Status**: Completed
-- **Focus**: UX, Navigation Gating, and Admin Dashboards.
-- **Key Features**:
-  - `EntityManager` and `DataTable` standardized UI patterns.
-  - Dynamic, permission-gated Sidebar navigation.
-  - Centralized Admin dashboards for Users, Roles, and Active Sessions.
-  - Smart redirection (Login loop prevention, Unauthorized boundaries).
+**Documentation**: See [EPIC-01-RBAC.md](./epics/EPIC-01-RBAC.md) for complete implementation details.
 
 ---
 
 ## 🏗️ Phase 2: HR & Operations Core
 Build the foundational operational modules that drive daily business logic.
 
-- [ ] **EPIC-03: HRIS Core & Employee Management**
+- [ ] **EPIC-02: HRIS Core & Employee Management**
   - Departments, Designations, Branches
   - Employee Master Profile
-- [ ] **EPIC-04: HRIS Attendance & Payroll**
+- [ ] **EPIC-03: HRIS Attendance & Payroll**
   - Time Tracking & Timesheet Aggregation
   - Leave Management Workflows
   - Compensation, Deductions & Payslips
-- [ ] **EPIC-05: Operations Master Data**
+- [ ] **EPIC-04: Operations Master Data**
   - Material Master (Items, Stock levels)
   - Bill of Materials (BOM / Recipes)
 
@@ -46,7 +42,7 @@ Build the foundational operational modules that drive daily business logic.
 ## 📦 Phase 3: Operational Modules
 *The modules that drive the actual day-to-day business tracking and supply chain.*
 
-### 📋 EPIC-04: Inventory & Asset Management
+### 📋 EPIC-05: Inventory & Asset Management
 - **Status**: Backlog
 - **Focus**: Tracking physical items, goods, and company assets.
 - **Key Features**:
@@ -55,7 +51,7 @@ Build the foundational operational modules that drive daily business logic.
   - Asset Flow: Assigning laptops/vehicles to `Employees` (depends on EPIC-03).
   - Goods Receipt and Issuance workflows.
 
-### 📋 EPIC-05: Operations & Procurement
+### 📋 EPIC-06: Operations & Procurement
 - **Status**: Backlog
 - **Focus**: Supply chain requests and vendor management.
 - **Key Features**:
@@ -69,7 +65,7 @@ Build the foundational operational modules that drive daily business logic.
 ## 💰 Phase 4: Financial Operations
 *The modules that track the flow of money, highly dependent on the operational modules.*
 
-### 📋 EPIC-06: Timekeeping & Payroll
+### 📋 EPIC-07: Timekeeping & Payroll
 - **Status**: Backlog
 - **Focus**: Compensating the workforce.
 - **Key Features**:
@@ -77,7 +73,7 @@ Build the foundational operational modules that drive daily business logic.
   - Dynamic payroll generation based on designations and attendance.
   - Payslip generation and portal viewing.
 
-### 📋 EPIC-07: Finance & Accounting (Core)
+### 📋 EPIC-08: Finance & Accounting (Core)
 - **Status**: Backlog
 - **Focus**: Bookkeeping and financial health tracking.
 - **Key Features**:
@@ -91,14 +87,14 @@ Build the foundational operational modules that drive daily business logic.
 ## 📈 Phase 5: Advanced Features & Analytics
 *Future-proofing and scaling the ERP.*
 
-### 📋 EPIC-08: Executive Dashboards & BI
+### 📋 EPIC-09: Executive Dashboards & BI
 - **Status**: Backlog
 - **Focus**: Data visualization for C-suite and Management.
 - **Key Features**:
   - Real-time widgets (Cash flow, Inventory valuation, Headcount).
   - Exportable custom reports (PDF/Excel).
 
-### 📋 EPIC-09: Notifications & Workflow Automation
+### 📋 EPIC-10: Notifications & Workflow Automation
 - **Status**: Backlog
 - **Focus**: Proactive alerting and system intelligence.
 - **Key Features**:
