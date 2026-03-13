@@ -3,8 +3,7 @@
 @TEST_USER_PASSWORD = admin123
 
 ### Login (Establish Session)
-# @name login
-POST {{API_BASE_URL}}/auth/login
+POST {{API_BASE_URL}}/v1/auth/login
 Content-Type: application/json
 
 {
@@ -18,8 +17,7 @@ Content-Type: application/json
 
 ### --- TIMESHEETS ---
 
-### Batch Generate Timesheets
-# This will scan TimeEvents and aggregate them into daily sheets
+### Generate Timesheets
 POST {{API_BASE_URL}}/hris/timesheets/generate
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
@@ -27,6 +25,27 @@ Authorization: Bearer {{authToken}}
 {
     "payPeriodId": 1
 }
+
+###
+
+### Get Job Status
+GET {{API_BASE_URL}}/hris/timesheets/job-status
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+### Manual Trigger Cron Job
+POST {{API_BASE_URL}}/hris/timesheets/trigger-cron
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+### List Timesheets
+GET {{API_BASE_URL}}/v1/hris/timesheets
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 ###
 
