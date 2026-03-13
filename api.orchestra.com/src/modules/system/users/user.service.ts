@@ -308,10 +308,13 @@ export class UserService {
    * @param tenantId - Optional tenant ID for multi-tenant support
    * @returns Promise<UserPermission[]> - Array of user permissions with full details
    */
-  async getUserPermissions(userId: number): Promise<UserPermission[]> {
+  async getUserPermissions(
+    userId: number,
+    tenantId?: number,
+  ): Promise<UserPermission[]> {
     // Verify user exists
     const user = await this.userRepository.findOne({
-      where: { id: userId },
+      where: tenantId ? { id: userId, tenantId } : { id: userId },
       relations: ['userPermissions', 'userPermissions.permission'],
     });
 
