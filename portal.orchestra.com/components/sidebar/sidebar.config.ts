@@ -8,15 +8,17 @@ import {
   Activity,
 } from "lucide-react";
 import { MenuItem } from "./sidebar.types";
-import { 
-  Building2, 
-  Briefcase, 
-  MapPin, 
+import {
+  Building2,
+  Briefcase,
+  MapPin,
   Network,
   Clock,
   Calendar,
   CheckCircle2,
-  Settings
+  Settings,
+  DollarSign,
+  Target,
 } from "lucide-react";
 
 export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
@@ -174,6 +176,22 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         description: "View automated processing status",
         menu_code: "CP-05-08",
         permission: "hris.timesheet.view",
+      },
+      {
+        label: "Compensation",
+        href: "/hris/compensation",
+        icon: DollarSign,
+        description: "Manage employee compensation records",
+        menu_code: "CP-05-09",
+        permission: "hris.compensation.view",
+      },
+      {
+        label: "Deductions",
+        href: "/hris/deductions",
+        icon: Target,
+        description: "Manage employee deduction records",
+        menu_code: "CP-05-10",
+        permission: "hris.compensation.view",
       },
     ],
   },
