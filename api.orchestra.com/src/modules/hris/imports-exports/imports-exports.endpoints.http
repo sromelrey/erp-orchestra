@@ -1,0 +1,34 @@
+### Login (if needed)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{TEST_USERNAME}}",
+  "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### Request import job (returns job record with upload key)
+POST {{API_BASE_URL}}/v1/hris/imports
+Content-Type: application/json
+
+{
+  "dataset": "employees",
+  "fileKey": "uploads/hris/imports/employees-2024-01.csv",
+  "clientRequestId": "req-123"
+}
+
+### Get import job status
+GET {{API_BASE_URL}}/v1/hris/imports/1
+
+### Request export job (returns job record)
+POST {{API_BASE_URL}}/v1/hris/exports
+Content-Type: application/json
+
+{
+  "dataset": "timesheets",
+  "fileKey": "exports/hris/timesheets-2024-01.csv",
+  "clientRequestId": "req-456"
+}
+
+### Get export job status
+GET {{API_BASE_URL}}/v1/hris/exports/1

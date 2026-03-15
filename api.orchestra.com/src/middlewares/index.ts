@@ -8,7 +8,7 @@ import { SessionModule } from '@/modules/system/sessions/session.module';
 import { SessionService } from '@/modules/system/sessions/session.service';
 import { setupSwagger } from './setupSwagger';
 import { Env } from '@/types/';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 /**
  * Request with session and user information
@@ -64,9 +64,16 @@ export function applyMiddlewares(app: INestApplication) {
     next();
   });
 
-  app.use(passport.initialize());
+  const passportInstance = passport as unknown as {
+    initialize: () => RequestHandler;
+    session: () => RequestHandler;
+  };
+  const passportInitialize = passportInstance.initialize();
+  const passportSession = passportInstance.session();
 
-  app.use(passport.session());
+  app.use(passportInitialize);
+
+  app.use(passportSession);
   app.use((req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
     if (req.user && !req.principal) {
       req.principal = req.user;
