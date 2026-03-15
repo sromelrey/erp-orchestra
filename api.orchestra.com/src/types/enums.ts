@@ -31,3 +31,10 @@ export enum BomStatus {
   ACTIVE = 'ACTIVE',
   OBSOLETE = 'OBSOLETE',
 }
+
+export enum JobStatus {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+}

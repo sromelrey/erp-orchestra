@@ -117,10 +117,17 @@ Set up the financial baseline for employees required to calculate net pay.
 The culmination of the HR module: taking approved timesheets and employee compensation to generate final payslips.
 
 **Tasks:**
-- [ ] Create `Payslip` and `PayslipItem` entities.
-- [ ] Develop the **Payroll Run** service that calculates Gross Pay, subtracts Deductions, and yields Net Pay.
-- [ ] Implement the **Payroll Dashboard UI** for HR to preview, confirm, and publish payslips.
-- [ ] Build the **Employee Payslip Portal** for staff to view and download PDF versions of their earnings.
+- [x] Create `Payslip` and `PayslipItem` entities.
+- [x] Develop the **Payroll Run** service that calculates Gross Pay, subtracts Deductions, and yields Net Pay (API layer complete).
+- [x] Implement the **Payroll Dashboard UI** for HR to preview, confirm, and publish payslips.
+- [x] Build the **Employee Payslip Portal** for staff to view and download PDF versions of their earnings.
+
+**✅ Completed Features (Payroll API & UI):**
+- Payslip domain entities and database schema finalized
+- Payroll Run API processes approved timesheets into payslips with gross/net calculations
+- RBAC-protected payroll endpoints (run, review, publish) with audit logging
+- HR Payroll Dashboard for previewing and publishing payroll runs
+- Employee Payslip Portal for viewing/downloading issued payslips
 
 ---
 

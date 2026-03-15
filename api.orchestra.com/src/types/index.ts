@@ -1,6 +1,7 @@
 import { User } from '@/entities';
 
 export * from './email.type';
+export * from './enums';
 
 /**
  * Environment enumeration for application configuration.

@@ -43,3 +43,5 @@ export * from './hris/employee-deduction.entity';
 export * from './hris/compensation-history.entity';
 export * from './hris/payslip.entity';
 export * from './hris/payslip-item.entity';
+export * from './hris/import-job.entity';
+export * from './hris/export-job.entity';

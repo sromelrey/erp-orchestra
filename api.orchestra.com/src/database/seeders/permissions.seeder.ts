@@ -161,6 +161,21 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.timesheet.manage',
           name: 'Manage Timesheets',
         },
+        // HRIS - Imports/Exports
+        {
+          module: 'hris',
+          resource: 'import',
+          action: 'manage',
+          slug: 'hris.import.manage',
+          name: 'Manage HRIS Imports',
+        },
+        {
+          module: 'hris',
+          resource: 'export',
+          action: 'manage',
+          slug: 'hris.export.manage',
+          name: 'Manage HRIS Exports',
+        },
         // System - Role
         {
           module: 'system',

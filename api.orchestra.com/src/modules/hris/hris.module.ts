@@ -10,6 +10,7 @@ import { LeaveRequestsModule } from './leave-requests/leave-requests.module';
 import { PayPeriodsModule } from './pay-periods/pay-periods.module';
 import { TimesheetsModule } from './timesheets/timesheets.module';
 import { CompensationModule } from './compensation/compensation.module';
+import { ImportsExportsModule } from './imports-exports/imports-exports.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CompensationModule } from './compensation/compensation.module';
     PayPeriodsModule,
     TimesheetsModule,
     CompensationModule,
+    ImportsExportsModule,
   ],
 })
 export class HrisModule {}
