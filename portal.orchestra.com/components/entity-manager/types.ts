@@ -36,36 +36,39 @@ export interface EntityManagerProps<T> {
   // Data
   data: T[];
   columns: Column<T>[];
-  
+
   // Identifiers
   entityName: string;
   entityNamePlural?: string;
   keyExtractor: (item: T) => string | number;
-  
+
   // Form configuration
   formFields: FormField[];
   getFormTitle?: (mode: FormMode, item?: T) => string;
   getFormDescription?: (mode: FormMode, item?: T) => string;
-  
+
   // CRUD handlers
   onCreate?: (data: Partial<T>) => void | Promise<void>;
   onUpdate?: (id: string | number, data: Partial<T>) => void | Promise<void>;
   onDelete?: (id: string | number) => void | Promise<void>;
   onView?: (item: T) => void;
-  
+
   // Optional customization
   searchPlaceholder?: string;
   emptyMessage?: string;
   isLoading?: boolean;
   error?: string | null;
-  
+
   // Stats cards (optional)
   stats?: StatCard[];
-  
+
   // Action buttons customization
   showViewButton?: boolean;
   showEditButton?: boolean;
   showDeleteButton?: boolean;
+
+  // Expandable row support
+  expandedRow?: (item: T) => React.ReactNode;
 
   /**
    * Permissions required for various CRUD operations.

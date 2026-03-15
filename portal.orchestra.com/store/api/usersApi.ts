@@ -74,7 +74,7 @@ export const usersApi = baseApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: (_result, _error, { userId }) => [
-        { type: "User", id },
+        { type: "User", id: userId },
         { type: "UserPermission", id: `USER_${userId}` },
         { type: "UserPermission", id: `EFFECTIVE_${userId}` },
       ],
@@ -92,7 +92,7 @@ export const usersApi = baseApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: (_result, _error, { userId }) => [
-        { type: "User", id },
+        { type: "User", id: userId },
         { type: "UserPermission", id: `USER_${userId}` },
         { type: "UserPermission", id: `EFFECTIVE_${userId}` },
       ],

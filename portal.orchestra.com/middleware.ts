@@ -2,15 +2,22 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Routes that require authentication
-const protectedRoutes = ['/system/dashboard', '/profile', '/settings', '/users', '/roles'];
+const protectedRoutes = [
+  "/system/dashboard",
+  "/profile",
+  "/settings",
+  "/users",
+  "/roles",
+  "/hris",
+];
 
 // Routes only for non-authenticated users
 const authRoutes = ['/login'];
 
 // Default redirect for each role after login
 const roleDefaultRoutes: Record<string, string> = {
-  USER: '/system/dashboard',
-  ADMIN: '/system/dashboard',
+  USER: "/system/dashboard",
+  ADMIN: "/hris",
 };
 
 export function middleware(request: NextRequest) {
@@ -51,7 +58,8 @@ export function middleware(request: NextRequest) {
   // Root redirect
   if (pathname === '/') {
     if (isAuthenticated) {
-      return NextResponse.redirect(new URL('/system/dashboard', request.url));
+      const redirectTo = roleDefaultRoutes[userRole] || "/system/dashboard";
+      return NextResponse.redirect(new URL(redirectTo, request.url));
     } else {
       return NextResponse.redirect(new URL('/login', request.url));
     }

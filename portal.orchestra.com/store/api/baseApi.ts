@@ -19,6 +19,7 @@ export const baseApi = createApi({
     "User",
     "Role",
     "Permission",
+    "UserPermission",
     "Session",
     "Departments",
     "Designations",
