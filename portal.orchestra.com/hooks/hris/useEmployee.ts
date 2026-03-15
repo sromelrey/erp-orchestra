@@ -386,7 +386,7 @@ export function useEmployee() {
   const dirtyEmployeeIds = inlineEdits.getDirtyEmployeeIds();
 
   // Redirect to onboarding flow
-  const handleAddEmployee = () => router.push("/employee/onboarding");
+  const handleAddEmployee = () => router.push("/hris/employees/onboarding");
 
   return {
     data,

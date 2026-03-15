@@ -162,6 +162,20 @@ export default function EntityPage() {
 }
 ```
 
+### 3.1 Page composition must be hook-driven (no heavy logic in page)
+
+- Move data fetching, mutations, validation, and inline-edit handlers into a dedicated hook (e.g., `useEmployee`).
+- The page should **only** compose UI (buttons, headers, EntityManager) and read handlers/state from the hook.
+- For inline expandable rows, have the hook return a `renderExpandedRow` factory (can use `React.createElement`) so the page stays JSX-light.
+- Build dynamic form options inside the hook and return a ready `formFields` array; keep `form-fields.ts` static for structure only.
+- Keep columns in `column.tsx` pure (no business logic); pass any extra props via the page/hook pattern.
+
+### 3.2 Creation flows and onboarding
+
+- For simple CRUD, wire `onCreate` to the hook handlers.
+- For complex onboarding (multi-step wizard), **do not** open the EntityManager form; instead, surface a CTA that redirects to the onboarding route (e.g., `router.push("/hris/employees/onboarding")`).
+- Remove redundant table action columns when the expanded row already provides edit controls.
+
 ## Key Benefits
 
 1.  **Consistency**: All CRUD pages look and behave the same.
