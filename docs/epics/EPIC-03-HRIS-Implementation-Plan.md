@@ -108,6 +108,8 @@ Provide a comprehensive interface for HR to manage staff members and view the co
   - Job Information section (Dropdowns for Department, Designation, Manager).
   - System Access section (Toggle to auto-create user account and assign roles).
 - [x] Create **Employee Profile View**: A detailed page showing the employee's full file.
+- [x] Add **Employee Onboarding Wizard** at `/hris/employees/onboarding` with steps for Personal Info, Job Details, Work Schedule, Compensation, Deductions, and Review; includes sidebar progress and summary components.
+- [x] Inline Compensation & Deductions editing inside the employee table expansion; "Add Employee" now routes to onboarding wizard.
 
 ---
 

@@ -1,0 +1,27 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### List payslips
+GET {{API_BASE_URL}}/v1/hris/payroll/payslips?payPeriodId=1
+
+### Get payslip by id
+GET {{API_BASE_URL}}/v1/hris/payroll/payslips/1
+
+### Trigger payroll run
+POST {{API_BASE_URL}}/v1/hris/payroll/run
+Content-Type: application/json
+
+{
+  "payPeriodId": 1,
+  "force": false
+}
+
+### Publish payslip
+POST {{API_BASE_URL}}/v1/hris/payroll/payslips/1/publish
