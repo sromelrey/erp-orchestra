@@ -4,24 +4,57 @@ export class AddTimesheetCronJobFields1773412501048 implements MigrationInterfac
   name = 'AddTimesheetCronJobFields1773412501048';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `CREATE TYPE "system"."job_execution_logs_status_enum" AS ENUM('SUCCESS', 'FAILED', 'PARTIAL')`,
+    // Check if enum already exists before creating it
+    const enumExists = await queryRunner.query(
+      `SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'job_execution_logs_status_enum')`,
     );
-    await queryRunner.query(
-      `CREATE TABLE "system"."job_execution_logs" ("id" SERIAL NOT NULL, "jobName" character varying(100) NOT NULL, "metadata" json NOT NULL, "status" "system"."job_execution_logs_status_enum" NOT NULL, "errorMessage" text, "processed_count" integer NOT NULL, "error_count" integer NOT NULL, "started_at" TIMESTAMP NOT NULL, "completed_at" TIMESTAMP NOT NULL, "tenant_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_32e009c848dc4c86c6fe1aa7831" PRIMARY KEY ("id"))`,
+
+    if (!enumExists[0].exists) {
+      await queryRunner.query(
+        `CREATE TYPE "system"."job_execution_logs_status_enum" AS ENUM('SUCCESS', 'FAILED', 'PARTIAL')`,
+      );
+    }
+
+    // Check if table already exists before creating it
+    const tableExists = await queryRunner.query(
+      `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'job_execution_logs' AND table_schema = 'system')`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "hris"."pay_periods" ADD "processed_at" TIMESTAMP`,
+
+    if (!tableExists[0].exists) {
+      await queryRunner.query(
+        `CREATE TABLE "system"."job_execution_logs" ("id" SERIAL NOT NULL, "jobName" character varying(100) NOT NULL, "metadata" json NOT NULL, "status" "system"."job_execution_logs_status_enum" NOT NULL, "errorMessage" text, "processed_count" integer NOT NULL, "error_count" integer NOT NULL, "started_at" TIMESTAMP NOT NULL, "completed_at" TIMESTAMP NOT NULL, "tenant_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_32e009c848dc4c86c6fe1aa7831" PRIMARY KEY ("id"))`,
+      );
+    }
+
+    // Check if columns exist before adding them
+    const payPeriodsColumns = await queryRunner.query(
+      `SELECT column_name FROM information_schema.columns WHERE table_name = 'pay_periods' AND table_schema = 'hris'`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "hris"."pay_periods" ADD "processing_attempts" integer NOT NULL DEFAULT '0'`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "hris"."pay_periods" ADD "last_processing_error" text`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "hris"."pay_periods" ADD "processing_started_at" TIMESTAMP`,
-    );
+    const columnNames = payPeriodsColumns.map((col) => col.column_name);
+
+    if (!columnNames.includes('processed_at')) {
+      await queryRunner.query(
+        `ALTER TABLE "hris"."pay_periods" ADD "processed_at" TIMESTAMP`,
+      );
+    }
+
+    if (!columnNames.includes('processing_attempts')) {
+      await queryRunner.query(
+        `ALTER TABLE "hris"."pay_periods" ADD "processing_attempts" integer NOT NULL DEFAULT '0'`,
+      );
+    }
+
+    if (!columnNames.includes('last_processing_error')) {
+      await queryRunner.query(
+        `ALTER TABLE "hris"."pay_periods" ADD "last_processing_error" text`,
+      );
+    }
+
+    if (!columnNames.includes('processing_started_at')) {
+      await queryRunner.query(
+        `ALTER TABLE "hris"."pay_periods" ADD "processing_started_at" TIMESTAMP`,
+      );
+    }
     await queryRunner.query(
       `ALTER TYPE "hris"."pay_periods_status_enum" RENAME TO "pay_periods_status_enum_old"`,
     );

@@ -27,6 +27,7 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
     showViewButton = true,
     showEditButton = true,
     showDeleteButton = true,
+    expandedRow,
     permissions,
   } = props;
 
@@ -130,7 +131,9 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder={searchPlaceholder || `Search ${plural.toLowerCase()}...`}
+            placeholder={
+              searchPlaceholder || `Search ${plural.toLowerCase()}...`
+            }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -146,14 +149,18 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         description={formDescription}
         onSubmit={formMode !== "view" ? handleFormSubmit : undefined}
         isLoading={isSubmitting}
-        submitLabel={formMode === "create" ? `Create ${entityName}` : `Save Changes`}
+        submitLabel={
+          formMode === "create" ? `Create ${entityName}` : `Save Changes`
+        }
         // Only show footer buttons if not in view mode
         footer={formMode === "view" ? <div /> : undefined}
       >
         <div className="grid gap-4 py-4 px-6">
           <FormRenderer
             fields={formFields}
-            formData={formData as Record<string, string | number | boolean | undefined>}
+            formData={
+              formData as Record<string, string | number | boolean | undefined>
+            }
             formMode={formMode}
             onFieldChange={handleFieldChange}
           />
@@ -179,9 +186,14 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
       {!isLoading && !error && stats && stats.length > 0 && (
         <div className="grid gap-4 md:grid-cols-4">
           {stats.map((stat, index) => (
-            <div key={index} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">
+            <div
+              key={index}
+              className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200"
+            >
               <div className="flex items-center gap-3">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.color}`}>
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.color}`}
+                >
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -201,6 +213,7 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
           data={filteredData}
           keyExtractor={keyExtractor}
           emptyMessage={emptyMessage || `No ${plural.toLowerCase()} found`}
+          expandedRow={expandedRow}
         />
       )}
     </div>

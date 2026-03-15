@@ -6,6 +6,7 @@ import {
   Monitor,
   KeyRound,
   Activity,
+  UserPlus,
 } from "lucide-react";
 import { MenuItem } from "./sidebar.types";
 import {
@@ -17,8 +18,6 @@ import {
   Calendar,
   CheckCircle2,
   Settings,
-  DollarSign,
-  Target,
 } from "lucide-react";
 
 export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
@@ -100,11 +99,28 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
       },
       {
         label: "Employees",
-        href: "/hris/employees",
         icon: Users,
         description: "Manage organization staff and user accounts",
         menu_code: "CP-04-04",
         permission: "hris.employee.view",
+        children: [
+          {
+            label: "Employee List",
+            href: "/hris/employees",
+            icon: Users,
+            description: "View and manage employees",
+            menu_code: "CP-04-04-01",
+            permission: "hris.employee.view",
+          },
+          {
+            label: "Employee Onboarding",
+            href: "/hris/employees/onboarding",
+            icon: UserPlus,
+            description: "Add a new employee with guided setup",
+            menu_code: "CP-04-04-02",
+            permission: "hris.employee.manage",
+          },
+        ],
       },
     ],
   },
@@ -176,22 +192,6 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         description: "View automated processing status",
         menu_code: "CP-05-08",
         permission: "hris.timesheet.view",
-      },
-      {
-        label: "Compensation",
-        href: "/hris/compensation",
-        icon: DollarSign,
-        description: "Manage employee compensation records",
-        menu_code: "CP-05-09",
-        permission: "hris.compensation.view",
-      },
-      {
-        label: "Deductions",
-        href: "/hris/deductions",
-        icon: Target,
-        description: "Manage employee deduction records",
-        menu_code: "CP-05-10",
-        permission: "hris.compensation.view",
       },
     ],
   },

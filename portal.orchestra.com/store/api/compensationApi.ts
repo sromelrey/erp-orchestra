@@ -247,12 +247,14 @@ export const compensationApi = baseApi.injectEndpoints({
 
 export const {
   useGetEmployeeCompensationQuery,
+  useLazyGetEmployeeCompensationQuery,
   useCreateEmployeeCompensationMutation,
   useUpdateEmployeeCompensationMutation,
   useDeleteEmployeeCompensationMutation,
   useGetCompensationHistoryQuery,
   useCalculateCompensationQuery,
   useGetEmployeeDeductionsQuery,
+  useLazyGetEmployeeDeductionsQuery,
   useCreateEmployeeDeductionMutation,
   useUpdateEmployeeDeductionMutation,
   useDeleteEmployeeDeductionMutation,

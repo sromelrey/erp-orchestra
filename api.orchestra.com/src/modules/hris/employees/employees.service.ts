@@ -101,10 +101,10 @@ export class EmployeesService {
     const { createUserAccount, ...employeeData } = dto;
 
     return this.dataSource.transaction(async (manager) => {
-      // Check for employee code uniqueness
-      if (employeeData.employeeCode) {
+      // Check for employee code uniqueness (only if code is provided and not empty)
+      if (employeeData.employeeCode && employeeData.employeeCode.trim()) {
         const existingCode = await manager.findOne(Employee, {
-          where: { employeeCode: employeeData.employeeCode, tenantId },
+          where: { employeeCode: employeeData.employeeCode.trim(), tenantId },
           withDeleted: true,
         });
         if (existingCode) {
@@ -145,6 +145,8 @@ export class EmployeesService {
 
       const employee = manager.create(Employee, {
         ...employeeData,
+        // Convert empty employeeCode to undefined to satisfy entity typing
+        employeeCode: employeeData.employeeCode?.trim() || undefined,
         userId,
         tenantId,
       });

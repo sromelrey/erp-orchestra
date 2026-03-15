@@ -22,7 +22,11 @@ import { CUSTOMER_PORTAL_MENU_ITEMS } from "./sidebar.config"
 import { useLogout } from "../../hooks/useLogout"
 import { LogOut, ChevronRight } from "lucide-react"
 import { useSelector } from "react-redux"
-import { selectUserPermissions, selectCurrentUser } from "@/store/slices/authSlice"
+import {
+  selectUserPermissions,
+  selectCurrentUser,
+  selectIsInitialized,
+} from "@/store/slices/authSlice";
 
 import {
   Collapsible,
@@ -35,6 +39,7 @@ export function AppSidebar() {
   const { logout } = useLogout()
   const permissions = useSelector(selectUserPermissions)
   const user = useSelector(selectCurrentUser)
+  const isInitialized = useSelector(selectIsInitialized);
   const isSystemAdmin = user?.isSystemAdmin
 
   // Filter menu items based on permissions (System Admins see everything)
@@ -63,6 +68,10 @@ export function AppSidebar() {
     }).filter((item): item is NonNullable<typeof item> => item !== null)
   }, [permissions, isSystemAdmin])
 
+  if (!isInitialized) {
+    return null;
+  }
+
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="p-4">
@@ -83,7 +92,12 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredItems.map((item) => {
-                const isActive = pathname === item.href || (item.children?.some(child => pathname === child.href))
+                const isActive =
+                  (item.href ? pathname.startsWith(item.href) : false) ||
+                  (item.children?.some((child) =>
+                    child.href ? pathname.startsWith(child.href) : false,
+                  ) ??
+                    false);
                 
                 if (item.children) {
                   return (
@@ -95,28 +109,152 @@ export function AppSidebar() {
                     >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton tooltip={item.label} isActive={isActive}>
+                          <SidebarMenuButton
+                            isActive={isActive}
+                            onClick={() => {
+                              if (item.menu_code === "CP-04-04") {
+                                console.log(
+                                  "[Sidebar] Employees menu clicked",
+                                  {
+                                    pathname,
+                                    isActive,
+                                    childrenCount: item.children?.length ?? 0,
+                                  },
+                                );
+                              }
+                            }}
+                          >
                             {item.icon && <item.icon />}
-                            <span>{item.label}</span>
+                            {item.href ? (
+                              <Link href={item.href} className="flex-1">
+                                <span>{item.label}</span>
+                              </Link>
+                            ) : (
+                              <span className="flex-1">{item.label}</span>
+                            )}
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <SidebarMenuSub>
-                            {item.children.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.menu_code}>
-                                <SidebarMenuSubButton asChild isActive={pathname === subItem.href}>
-                                  <Link href={subItem.href || "#"}>
-                                    <span>{subItem.label}</span>
-                                  </Link>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
+                            {item.children.map((subItem) => {
+                              const subItemIsActive =
+                                (subItem.href
+                                  ? pathname.startsWith(subItem.href)
+                                  : false) ||
+                                (subItem.children?.some((child) =>
+                                  child.href
+                                    ? pathname.startsWith(child.href)
+                                    : false,
+                                ) ??
+                                  false);
+
+                              if (
+                                subItem.children &&
+                                subItem.children.length > 0
+                              ) {
+                                // Nested collapsible
+                                return (
+                                  <Collapsible
+                                    key={subItem.menu_code}
+                                    asChild
+                                    defaultOpen={subItemIsActive}
+                                    className="group/nested-collapsible"
+                                  >
+                                    <SidebarMenuSubItem>
+                                      <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton
+                                          size="sm"
+                                          isActive={subItemIsActive}
+                                          onClick={() => {
+                                            if (
+                                              subItem.menu_code === "CP-04-04"
+                                            ) {
+                                              console.log(
+                                                "[Sidebar] Employees submenu clicked",
+                                                {
+                                                  pathname,
+                                                  isActive: subItemIsActive,
+                                                  childrenCount:
+                                                    subItem.children?.length ??
+                                                    0,
+                                                },
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          {subItem.icon && <subItem.icon />}
+                                          <span className="flex-1">
+                                            {subItem.label}
+                                          </span>
+                                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/nested-collapsible:rotate-90" />
+                                        </SidebarMenuButton>
+                                      </CollapsibleTrigger>
+                                      <CollapsibleContent>
+                                        <SidebarMenuSub>
+                                          {subItem.children.map(
+                                            (nestedItem) => (
+                                              <SidebarMenuSubItem
+                                                key={nestedItem.menu_code}
+                                              >
+                                                <SidebarMenuSubButton
+                                                  asChild
+                                                  size="sm"
+                                                  isActive={
+                                                    nestedItem.href
+                                                      ? pathname.startsWith(
+                                                          nestedItem.href,
+                                                        )
+                                                      : false
+                                                  }
+                                                >
+                                                  <Link
+                                                    href={
+                                                      nestedItem.href || "#"
+                                                    }
+                                                  >
+                                                    {nestedItem.icon && (
+                                                      <nestedItem.icon />
+                                                    )}
+                                                    <span>
+                                                      {nestedItem.label}
+                                                    </span>
+                                                  </Link>
+                                                </SidebarMenuSubButton>
+                                              </SidebarMenuSubItem>
+                                            ),
+                                          )}
+                                        </SidebarMenuSub>
+                                      </CollapsibleContent>
+                                    </SidebarMenuSubItem>
+                                  </Collapsible>
+                                );
+                              }
+
+                              // Simple submenu item
+                              return (
+                                <SidebarMenuSubItem key={subItem.menu_code}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={
+                                      subItem.href
+                                        ? pathname.startsWith(subItem.href)
+                                        : false
+                                    }
+                                  >
+                                    <Link href={subItem.href || "#"}>
+                                      {subItem.icon && <subItem.icon />}
+                                      <span>{subItem.label}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            })}
                           </SidebarMenuSub>
                         </CollapsibleContent>
                       </SidebarMenuItem>
                     </Collapsible>
-                  )
+                  );
                 }
 
                 return (

@@ -19,11 +19,20 @@ export function usePermissionFilters(
 
     // Apply search filter
     if (filters.searchQuery) {
-      filtered = filtered.filter((permission) =>
-        permission.name?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        permission.description?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        permission.resource.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        permission.action.toLowerCase().includes(filters.searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        (permission) =>
+          permission.slug
+            ?.toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          permission.description
+            ?.toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          permission.resource
+            ?.toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()) ||
+          permission.action
+            ?.toLowerCase()
+            .includes(filters.searchQuery.toLowerCase()),
       );
     }
 
