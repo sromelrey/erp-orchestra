@@ -26,14 +26,17 @@ This document serves as the high-level roadmap for the Orchestra ERP system, det
 ## 🏗️ Phase 2: HR & Operations Core
 Build the foundational operational modules that drive daily business logic.
 
-- [ ] **EPIC-02: HRIS Core & Employee Management**
+- ✅ **EPIC-02: HRIS Core & Employee Management** (delivered)
   - Departments, Designations, Branches
   - Employee Master Profile
-- [ ] **EPIC-03: HRIS Attendance & Payroll**
+- ✅ **EPIC-03: HRIS Attendance & Payroll** (delivered; see EPIC-04 HRIS doc for payroll/attendance)
   - Time Tracking & Timesheet Aggregation
   - Leave Management Workflows
   - Compensation, Deductions & Payslips
-- [ ] **EPIC-04: Operations Master Data**
+- 🚧 **EPIC-05: HRIS API Completion** (partially delivered; parked)
+  - Done: import/export entities, migrations, permissions, endpoints scaffold
+  - Pending (parked): reporting/analytics, import/export workers & FilesService, notifications/webhooks, audit trail, API v2/docs (see tech-debt)
+- 📋 **EPIC-04: Operations Master Data** (next candidate)
   - Material Master (Items, Stock levels)
   - Bill of Materials (BOM / Recipes)
 
