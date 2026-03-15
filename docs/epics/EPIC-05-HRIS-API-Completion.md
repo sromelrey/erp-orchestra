@@ -4,7 +4,7 @@
 |-------|-------|
 | **Epic ID** | EPIC-05 |
 | **Epic Name** | HRIS API Completion & Optimization |
-| **Status** | 🚧 In Progress |
+| **Status** | 🚧 In Progress (import/export backend scaffolded; queues & files pending) |
 | **Priority** | High |
 | **Dependencies** | EPIC-01, EPIC-02, EPIC-03, EPIC-04 |
 
@@ -56,9 +56,9 @@ Finalize and polish all outstanding HRIS APIs to deliver a fully self-contained,
 | **Type** | Full Stack |
 
 **Tasks:**
-- [ ] Create `ImportJob` & `ExportJob` entities with status tracking.
+- [x] Create `ImportJob` & `ExportJob` entities with status tracking.
 - [ ] Build queue workers using BullMQ for parsing & generation.
-- [ ] Implement `/imports` and `/exports` REST endpoints with presigned S3 upload/download.
+- [ ] Implement `/imports` and `/exports` REST endpoints with presigned S3 upload/download. *(API scaffolds exist; add presigned URL + worker wiring)*
 - [ ] Develop React wizard UI components for HR admins.
 - [ ] Add Excel template generation utility.
 
