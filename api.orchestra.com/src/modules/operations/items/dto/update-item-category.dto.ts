@@ -11,6 +11,5 @@ export class UpdateItemCategoryDto {
   @ApiPropertyOptional({ maxLength: 1024 })
   @IsOptional()
   @IsString()
-  @MaxLength(1024)
   description?: string | null;
 }

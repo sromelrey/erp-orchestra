@@ -38,3 +38,11 @@ export enum JobStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
 }
+
+export enum StockMovementType {
+  RECEIPT = 'RECEIPT',
+  ISSUE = 'ISSUE',
+  TRANSFER_IN = 'TRANSFER_IN',
+  TRANSFER_OUT = 'TRANSFER_OUT',
+  ADJUSTMENT = 'ADJUSTMENT',
+}

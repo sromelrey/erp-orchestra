@@ -22,6 +22,9 @@ import { Status } from '@/types/enums';
   unique: true,
   where: 'deleted_at IS NULL',
 })
+@Index(['tenantId', 'status'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'departmentId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'managerId'], { where: 'deleted_at IS NULL' })
 export class Employee extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int' })
   @Index()

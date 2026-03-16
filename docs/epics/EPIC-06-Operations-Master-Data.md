@@ -43,9 +43,9 @@ Establish foundational master data for operations: items, units, categories, war
 | **Suggested Branch** | `feature/ops-item-master-uom` |
 
 **Tasks:**
-- [ ] Create entities: Item, ItemCategory, UnitOfMeasure, ItemUnit (conversion), ItemAttribute/Value (optional).
-- [ ] CRUD APIs + list/search filters; indexes on item_code/sku + tenant.
-- [ ] Seed permissions: `operations.item.view`, `operations.item.manage`, `operations.category.manage`, `operations.uom.manage`.
+- [x] Create entities: Item, ItemCategory, UnitOfMeasure, ItemUnit (conversion). (ItemAttribute/Value deferred)
+- [x] CRUD APIs + list/search filters; indexes on item_code/sku + tenant.
+- [x] Seed permissions: `operations.item.view`, `operations.item.manage`, `operations.category.manage`, `operations.uom.manage`.
 - [ ] Admin UI: tables + create/edit forms; basic RBAC guards.
 
 ### 📌 PHASE 2: Warehouses & Stock Ledger

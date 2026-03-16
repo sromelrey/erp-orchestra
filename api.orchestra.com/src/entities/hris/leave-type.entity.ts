@@ -2,6 +2,7 @@ import { Entity, Column, Index } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 
 @Entity({ name: 'leave_types', schema: 'hris' })
+@Index(['tenantId', 'name'], { unique: true, where: 'deleted_at IS NULL' })
 export class LeaveType extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int', nullable: true })
   @Index()

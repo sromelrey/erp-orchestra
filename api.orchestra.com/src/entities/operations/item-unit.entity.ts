@@ -6,9 +6,10 @@ import { UnitOfMeasure } from './unit-of-measure.entity';
 
 @Entity({ name: 'item_units', schema: 'operations' })
 @Index(['itemId', 'uomId'], { unique: true, where: 'deleted_at IS NULL' })
+@Index(['tenantId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'itemId'], { where: 'deleted_at IS NULL' })
 export class ItemUnit extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int' })
-  @Index()
   tenantId: number;
 
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })

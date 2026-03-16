@@ -1,11 +1,19 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Tenant } from '../system/tenant.entity';
+import { WarehouseLocation } from './warehouse-location.entity';
 
-@Entity({ name: 'item_categories', schema: 'operations' })
+@Entity({ name: 'warehouses', schema: 'operations' })
 @Index(['tenantId', 'code'], { unique: true, where: 'deleted_at IS NULL' })
 @Index(['tenantId'], { where: 'deleted_at IS NULL' })
-export class ItemCategory extends CommonEntity {
+export class Warehouse extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int' })
   tenantId: number;
 
@@ -21,4 +29,16 @@ export class ItemCategory extends CommonEntity {
 
   @Column({ type: 'text', nullable: true })
   description?: string | null;
+
+  @Column({ name: 'is_default', type: 'boolean', default: false })
+  isDefault: boolean;
+
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean;
+
+  @OneToMany(
+    () => WarehouseLocation,
+    (location: WarehouseLocation) => location.warehouse,
+  )
+  locations?: WarehouseLocation[];
 }

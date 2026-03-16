@@ -7,6 +7,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { Tenant, Employee, PayPeriod } from '@/entities';
 import { PayslipItem } from './payslip-item.entity';
@@ -18,6 +19,9 @@ export enum PayslipStatus {
 }
 
 @Entity('payslips', { schema: 'hris' })
+@Index(['tenantId', 'payPeriodId'])
+@Index(['tenantId', 'employeeId'])
+@Index(['tenantId', 'status'])
 export class Payslip {
   @PrimaryGeneratedColumn()
   id: number;

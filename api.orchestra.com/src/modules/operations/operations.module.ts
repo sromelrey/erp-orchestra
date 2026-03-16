@@ -5,6 +5,7 @@ import { BillOfMaterialsModule } from './bill-of-materials/bill-of-materials.mod
 import { GoodsReceiptModule } from './goods-receipt/goods-receipt.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
 import { GoodsIssueModule } from './goods-issue/goods-issue.module';
+import { WarehousesModule } from './warehouses/warehouses.module';
 import { ItemsModule } from './items/items.module';
 
 @Module({
@@ -12,6 +13,7 @@ import { ItemsModule } from './items/items.module';
     MaterialMasterModule,
     BillOfMaterialsModule,
     ItemsModule,
+    WarehousesModule,
     ProcurementModule,
     GoodsReceiptModule,
     SalesOrderModule,

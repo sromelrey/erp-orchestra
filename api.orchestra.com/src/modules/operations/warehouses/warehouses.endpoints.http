@@ -1,0 +1,68 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### Create Warehouse
+POST {{API_BASE_URL}}/v1/ops/warehouses
+Content-Type: application/json
+
+{
+  "code": "WH-MNL",
+  "name": "Manila Fulfillment",
+  "description": "Primary T-shirt printing warehouse",
+  "isDefault": true
+}
+
+### List Warehouses
+GET {{API_BASE_URL}}/v1/ops/warehouses
+
+
+### Update Warehouse
+PATCH {{API_BASE_URL}}/v1/ops/warehouses/1
+Content-Type: application/json
+
+{
+  "name": "Manila Fulfillment Hub",
+  "description": "Updated name for primary warehouse"
+}
+
+### Create Warehouse Location
+POST {{API_BASE_URL}}/v1/ops/warehouses/1/locations
+Content-Type: application/json
+
+{
+  "code": "PICK-PACK",
+  "name": "Picking & Packing Area",
+  "isActive": true
+}
+
+### List Locations for Warehouse
+GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations
+
+
+### Record Stock Receipt
+POST {{API_BASE_URL}}/v1/ops/stock-ledger
+Content-Type: application/json
+
+{
+  "warehouseId": 1,
+  "locationId": 2,
+  "itemId": 101,
+  "uomId": 1,
+  "quantity": 250,
+  "movementType": "RECEIPT",
+  "referenceType": "PO",
+  "referenceCode": "PO-2026-00045",
+  "memo": "Fabric rolls received",
+  "documentDate": "2026-03-16T06:30:00Z"
+}
+
+### List Stock Ledger Entries
+GET {{API_BASE_URL}}/v1/ops/stock-ledger
+

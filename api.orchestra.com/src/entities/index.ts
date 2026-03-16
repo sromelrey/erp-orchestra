@@ -30,6 +30,10 @@ export * from './operations/item-category.entity';
 export * from './operations/unit-of-measure.entity';
 export * from './operations/item.entity';
 export * from './operations/item-unit.entity';
+export * from './operations/warehouse.entity';
+export * from './operations/warehouse-location.entity';
+export * from './operations/stock-ledger.entity';
+export * from './operations/stock-balance.entity';
 
 // * HRIS
 export * from './hris/branch.entity';

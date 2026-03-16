@@ -10,19 +10,19 @@ import {
 } from 'class-validator';
 
 export class CreateUnitOfMeasureDto {
-  @ApiProperty({ example: 'KG', maxLength: 32 })
+  @ApiProperty({ example: 'M', maxLength: 32 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(32)
   code: string;
 
-  @ApiProperty({ example: 'Kilogram', maxLength: 255 })
+  @ApiProperty({ example: 'Meter', maxLength: 255 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   name: string;
 
-  @ApiProperty({ example: 3, minimum: 0, maximum: 6, required: false })
+  @ApiProperty({ example: 2, minimum: 0, maximum: 6, required: false })
   @IsOptional()
   @IsInt()
   @Min(0)

@@ -205,6 +205,28 @@ export const PermissionsSeeder: Seeder = {
           slug: 'operations.uom.manage',
           name: 'Manage Units of Measure',
         },
+        // Operations - Warehouses & Stock
+        {
+          module: 'operations',
+          resource: 'warehouse',
+          action: 'manage',
+          slug: 'operations.warehouse.manage',
+          name: 'Manage Warehouses & Locations',
+        },
+        {
+          module: 'operations',
+          resource: 'stock',
+          action: 'manage',
+          slug: 'operations.stock.manage',
+          name: 'Manage Stock Movements',
+        },
+        {
+          module: 'operations',
+          resource: 'stock',
+          action: 'view',
+          slug: 'operations.stock.view',
+          name: 'View Stock Ledger',
+        },
         // System - Role
         {
           module: 'system',
