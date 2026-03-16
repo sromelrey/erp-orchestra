@@ -1,0 +1,85 @@
+
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+### Create Item Category
+POST {{API_BASE_URL}}/v1/ops/categories
+Content-Type: application/json
+
+{
+  "code": "FAB",
+  "name": "Fabric Rolls",
+  "description": "Cotton or poly-cotton rolls for shirt production"
+}
+
+### List Item Categories
+GET {{API_BASE_URL}}/v1/ops/categories
+
+### Update Item Category
+PATCH {{API_BASE_URL}}/v1/ops/categories/1
+Content-Type: application/json
+
+{
+  "name": "Raw Materials Updated",
+  "description": "Updated description"
+}
+
+### Create Unit of Measure
+POST {{API_BASE_URL}}/v1/ops/uoms
+Content-Type: application/json
+
+{
+  "code": "M",
+  "name": "Meter",
+  "precision": 2
+}
+
+### List Units of Measure
+GET {{API_BASE_URL}}/v1/ops/uoms
+
+
+### Update Unit of Measure
+PATCH {{API_BASE_URL}}/v1/ops/uoms/1
+Content-Type: application/json
+
+{
+  "name": "Kilogram Updated",
+  "precision": 2
+}
+
+### Create Item
+POST {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+
+{
+  "code": "TSHIRT-WHT-001",
+  "name": "Basic White T-Shirt",
+  "description": "Crew neck, 100% cotton, medium weight",
+  "categoryId": 1,
+  "baseUomId": 1,
+  "isActive": true
+}
+
+### List Items
+GET {{API_BASE_URL}}/v1/ops/items
+
+
+### Update Item
+PATCH {{API_BASE_URL}}/v1/ops/items/1
+Content-Type: application/json
+
+{
+  "name": "Basic White T-Shirt (Rebranded)",
+  "description": "Crew neck, 100% cotton, medium weight, updated spec",
+  "categoryId": 1,
+  "baseUomId": 1,
+  "isActive": true
+}

@@ -176,6 +176,35 @@ export const PermissionsSeeder: Seeder = {
           slug: 'hris.export.manage',
           name: 'Manage HRIS Exports',
         },
+        // Operations - Item Master
+        {
+          module: 'operations',
+          resource: 'item',
+          action: 'view',
+          slug: 'operations.item.view',
+          name: 'View Items',
+        },
+        {
+          module: 'operations',
+          resource: 'item',
+          action: 'manage',
+          slug: 'operations.item.manage',
+          name: 'Manage Items',
+        },
+        {
+          module: 'operations',
+          resource: 'category',
+          action: 'manage',
+          slug: 'operations.category.manage',
+          name: 'Manage Item Categories',
+        },
+        {
+          module: 'operations',
+          resource: 'uom',
+          action: 'manage',
+          slug: 'operations.uom.manage',
+          name: 'Manage Units of Measure',
+        },
         // System - Role
         {
           module: 'system',
