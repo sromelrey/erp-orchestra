@@ -52,8 +52,8 @@ Content-Type: application/json
 
 {
   "warehouseId": 1,
-  "locationId": 2,
-  "itemId": 101,
+  "locationId": 1,
+  "itemId": 1,
   "uomId": 1,
   "quantity": 250,
   "movementType": "RECEIPT",
