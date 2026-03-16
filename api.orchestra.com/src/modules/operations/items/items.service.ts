@@ -1,20 +1,17 @@
 import {
-  Injectable,
   BadRequestException,
+  Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ItemCategory } from '@/entities/operations/item-category.entity';
-import { UnitOfMeasure } from '@/entities/operations/unit-of-measure.entity';
-import { Item } from '@/entities/operations/item.entity';
-import { ItemUnit } from '@/entities/operations/item-unit.entity';
+import { Item, ItemCategory, ItemUnit, UnitOfMeasure } from '@/entities';
 import { CreateItemCategoryDto } from './dto/create-item-category.dto';
+import { UpdateItemCategoryDto } from './dto/update-item-category.dto';
 import { CreateUnitOfMeasureDto } from './dto/create-unit-of-measure.dto';
+import { UpdateUnitOfMeasureDto } from './dto/update-unit-of-measure.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { UpdateItemCategoryDto } from './dto/update-item-category.dto';
-import { UpdateUnitOfMeasureDto } from './dto/update-unit-of-measure.dto';
 
 interface ActorContext {
   tenantId: number;
@@ -36,18 +33,20 @@ export class ItemsService {
 
   // Categories
   async createCategory(dto: CreateItemCategoryDto, actor: ActorContext) {
-    const exists = await this.categoryRepo.findOne({
+    const existing = await this.categoryRepo.findOne({
       where: { tenantId: actor.tenantId, code: dto.code },
     });
-    if (exists) {
+    if (existing) {
       throw new BadRequestException('Category code already exists');
     }
-    const entity = this.categoryRepo.create({
-      ...dto,
+    const category = this.categoryRepo.create({
       tenantId: actor.tenantId,
+      code: dto.code,
+      name: dto.name,
+      description: dto.description,
       createdBy: actor.userId,
     });
-    return this.categoryRepo.save(entity);
+    return this.categoryRepo.save(category);
   }
 
   findCategories(tenantId: number) {
@@ -57,33 +56,34 @@ export class ItemsService {
   async updateCategory(
     id: number,
     dto: UpdateItemCategoryDto,
-    tenantId: number,
-    userId: number,
+    actor: ActorContext,
   ) {
     const category = await this.categoryRepo.findOne({
-      where: { id, tenantId },
+      where: { id, tenantId: actor.tenantId },
     });
     if (!category) {
       throw new NotFoundException('Category not found');
     }
-    Object.assign(category, dto, { updatedBy: userId });
+    Object.assign(category, dto, { updatedBy: actor.userId });
     return this.categoryRepo.save(category);
   }
 
-  // UOM
+  // UOMs
   async createUom(dto: CreateUnitOfMeasureDto, actor: ActorContext) {
-    const exists = await this.uomRepo.findOne({
+    const existing = await this.uomRepo.findOne({
       where: { tenantId: actor.tenantId, code: dto.code },
     });
-    if (exists) {
+    if (existing) {
       throw new BadRequestException('UOM code already exists');
     }
-    const entity = this.uomRepo.create({
-      ...dto,
+    const uom = this.uomRepo.create({
       tenantId: actor.tenantId,
+      code: dto.code,
+      name: dto.name,
+      precision: dto.precision ?? 2,
       createdBy: actor.userId,
     });
-    return this.uomRepo.save(entity);
+    return this.uomRepo.save(uom);
   }
 
   findUoms(tenantId: number) {
@@ -93,47 +93,34 @@ export class ItemsService {
   async updateUom(
     id: number,
     dto: UpdateUnitOfMeasureDto,
-    tenantId: number,
-    userId: number,
+    actor: ActorContext,
   ) {
     const uom = await this.uomRepo.findOne({
-      where: { id, tenantId },
+      where: { id, tenantId: actor.tenantId },
     });
     if (!uom) {
       throw new NotFoundException('UOM not found');
     }
-    Object.assign(uom, dto, { updatedBy: userId });
+    Object.assign(uom, dto, { updatedBy: actor.userId });
     return this.uomRepo.save(uom);
   }
 
   // Items
   async createItem(dto: CreateItemDto, actor: ActorContext) {
-    const exists = await this.itemRepo.findOne({
+    const existing = await this.itemRepo.findOne({
       where: { tenantId: actor.tenantId, code: dto.code },
     });
-    if (exists) {
+    if (existing) {
       throw new BadRequestException('Item code already exists');
     }
 
-    const baseUom = await this.uomRepo.findOne({
-      where: { id: dto.baseUomId, tenantId: actor.tenantId },
-    });
-    if (!baseUom) {
-      throw new BadRequestException('Base UOM not found for tenant');
-    }
+    await this.ensureUomExists(dto.baseUomId, actor.tenantId);
+    const categoryId = await this.resolveCategoryId(
+      dto.categoryId,
+      actor.tenantId,
+    );
 
-    let categoryId: number | undefined;
-    if (dto.categoryId) {
-      const category = await this.categoryRepo.findOne({
-        where: { id: dto.categoryId, tenantId: actor.tenantId },
-      });
-      if (!category) {
-        throw new BadRequestException('Category not found for tenant');
-      }
-      categoryId = category.id;
-    }
-
-    const entity = this.itemRepo.create({
+    const item = this.itemRepo.create({
       tenantId: actor.tenantId,
       code: dto.code,
       name: dto.name,
@@ -143,18 +130,16 @@ export class ItemsService {
       isActive: dto.isActive ?? true,
       createdBy: actor.userId,
     });
+    const saved = await this.itemRepo.save(item);
 
-    const saved = await this.itemRepo.save(entity);
-
-    // Create item-unit row for base UOM
-    const baseItemUnit = this.itemUnitRepo.create({
+    const baseUnit = this.itemUnitRepo.create({
       tenantId: actor.tenantId,
       itemId: saved.id,
       uomId: dto.baseUomId,
       conversionFactor: '1',
       createdBy: actor.userId,
     });
-    await this.itemUnitRepo.save(baseItemUnit);
+    await this.itemUnitRepo.save(baseUnit);
 
     return saved;
   }
@@ -175,36 +160,46 @@ export class ItemsService {
     }
 
     if (dto.baseUomId) {
-      const uom = await this.uomRepo.findOne({
-        where: { id: dto.baseUomId, tenantId: actor.tenantId },
-      });
-      if (!uom) {
-        throw new BadRequestException('Base UOM not found for tenant');
-      }
+      await this.ensureUomExists(dto.baseUomId, actor.tenantId);
       item.baseUomId = dto.baseUomId;
     }
 
     if (dto.categoryId !== undefined) {
-      if (dto.categoryId === null) {
-        item.categoryId = null;
-      } else {
-        const category = await this.categoryRepo.findOne({
-          where: { id: dto.categoryId, tenantId: actor.tenantId },
-        });
-        if (!category) {
-          throw new BadRequestException('Category not found for tenant');
-        }
-        item.categoryId = category.id;
-      }
+      item.categoryId = await this.resolveCategoryId(
+        dto.categoryId,
+        actor.tenantId,
+      );
     }
 
-    Object.assign(item, {
-      name: dto.name ?? item.name,
-      description: dto.description ?? item.description,
-      isActive: dto.isActive ?? item.isActive,
-      updatedBy: actor.userId,
-    });
-
+    Object.assign(item, dto, { updatedBy: actor.userId });
     return this.itemRepo.save(item);
+  }
+
+  private async ensureUomExists(id: number, tenantId: number) {
+    const uom = await this.uomRepo.findOne({
+      where: { id, tenantId },
+    });
+    if (!uom) {
+      throw new BadRequestException('UOM not found for tenant');
+    }
+  }
+
+  private async resolveCategoryId(
+    categoryId: number | undefined | null,
+    tenantId: number,
+  ): Promise<number | null | undefined> {
+    if (categoryId === undefined) {
+      return undefined;
+    }
+    if (categoryId === null) {
+      return null;
+    }
+    const category = await this.categoryRepo.findOne({
+      where: { id: categoryId, tenantId },
+    });
+    if (!category) {
+      throw new BadRequestException('Category not found for tenant');
+    }
+    return category.id;
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Tenant } from '../system/tenant.entity';
 
@@ -7,7 +7,6 @@ import { Tenant } from '../system/tenant.entity';
 @Index(['tenantId'], { where: 'deleted_at IS NULL' })
 export class UnitOfMeasure extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int' })
-  @Index()
   tenantId: number;
 
   @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })

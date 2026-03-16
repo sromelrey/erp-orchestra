@@ -1,0 +1,61 @@
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import { CommonEntity } from '../common.entity';
+import { Tenant } from '../system/tenant.entity';
+import { Warehouse } from './warehouse.entity';
+import { WarehouseLocation } from './warehouse-location.entity';
+import { Item } from './item.entity';
+import { UnitOfMeasure } from './unit-of-measure.entity';
+
+@Entity({ name: 'stock_balances', schema: 'operations' })
+@Index(['tenantId', 'warehouseId', 'itemId'], { where: 'deleted_at IS NULL' })
+@Index(['tenantId', 'warehouseId', 'locationId'], {
+  where: 'deleted_at IS NULL',
+})
+@Index(['tenantId', 'warehouseId', 'locationId', 'itemId', 'uomId'], {
+  where: 'deleted_at IS NULL',
+})
+export class StockBalance extends CommonEntity {
+  @Column({ name: 'tenant_id', type: 'int' })
+  tenantId: number;
+
+  @ManyToOne(() => Tenant, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant?: Tenant;
+
+  @Column({ name: 'warehouse_id', type: 'int' })
+  warehouseId: number;
+
+  @ManyToOne(() => Warehouse, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'warehouse_id' })
+  warehouse?: Warehouse;
+
+  @Column({ name: 'location_id', type: 'int', nullable: true })
+  locationId?: number | null;
+
+  @ManyToOne(() => WarehouseLocation, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'location_id' })
+  location?: WarehouseLocation | null;
+
+  @Column({ name: 'item_id', type: 'int' })
+  itemId: number;
+
+  @ManyToOne(() => Item, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'item_id' })
+  item?: Item;
+
+  @Column({ name: 'uom_id', type: 'int' })
+  uomId: number;
+
+  @ManyToOne(() => UnitOfMeasure, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'uom_id' })
+  uom?: UnitOfMeasure;
+
+  @Column({
+    name: 'on_hand_qty',
+    type: 'numeric',
+    precision: 18,
+    scale: 6,
+    default: 0,
+  })
+  onHandQty: string;
+}

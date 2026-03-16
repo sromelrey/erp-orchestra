@@ -1,41 +1,34 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';
 
-export class CreateItemDto {
-  @ApiProperty({ example: 'TSHIRT-WHT-001', maxLength: 64 })
+export class CreateWarehouseDto {
+  @ApiProperty({ example: 'WH-MNL', maxLength: 64 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(64)
   code: string;
 
-  @ApiProperty({ example: 'Basic White T-Shirt', maxLength: 255 })
+  @ApiProperty({ example: 'Manila Warehouse', maxLength: 255 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   name: string;
 
-  @ApiPropertyOptional({ example: 'Crew neck, 100% cotton' })
+  @ApiPropertyOptional({ example: 'Main Metro Manila warehouse' })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiPropertyOptional({ example: 3 })
+  @ApiPropertyOptional({ example: true })
   @IsOptional()
-  @IsInt()
-  categoryId?: number;
-
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsPositive()
-  baseUomId: number;
+  @IsBoolean()
+  isDefault?: boolean;
 
   @ApiPropertyOptional({ example: true })
   @IsOptional()

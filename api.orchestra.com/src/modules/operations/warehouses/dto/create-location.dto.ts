@@ -4,38 +4,27 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';
 
-export class CreateItemDto {
-  @ApiProperty({ example: 'TSHIRT-WHT-001', maxLength: 64 })
+export class CreateWarehouseLocationDto {
+  @ApiProperty({ example: 'STOCK', maxLength: 64 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(64)
   code: string;
 
-  @ApiProperty({ example: 'Basic White T-Shirt', maxLength: 255 })
+  @ApiProperty({ example: 'Stock Area', maxLength: 255 })
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   name: string;
 
-  @ApiPropertyOptional({ example: 'Crew neck, 100% cotton' })
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @ApiPropertyOptional({ example: 3 })
+  @ApiPropertyOptional({ example: 10 })
   @IsOptional()
   @IsInt()
-  categoryId?: number;
-
-  @ApiProperty({ example: 1 })
-  @IsInt()
-  @IsPositive()
-  baseUomId: number;
+  parentId?: number;
 
   @ApiPropertyOptional({ example: true })
   @IsOptional()

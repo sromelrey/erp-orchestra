@@ -3,33 +3,21 @@ import {
   IsBoolean,
   IsInt,
   IsOptional,
-  IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';
 
-export class UpdateItemDto {
+export class UpdateWarehouseLocationDto {
   @ApiPropertyOptional({ maxLength: 255 })
   @IsOptional()
   @IsString()
   @MaxLength(255)
   name?: string;
 
-  @ApiPropertyOptional({ example: 'Updated description' })
-  @IsOptional()
-  @IsString()
-  description?: string | null;
-
-  @ApiPropertyOptional({ example: 3 })
+  @ApiPropertyOptional({ example: 5 })
   @IsOptional()
   @IsInt()
-  categoryId?: number | null;
-
-  @ApiPropertyOptional({ example: 1 })
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  baseUomId?: number;
+  parentId?: number | null;
 
   @ApiPropertyOptional({ example: true })
   @IsOptional()

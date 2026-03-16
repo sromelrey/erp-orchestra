@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -14,7 +13,6 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
@@ -35,89 +33,93 @@ import { UpdateItemDto } from './dto/update-item.dto';
 export class ItemsController {
   constructor(private readonly service: ItemsService) {}
 
+  private getActor(req: AuthenticatedRequest) {
+    if (!req.user?.id || !req.user?.tenantId) {
+      throw new Error('Missing authenticated user context');
+    }
+    return { userId: req.user.id, tenantId: req.user.tenantId };
+  }
+
   // Categories
-  @Post('categories')
+  @Post('item-categories')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.category.manage',
+    permission: 'operations.item.manage',
   })
   @ApiOperation({ summary: 'Create item category' })
-  @ApiResponse({ status: 201 })
-  async createCategory(
+  createCategory(
     @Body() dto: CreateItemCategoryDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const actor = this.requireActor(req);
+    const actor = this.getActor(req);
     return this.service.createCategory(dto, actor);
   }
 
-  @Get('categories')
+  @Get('item-categories')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.category.manage',
+    permission: 'operations.item.view',
   })
   @ApiOperation({ summary: 'List item categories' })
-  async listCategories(@Req() req: AuthenticatedRequest) {
-    const actor = this.requireActor(req);
+  listCategories(@Req() req: AuthenticatedRequest) {
+    const actor = this.getActor(req);
     return this.service.findCategories(actor.tenantId);
   }
 
-  @Patch('categories/:id')
+  @Patch('item-categories/:id')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.category.manage',
+    permission: 'operations.item.manage',
   })
-  @ApiOperation({ summary: 'Update item category' })
   @ApiParam({ name: 'id', type: Number })
-  async updateCategory(
+  updateCategory(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateItemCategoryDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const actor = this.requireActor(req);
-    return this.service.updateCategory(id, dto, actor.tenantId, actor.userId);
+    const actor = this.getActor(req);
+    return this.service.updateCategory(id, dto, actor);
   }
 
-  // Units of measure
-  @Post('uoms')
+  // UOMs
+  @Post('item-uoms')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.uom.manage',
+    permission: 'operations.item.manage',
   })
   @ApiOperation({ summary: 'Create unit of measure' })
-  async createUom(
+  createUom(
     @Body() dto: CreateUnitOfMeasureDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const actor = this.requireActor(req);
+    const actor = this.getActor(req);
     return this.service.createUom(dto, actor);
   }
 
-  @Get('uoms')
+  @Get('item-uoms')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.uom.manage',
+    permission: 'operations.item.view',
   })
   @ApiOperation({ summary: 'List units of measure' })
-  async listUoms(@Req() req: AuthenticatedRequest) {
-    const actor = this.requireActor(req);
+  listUoms(@Req() req: AuthenticatedRequest) {
+    const actor = this.getActor(req);
     return this.service.findUoms(actor.tenantId);
   }
 
-  @Patch('uoms/:id')
+  @Patch('item-uoms/:id')
   @RequireAccess({
     feature: 'OPERATIONS',
-    permission: 'operations.uom.manage',
+    permission: 'operations.item.manage',
   })
-  @ApiOperation({ summary: 'Update unit of measure' })
   @ApiParam({ name: 'id', type: Number })
-  async updateUom(
+  updateUom(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateUnitOfMeasureDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const actor = this.requireActor(req);
-    return this.service.updateUom(id, dto, actor.tenantId, actor.userId);
+    const actor = this.getActor(req);
+    return this.service.updateUom(id, dto, actor);
   }
 
   // Items
@@ -127,11 +129,8 @@ export class ItemsController {
     permission: 'operations.item.manage',
   })
   @ApiOperation({ summary: 'Create item' })
-  async createItem(
-    @Body() dto: CreateItemDto,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    const actor = this.requireActor(req);
+  createItem(@Body() dto: CreateItemDto, @Req() req: AuthenticatedRequest) {
+    const actor = this.getActor(req);
     return this.service.createItem(dto, actor);
   }
 
@@ -141,8 +140,8 @@ export class ItemsController {
     permission: 'operations.item.view',
   })
   @ApiOperation({ summary: 'List items' })
-  async listItems(@Req() req: AuthenticatedRequest) {
-    const actor = this.requireActor(req);
+  listItems(@Req() req: AuthenticatedRequest) {
+    const actor = this.getActor(req);
     return this.service.findItems(actor.tenantId);
   }
 
@@ -151,21 +150,13 @@ export class ItemsController {
     feature: 'OPERATIONS',
     permission: 'operations.item.manage',
   })
-  @ApiOperation({ summary: 'Update item' })
   @ApiParam({ name: 'id', type: Number })
-  async updateItem(
+  updateItem(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateItemDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const actor = this.requireActor(req);
+    const actor = this.getActor(req);
     return this.service.updateItem(id, dto, actor);
-  }
-
-  private requireActor(req: AuthenticatedRequest) {
-    if (!req.user?.id || !req.user?.tenantId) {
-      throw new BadRequestException('Missing authenticated user context');
-    }
-    return { userId: req.user.id, tenantId: req.user.tenantId };
   }
 }

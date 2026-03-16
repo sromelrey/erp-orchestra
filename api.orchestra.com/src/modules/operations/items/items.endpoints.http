@@ -1,58 +1,47 @@
-
-### Login (Establish Session) to get credentials if needed,
-### or rely on browser cookies if using an extension
-POST {{API_BASE_URL}}/v1/auth/login
-Content-Type: application/json
-
-{
-    "email": "{{TEST_USERNAME}}",
-    "password": "{{TEST_USER_PASSWORD}}"
-}
-
-###
 ### Create Item Category
-POST {{API_BASE_URL}}/v1/ops/categories
+POST {{API_BASE_URL}}/v1/ops/item-categories
 Content-Type: application/json
 
 {
   "code": "FAB",
   "name": "Fabric Rolls",
-  "description": "Cotton or poly-cotton rolls for shirt production"
+  "description": "Greige and dyed fabrics"
 }
 
 ### List Item Categories
-GET {{API_BASE_URL}}/v1/ops/categories
+GET {{API_BASE_URL}}/v1/ops/item-categories
+
 
 ### Update Item Category
-PATCH {{API_BASE_URL}}/v1/ops/categories/1
+PATCH {{API_BASE_URL}}/v1/ops/item-categories/1
 Content-Type: application/json
 
 {
-  "name": "Raw Materials Updated",
+  "name": "Premium Fabric Rolls",
   "description": "Updated description"
 }
 
 ### Create Unit of Measure
-POST {{API_BASE_URL}}/v1/ops/uoms
+POST {{API_BASE_URL}}/v1/ops/item-uoms
 Content-Type: application/json
 
 {
-  "code": "M",
+  "code": "MTR",
   "name": "Meter",
   "precision": 2
 }
 
 ### List Units of Measure
-GET {{API_BASE_URL}}/v1/ops/uoms
+GET {{API_BASE_URL}}/v1/ops/item-uoms
 
 
 ### Update Unit of Measure
-PATCH {{API_BASE_URL}}/v1/ops/uoms/1
+PATCH {{API_BASE_URL}}/v1/ops/item-uoms/1
 Content-Type: application/json
 
 {
-  "name": "Kilogram Updated",
-  "precision": 2
+  "name": "Meter (m)",
+  "precision": 3
 }
 
 ### Create Item
@@ -61,8 +50,8 @@ Content-Type: application/json
 
 {
   "code": "TSHIRT-WHT-001",
-  "name": "Basic White T-Shirt",
-  "description": "Crew neck, 100% cotton, medium weight",
+  "name": "Basic White Tee",
+  "description": "Crew neck, 180gsm cotton",
   "categoryId": 1,
   "baseUomId": 1,
   "isActive": true
@@ -77,9 +66,6 @@ PATCH {{API_BASE_URL}}/v1/ops/items/1
 Content-Type: application/json
 
 {
-  "name": "Basic White T-Shirt (Rebranded)",
-  "description": "Crew neck, 100% cotton, medium weight, updated spec",
-  "categoryId": 1,
-  "baseUomId": 1,
+  "description": "Updated fabric blend",
   "isActive": true
 }
