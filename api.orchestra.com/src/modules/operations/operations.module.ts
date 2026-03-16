@@ -5,11 +5,13 @@ import { BillOfMaterialsModule } from './bill-of-materials/bill-of-materials.mod
 import { GoodsReceiptModule } from './goods-receipt/goods-receipt.module';
 import { SalesOrderModule } from './sales-order/sales-order.module';
 import { GoodsIssueModule } from './goods-issue/goods-issue.module';
+import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
     MaterialMasterModule,
     BillOfMaterialsModule,
+    ItemsModule,
     ProcurementModule,
     GoodsReceiptModule,
     SalesOrderModule,

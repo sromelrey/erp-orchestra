@@ -26,6 +26,10 @@ export * from './system/system-module.entity';
 export * from './inventory/material.entity';
 export * from './operations/bom.entity';
 export * from './operations/bom-item.entity';
+export * from './operations/item-category.entity';
+export * from './operations/unit-of-measure.entity';
+export * from './operations/item.entity';
+export * from './operations/item-unit.entity';
 
 // * HRIS
 export * from './hris/branch.entity';
