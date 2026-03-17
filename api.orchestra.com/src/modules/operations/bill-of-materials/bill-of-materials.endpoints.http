@@ -1,0 +1,133 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### Create BOM
+POST {{API_BASE_URL}}/v1/ops/bom
+Content-Type: application/json
+{
+  "code": "BOM-TSHIRT-001",
+  "name": "T-Shirt Assembly",
+  "parentMaterialId": 1,
+  "version": "1.0",
+  "effectiveDate": "2026-03-16",
+  "lines": [
+    {
+      "componentMaterialId": 2,
+      "quantity": 1.5,
+      "uom": "MTR",
+      "scrapPercentage": 5,
+      "sortOrder": 1
+    },
+    {
+      "componentMaterialId": 3,
+      "quantity": 3,
+      "uom": "PCS",
+      "scrapPercentage": 2,
+      "sortOrder": 2
+    }
+  ]
+}
+
+### List BOMs
+GET {{API_BASE_URL}}/v1/ops/bom?page=1&limit=20
+
+### Search BOMs
+GET {{API_BASE_URL}}/v1/ops/bom?search=TSHIRT
+
+### Get BOM by ID
+GET {{API_BASE_URL}}/v1/ops/bom/10
+
+### Update BOM (creates new version)
+PATCH {{API_BASE_URL}}/v1/ops/bom/10
+Content-Type: application/json
+
+{
+  "name": "T-Shirt Assembly v2",
+  "version": "2.0",
+  "lines": [
+    {
+      "componentMaterialId": 2,
+      "quantity": 1.6,
+      "uom": "MTR",
+      "scrapPercentage": 3,
+      "sortOrder": 1
+    }
+  ]
+}
+
+### Update BOM Status
+PATCH {{API_BASE_URL}}/v1/ops/bom/10/status
+Content-Type: application/json
+
+{
+  "status": "ACTIVE",
+  "isActive": true
+}
+
+### Deactivate BOM
+POST {{API_BASE_URL}}/v1/ops/bom/10/deactivate
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+### Get active BOM for item
+GET {{API_BASE_URL}}/v1/ops/bom/item/10/active
+
+### Calculate BOM cost
+GET {{API_BASE_URL}}/v1/ops/bom/10/cost
+
+### Get BOM cost breakdown (includes scrap, component detail)
+GET {{API_BASE_URL}}/v1/ops/bom/10/cost/breakdown
+
+### Get where used (implosion)
+GET {{API_BASE_URL}}/v1/ops/bom/component/2/where-used
+
+### Validate BOM (cycle detection)
+POST {{API_BASE_URL}}/v1/ops/bom/10/validate
+
+### Delete BOM
+DELETE {{API_BASE_URL}}/v1/ops/bom/10
+ 
+### Test Cycle Detection (should fail)
+POST {{API_BASE_URL}}/v1/ops/bom
+Content-Type: application/json
+ 
+{
+  "code": "BOM-CYCLIC-001",
+  "name": "Cyclic BOM Test",
+  "parentMaterialId": 1,
+  "version": "1.0",
+  "lines": [
+    {
+      "componentMaterialId": 1,
+      "quantity": 1,
+      "uom": "PCS"
+    }
+  ]
+}
+
+### Test Version Uniqueness (should fail)
+POST {{API_BASE_URL}}/v1/ops/bom
+Content-Type: application/json
+ 
+{
+  "code": "BOM-TSHIRT-002",
+  "name": "Another T-Shirt BOM",
+  "parentMaterialId": 1,
+  "version": "1.0",
+  "lines": [
+    {
+      "componentMaterialId": 2,
+      "quantity": 2,
+      "uom": "MTR"
+    }
+  ]
+}
