@@ -4,7 +4,7 @@
 |-------|-------|
 | **Epic ID** | EPIC-06 |
 | **Epic Name** | Operations Master Data |
-| **Status** | 📋 Backlog |
+| **Status** | 🚧 In Progress |
 | **Priority** | High |
 | **Dependencies** | EPIC-01 (RBAC), EPIC-02/03 (HRIS core data for user roles), data platform | 
 
@@ -12,6 +12,31 @@
 
 ## 🎯 Purpose
 Establish foundational master data for operations: items, units, categories, warehouses/locations, stock records, and bills of materials/recipes. Provide secure APIs and admin UI scaffolds to support inventory, production, and procurement.
+
+---
+
+## 📊 Implementation Progress (as of March 16, 2026)
+
+### ✅ Completed
+- **Item Master**: Full CRUD for Items, Categories, Units of Measure, and Item Units with conversions
+- **Warehouse Management**: Full CRUD for Warehouses and hierarchical Locations/Bins
+- **Stock Ledger**: Complete stock movement tracking (Receipts, Issues, Transfers, Adjustments)
+- **Stock Balances**: Real-time balance snapshots with proper indexing
+- **BOM Entities & Validation**: Data models plus cycle-detection/version checks now wired into services
+- **RBAC Integration**: All operations permissions seeded and guards applied
+- **Database Migrations**: All tables created with proper indexes and constraints
+- **API Documentation**: OpenAPI/Swagger documentation with examples
+- **Testing Guide**: Comprehensive manual testing walkthrough
+
+### 🚧 In Progress
+- **BOM APIs**: CRUD + versioning endpoints delivered; costing and cost-breakdown responses still placeholder and awaiting costing service hookup
+- **Costing**: Weighted average (initial) service design pending before FIFO follow-up
+- **Availability Queries**: Real-time stock availability with safety stock rules still under development
+
+### 📋 Pending
+- **Admin UI Polish**: Enhanced forms and bulk import templates
+- **Advanced Features**: Materialized views for performance optimization
+- **Cost Roll-up & Integrations**: Procurement consumption, BOM explosion, MRP, and true cost roll-up
 
 ---
 
@@ -46,7 +71,7 @@ Establish foundational master data for operations: items, units, categories, war
 - [x] Create entities: Item, ItemCategory, UnitOfMeasure, ItemUnit (conversion). (ItemAttribute/Value deferred)
 - [x] CRUD APIs + list/search filters; indexes on item_code/sku + tenant.
 - [x] Seed permissions: `operations.item.view`, `operations.item.manage`, `operations.category.manage`, `operations.uom.manage`.
-- [ ] Admin UI: tables + create/edit forms; basic RBAC guards.
+- [x] Admin UI: tables + create/edit forms; basic RBAC guards.
 
 ### 📌 PHASE 2: Warehouses & Stock Ledger
 | Story ID | STORY-OPS-002 |
@@ -56,10 +81,10 @@ Establish foundational master data for operations: items, units, categories, war
 | **Suggested Branch** | `feature/ops-warehouses-stock-ledger` |
 
 **Tasks:**
-- [ ] Entities: Warehouse, Location/Bin, StockLedger (movements), StockBalance (snapshot/read model).
-- [ ] APIs: create warehouses/bins; record movements (receipts, issues, transfers, adjustments).
-- [ ] Adjustments/import for opening balances.
-- [ ] Permissions: `operations.warehouse.manage`, `operations.stock.manage`, `operations.stock.view`.
+- [x] Entities: Warehouse, Location/Bin, StockLedger (movements), StockBalance (snapshot/read model).
+- [x] APIs: create warehouses/bins; record movements (receipts, issues, transfers, adjustments).
+- [x] Adjustments/import for opening balances.
+- [x] Permissions: `operations.warehouse.manage`, `operations.stock.manage`, `operations.stock.view`.
 
 ### 📌 PHASE 3: BOM / Recipes
 | Story ID | STORY-OPS-003 |
@@ -69,10 +94,10 @@ Establish foundational master data for operations: items, units, categories, war
 | **Suggested Branch** | `feature/ops-bom-recipes` |
 
 **Tasks:**
-- [ ] Entities: BomHeader, BomLine, BomVersion; link to finished good item and components.
-- [ ] APIs: CRUD BOMs, versioning, activate/deprecate.
-- [ ] Validation: detect cycles, enforce UOM conversions.
-- [ ] Permissions: `operations.bom.view`, `operations.bom.manage`.
+- [x] Entities: BomHeader, BomLine, BomVersion; link to finished good item and components.
+- [ ] APIs: CRUD BOMs, versioning, activate/deprecate _(CRUD + activation done; costing + cost breakdown pending)_.
+- [x] Validation: detect cycles, enforce UOM conversions.
+- [x] Permissions: `operations.bom.view`, `operations.bom.manage`.
 
 ### 📌 PHASE 4: Costing & Availability
 | Story ID | STORY-OPS-004 |
@@ -84,7 +109,7 @@ Establish foundational master data for operations: items, units, categories, war
 **Tasks:**
 - [ ] Implement weighted average (initial) costing; plan for FIFO as follow-up.
 - [ ] Availability endpoint per item/location with configurable safety stock.
-- [ ] Materialized view or cache for aggregated availability.
+- [x] Materialized view or cache for aggregated availability.
 
 ### 📌 PHASE 5: Documentation & DX
 | Story ID | STORY-OPS-005 |
@@ -94,9 +119,9 @@ Establish foundational master data for operations: items, units, categories, war
 | **Suggested Branch** | `chore/ops-openapi-admin-ux` |
 
 **Tasks:**
-- [ ] OpenAPI examples for all endpoints; error codes and validation messages.
+- [x] OpenAPI examples for all endpoints; error codes and validation messages.
 - [ ] Admin UI polish for Items/Warehouses/BOM forms; bulk import templates.
-- [ ] Postman/HTTP examples for stock movements and BOM CRUD.
+- [x] Postman/HTTP examples for stock movements and BOM CRUD.
 
 ---
 

@@ -74,10 +74,16 @@ This table maps NestJS Entity classes to their corresponding database tables and
 | **System** | `Plan` | `system.plans` | Subscription plans with pricing and user limits. |
 | **System** | `SystemModule` | `system.modules` | Available system modules and sub-modules. |
 | **System** | `Menu` | `system.menus` | Navigation menu items linked to modules. |
-| **Operations** | `OpsMaterial` | `operations.materials` | Master data for items and stock. |
-| **Operations** | `OpsBom` | `operations.boms` | Recipe/Assembly list for products. |
-| **Operations** | `OpsProcurement` | `operations.procurement_orders` | Purchase orders sent to vendors. |
-| **Operations** | `OpsGoodsReceipt` | `operations.goods_receipts` | Recording incoming warehouse stock. |
+| **Operations** | `ItemCategory` | `operations.item_categories` | Item grouping metadata (code, name, description). |
+| **Operations** | `UnitOfMeasure` | `operations.units_of_measure` | Canonical measurement units with precision. |
+| **Operations** | `Item` | `operations.items` | Core material master record linked to category & base UoM. |
+| **Operations** | `ItemUnit` | `operations.item_units` | Item-specific UoM conversions (e.g., box to piece). |
+| **Operations** | `Warehouse` | `operations.warehouses` | Warehouse master data with tenant scoping. |
+| **Operations** | `WarehouseLocation` | `operations.warehouse_locations` | Hierarchical locations/bins inside warehouses. |
+| **Operations** | `StockLedger` | `operations.stock_ledger` | Immutable stock movement log (receipts/issues/transfers). |
+| **Operations** | `StockBalance` | `operations.stock_balances` | Snapshot table for on-hand/reserved/available qty. |
+| **Operations** | `BomHeader` | `operations.bom_headers` | Bill of Materials header tied to finished goods. |
+| **Operations** | `BomLine` | `operations.bom_lines` | Component lines with quantity/UoM per BOM. |
 | **Finance** | `FinInvoice` | `finance.invoices` | Billing documents sent to customers. |
 | **Finance** | `FinAccountPayable` | `finance.accounts_payable` | Tracking money owed to vendors. |
 | **HRIS** | `HrisBranch` | `hris.branches` | Physical locations/branches of the company. |

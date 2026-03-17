@@ -35,6 +35,9 @@ export class Bom extends CommonEntity {
   parentMaterial: any;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
+  code?: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
   name?: string | null;
 
   @Column({ type: 'varchar', length: 20, default: '1.0' })
@@ -49,6 +52,20 @@ export class Bom extends CommonEntity {
 
   @Column({ type: 'boolean', name: 'is_active', default: true })
   isActive: boolean;
+
+  @Column({
+    type: 'timestamp without time zone',
+    name: 'effective_date',
+    nullable: true,
+  })
+  effectiveDate?: Date | null;
+
+  @Column({
+    type: 'timestamp without time zone',
+    name: 'expiry_date',
+    nullable: true,
+  })
+  expiryDate?: Date | null;
 
   // Relationships
   @OneToMany('BomItem', 'bom')

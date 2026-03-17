@@ -36,16 +36,19 @@ Build the foundational operational modules that drive daily business logic.
 - 🚧 **EPIC-05: HRIS API Completion** (partially delivered; parked)
   - Done: import/export entities, migrations, permissions, endpoints scaffold
   - Pending (parked): reporting/analytics, import/export workers & FilesService, notifications/webhooks, audit trail, API v2/docs (see tech-debt)
-- 📋 **EPIC-04: Operations Master Data** (next candidate)
-  - Material Master (Items, Stock levels)
-  - Bill of Materials (BOM / Recipes)
+- � **EPIC-04: Operations Master Data** (in progress; ~80% complete)
+  - Material Master (Items, Stock levels) - ✅ Complete
+  - Warehouse & Location Management - ✅ Complete
+  - Stock Ledger & Movements - ✅ Complete
+  - Bill of Materials (BOM) - 🚧 Entities done, APIs pending
+  - Costing & Availability - 📋 Pending
 
 ---
 
 ## 📦 Phase 3: Operational Modules
 *The modules that drive the actual day-to-day business tracking and supply chain.*
 
-### 📋 EPIC-05: Inventory & Asset Management
+### 📋 EPIC-07: Inventory & Asset Management
 - **Status**: Backlog
 - **Focus**: Tracking physical items, goods, and company assets.
 - **Key Features**:
@@ -54,7 +57,7 @@ Build the foundational operational modules that drive daily business logic.
   - Asset Flow: Assigning laptops/vehicles to `Employees` (depends on EPIC-03).
   - Goods Receipt and Issuance workflows.
 
-### 📋 EPIC-06: Operations & Procurement
+### 📋 EPIC-08: Operations & Procurement
 - **Status**: Backlog
 - **Focus**: Supply chain requests and vendor management.
 - **Key Features**:
@@ -68,7 +71,7 @@ Build the foundational operational modules that drive daily business logic.
 ## 💰 Phase 4: Financial Operations
 *The modules that track the flow of money, highly dependent on the operational modules.*
 
-### 📋 EPIC-07: Timekeeping & Payroll
+### 📋 EPIC-09: Timekeeping & Payroll
 - **Status**: Backlog
 - **Focus**: Compensating the workforce.
 - **Key Features**:
@@ -76,7 +79,7 @@ Build the foundational operational modules that drive daily business logic.
   - Dynamic payroll generation based on designations and attendance.
   - Payslip generation and portal viewing.
 
-### 📋 EPIC-08: Finance & Accounting (Core)
+### 📋 EPIC-10: Finance & Accounting (Core)
 - **Status**: Backlog
 - **Focus**: Bookkeeping and financial health tracking.
 - **Key Features**:
@@ -90,14 +93,14 @@ Build the foundational operational modules that drive daily business logic.
 ## 📈 Phase 5: Advanced Features & Analytics
 *Future-proofing and scaling the ERP.*
 
-### 📋 EPIC-09: Executive Dashboards & BI
+### 📋 EPIC-11: Executive Dashboards & BI
 - **Status**: Backlog
 - **Focus**: Data visualization for C-suite and Management.
 - **Key Features**:
   - Real-time widgets (Cash flow, Inventory valuation, Headcount).
   - Exportable custom reports (PDF/Excel).
 
-### 📋 EPIC-10: Notifications & Workflow Automation
+### 📋 EPIC-12: Notifications & Workflow Automation
 - **Status**: Backlog
 - **Focus**: Proactive alerting and system intelligence.
 - **Key Features**:
