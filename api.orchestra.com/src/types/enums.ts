@@ -46,3 +46,18 @@ export enum StockMovementType {
   TRANSFER_OUT = 'TRANSFER_OUT',
   ADJUSTMENT = 'ADJUSTMENT',
 }
+
+export enum CostingMethod {
+  STANDARD = 'STANDARD',
+  AVERAGE = 'AVERAGE',
+  FIFO = 'FIFO',
+  LIFO = 'LIFO',
+  ACTUAL = 'ACTUAL',
+}
+
+export enum CostComponentType {
+  MATERIAL = 'MATERIAL',
+  LABOR = 'LABOR',
+  OVERHEAD = 'OVERHEAD',
+  SCRAP = 'SCRAP',
+}

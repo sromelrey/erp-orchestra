@@ -1,0 +1,107 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### Create Material
+POST {{API_BASE_URL}}/v1/ops/materials
+Content-Type: application/json
+
+{
+    "sku": "RAW-001",
+    "name": "Steel Sheet 2mm",
+    "description": "Cold rolled steel sheet, 2mm thickness",
+    "materialType": "RAW",
+    "materialGroup": "METALS",
+    "baseUom": "KG",
+    "netWeight": 7.85,
+    "weightUom": "KG",
+    "isActive": true
+}
+
+###
+
+### List Materials (with filters)
+GET {{API_BASE_URL}}/v1/ops/materials?page=1&limit=20&materialType=RAW&isActive=true
+Content-Type: application/json
+
+###
+
+### Search Materials
+GET {{API_BASE_URL}}/v1/ops/materials?search=steel&page=1&limit=10
+Content-Type: application/json
+
+###
+
+### Get Material by ID
+GET {{API_BASE_URL}}/v1/ops/materials/1
+Content-Type: application/json
+
+###
+
+### Update Material
+PATCH {{API_BASE_URL}}/v1/ops/materials/1
+Content-Type: application/json
+
+{
+    "name": "Steel Sheet 2mm (Updated)",
+    "description": "Cold rolled steel sheet, 2mm thickness - updated specification"
+}
+
+###
+
+### Deactivate Material
+PATCH {{API_BASE_URL}}/v1/ops/materials/1
+Content-Type: application/json
+
+{
+    "isActive": false
+}
+
+###
+
+### Delete Material
+DELETE {{API_BASE_URL}}/v1/ops/materials/1
+Content-Type: application/json
+
+###
+
+### Create Another Material (Finished Goods)
+POST {{API_BASE_URL}}/v1/ops/materials
+Content-Type: application/json
+
+{
+    "sku": "FG-001",
+    "name": "Office Chair Model A",
+    "description": "Ergonomic office chair with lumbar support",
+    "materialType": "FINISHED",
+    "materialGroup": "FURNITURE",
+    "baseUom": "PCS",
+    "netWeight": 15.5,
+    "weightUom": "KG",
+    "isActive": true
+}
+
+###
+
+### List All Material Types
+GET {{API_BASE_URL}}/v1/ops/materials?limit=100
+Content-Type: application/json
+
+###
+
+### Filter by Material Group
+GET {{API_BASE_URL}}/v1/ops/materials?materialGroup=METALS
+Content-Type: application/json
+
+###
+
+### Get Inactive Materials
+GET {{API_BASE_URL}}/v1/ops/materials?isActive=false
+Content-Type: application/json

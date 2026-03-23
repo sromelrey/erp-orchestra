@@ -5,12 +5,20 @@ import { seeders } from './seeders';
 /**
  * Reset database: Truncate all tables and re-run seeders.
  * Usage: npm run db:reset
+ *        npm run db:reset -- <schema>   (e.g., operations, hris, system)
  *
  * WARNING: This will DELETE ALL DATA in the database!
  */
 async function resetDatabase() {
+  const argSchema = process.argv[2]?.trim();
+
   console.log('🔄 Starting database reset...\n');
-  console.log('⚠️  WARNING: This will DELETE ALL DATA!\n');
+  if (argSchema) {
+    console.log(`ℹ️  Target schema: ${argSchema}\n`);
+  } else {
+    console.log('ℹ️  Target: ALL configured schemas\n');
+  }
+  console.log('⚠️  WARNING: This will DELETE DATA in the target scope!\n');
 
   try {
     await SeederDataSource.initialize();
@@ -18,8 +26,17 @@ async function resetDatabase() {
 
     const queryRunner = SeederDataSource.createQueryRunner();
 
-    // List of schemas to truncate
-    const schemas = ['system', 'management', 'hris', 'finance', 'operations'];
+    // List of schemas to truncate (default)
+    const allSchemas = [
+      'system',
+      'management',
+      'hris',
+      'finance',
+      'operations',
+    ];
+
+    // If an arg is provided, restrict to that schema; otherwise, use all
+    const schemas = argSchema ? [argSchema] : allSchemas;
 
     console.log(
       '🗑️  Truncating all tables in schemas:',

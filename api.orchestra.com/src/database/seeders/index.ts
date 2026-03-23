@@ -20,7 +20,8 @@ export const seeders: Seeder[] = [
   PermissionsSeeder,
   StandardRolesSeeder,
   AdminUserSeeder,
-  UnitsOfMeasureSeeder,
-  MaterialsSeeder,
-  BomSeeder,
+  // * Operations Module Seeders
+  // UnitsOfMeasureSeeder,
+  // MaterialsSeeder,
+  // BomSeeder,
 ];

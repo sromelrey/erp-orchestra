@@ -13,8 +13,8 @@ POST {{API_BASE_URL}}/v1/ops/warehouses
 Content-Type: application/json
 
 {
-  "code": "WH-MNL",
-  "name": "Manila Fulfillment",
+  "code": "WH-CEB",
+  "name": "Liloan Head Quarter",
   "description": "Primary T-shirt printing warehouse",
   "isDefault": true
 }
@@ -28,7 +28,7 @@ PATCH {{API_BASE_URL}}/v1/ops/warehouses/1
 Content-Type: application/json
 
 {
-  "name": "Manila Fulfillment Hub",
+  "name": "Cebu Fulfillment Hub",
   "description": "Updated name for primary warehouse"
 }
 
@@ -47,6 +47,7 @@ GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations
 
 
 ### Record Stock Receipt
+### Use to log inbound quantities (signed positive) and update balances
 POST {{API_BASE_URL}}/v1/ops/stock-ledger
 Content-Type: application/json
 
@@ -64,5 +65,6 @@ Content-Type: application/json
 }
 
 ### List Stock Ledger Entries
+### Use to review movement history (ordered by document date / id)
 GET {{API_BASE_URL}}/v1/ops/stock-ledger
 
