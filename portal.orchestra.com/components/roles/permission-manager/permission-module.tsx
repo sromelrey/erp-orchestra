@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { FolderOpen } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { PermissionRow } from "./permission-row";
-import { PermissionModuleProps } from "./types";
+import * as React from 'react';
+import { FolderOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { PermissionRow } from './permission-row';
+import { PermissionModuleProps } from './types';
 
 /**
  * PermissionModule - Module section in the permission matrix
@@ -26,14 +26,14 @@ export function PermissionModule({
   resources,
   selectedPermissions,
   onTogglePermission,
-  searchQuery
+  searchQuery,
 }: PermissionModuleProps) {
   const [isExpanded, setIsExpanded] = React.useState(true);
 
   // Calculate filtered resources first (before any early returns)
   const filteredResources = React.useMemo(() => {
     if (!searchQuery) return resources;
-    return resources.filter(resource =>
+    return resources.filter((resource) =>
       resource.resource.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [resources, searchQuery]);
@@ -41,7 +41,7 @@ export function PermissionModule({
   // Calculate enabled count
   const enabledCount = React.useMemo(() => {
     return filteredResources.reduce((count, resource) => {
-      const enabledInResource = resource.permissions.filter(p => 
+      const enabledInResource = resource.permissions.filter((p) =>
         selectedPermissions.has(p.slug)
       ).length;
       return count + enabledInResource;
@@ -56,34 +56,42 @@ export function PermissionModule({
   return (
     <div className="space-y-4">
       {/* Module Header */}
-      <div className={cn(
-        "flex items-center justify-between p-3 rounded-lg border bg-muted/30",
-        "cursor-pointer hover:bg-muted/50 transition-colors"
-      )} onClick={() => setIsExpanded(!isExpanded)}>
+      <div
+        className={cn(
+          'flex items-center justify-between p-3 rounded-lg border bg-muted/30',
+          'cursor-pointer hover:bg-muted/50 transition-colors'
+        )}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
         <div className="flex items-center gap-3">
           <FolderOpen className="h-4 w-4 text-muted-foreground" />
           <div>
             <h3 className="font-semibold capitalize text-sm">{module}</h3>
             <p className="text-xs text-muted-foreground">
-              {filteredResources.length} resources • {enabledCount}/{totalPossible} permissions enabled
+              {filteredResources.length} resources • {enabledCount}/{totalPossible} permissions
+              enabled
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {/* Progress indicator */}
           <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-primary transition-all duration-300"
-              style={{ width: `${totalPossible > 0 ? (enabledCount / totalPossible) * 100 : 0}%` }}
+              style={{
+                width: `${totalPossible > 0 ? (enabledCount / totalPossible) * 100 : 0}%`,
+              }}
             />
           </div>
-          
+
           {/* Expand/collapse icon */}
-          <div className={cn(
-            "w-4 h-4 text-muted-foreground transition-transform duration-200",
-            isExpanded && "rotate-90"
-          )}>
+          <div
+            className={cn(
+              'w-4 h-4 text-muted-foreground transition-transform duration-200',
+              isExpanded && 'rotate-90'
+            )}
+          >
             ▶
           </div>
         </div>

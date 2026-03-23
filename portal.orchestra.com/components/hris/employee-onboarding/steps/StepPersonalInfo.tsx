@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { EmployeeOnboardingState } from "../EmployeeOnboardingWizard";
-import { Department, Designation, Branch } from "@/types";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { EmployeeOnboardingState } from '../EmployeeOnboardingWizard';
+import { Department, Designation, Branch } from '@/types';
 
 interface StepPersonalInfoProps {
   data: EmployeeOnboardingState;
@@ -18,8 +18,7 @@ interface StepPersonalInfoProps {
 
 export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
   const handleChange =
-    (field: keyof EmployeeOnboardingState["personalInfo"]) =>
-    (value: string) => {
+    (field: keyof EmployeeOnboardingState['personalInfo']) => (value: string) => {
       updateData({
         personalInfo: {
           ...data.personalInfo,
@@ -37,7 +36,7 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
             id="firstName"
             type="text"
             value={data.personalInfo.firstName}
-            onChange={(e) => handleChange("firstName")(e.target.value)}
+            onChange={(e) => handleChange('firstName')(e.target.value)}
             placeholder="Enter first name"
             required
           />
@@ -49,7 +48,7 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
             id="lastName"
             type="text"
             value={data.personalInfo.lastName}
-            onChange={(e) => handleChange("lastName")(e.target.value)}
+            onChange={(e) => handleChange('lastName')(e.target.value)}
             placeholder="Enter last name"
             required
           />
@@ -62,7 +61,7 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
           id="email"
           type="email"
           value={data.personalInfo.email}
-          onChange={(e) => handleChange("email")(e.target.value)}
+          onChange={(e) => handleChange('email')(e.target.value)}
           placeholder="Enter email address"
           required
         />
@@ -74,8 +73,8 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
           <Input
             id="phone"
             type="tel"
-            value={data.personalInfo.phone || ""}
-            onChange={(e) => handleChange("phone")(e.target.value)}
+            value={data.personalInfo.phone || ''}
+            onChange={(e) => handleChange('phone')(e.target.value)}
             placeholder="Enter phone number"
           />
         </div>
@@ -85,8 +84,8 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
           <Input
             id="birthdate"
             type="date"
-            value={data.personalInfo.birthdate || ""}
-            onChange={(e) => handleChange("birthdate")(e.target.value)}
+            value={data.personalInfo.birthdate || ''}
+            onChange={(e) => handleChange('birthdate')(e.target.value)}
           />
         </div>
       </div>
@@ -95,8 +94,8 @@ export function StepPersonalInfo({ data, updateData }: StepPersonalInfoProps) {
         <Label htmlFor="address">Address</Label>
         <Textarea
           id="address"
-          value={data.personalInfo.address || ""}
-          onChange={(e) => handleChange("address")(e.target.value)}
+          value={data.personalInfo.address || ''}
+          onChange={(e) => handleChange('address')(e.target.value)}
           placeholder="Enter address"
           rows={3}
         />

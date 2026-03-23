@@ -70,7 +70,7 @@ export const rolesApi = baseApi.injectEndpoints({
       query: ({ roleId, userIds }) => ({
         url: `/system/roles/${roleId}/users`,
         method: 'POST',
-        body: { userIds }, 
+        body: { userIds },
       }),
       invalidatesTags: (_result, _error, { roleId }) => [
         { type: 'Role', id: roleId },

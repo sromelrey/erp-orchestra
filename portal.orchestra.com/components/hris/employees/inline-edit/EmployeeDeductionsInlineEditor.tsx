@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { DeductionType, DeductionFrequency } from "@/store/api/compensationApi";
-import { Plus, Trash2, AlertCircle } from "lucide-react";
-import { DeductionsInlineEditorProps } from "./types";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { DeductionType, DeductionFrequency } from '@/store/api/compensationApi';
+import { Plus, Trash2, AlertCircle } from 'lucide-react';
+import { DeductionsInlineEditorProps } from './types';
 
 export function EmployeeDeductionsInlineEditor({
   employeeId,
@@ -28,42 +28,39 @@ export function EmployeeDeductionsInlineEditor({
   const handleFieldChange = (
     deductionIndex: number,
     field: string,
-    value: string | number | undefined,
+    value: string | number | undefined
   ) => {
     onUpdate(deductionIndex, { [field]: value });
   };
 
   const deductionTypeOptions = [
-    { value: DeductionType.FIXED, label: "Fixed", variant: "default" as const },
+    { value: DeductionType.FIXED, label: 'Fixed', variant: 'default' as const },
     {
       value: DeductionType.PERCENTAGE,
-      label: "Percentage",
-      variant: "secondary" as const,
+      label: 'Percentage',
+      variant: 'secondary' as const,
     },
     {
       value: DeductionType.RECURRING,
-      label: "Recurring",
-      variant: "outline" as const,
+      label: 'Recurring',
+      variant: 'outline' as const,
     },
     {
       value: DeductionType.VARIABLE,
-      label: "Variable",
-      variant: "destructive" as const,
+      label: 'Variable',
+      variant: 'destructive' as const,
     },
   ];
 
   const deductionFrequencyOptions = [
-    { value: DeductionFrequency.ONE_TIME, label: "One-Time" },
-    { value: DeductionFrequency.MONTHLY, label: "Monthly" },
-    { value: DeductionFrequency.QUARTERLY, label: "Quarterly" },
-    { value: DeductionFrequency.ANNUALLY, label: "Annually" },
+    { value: DeductionFrequency.ONE_TIME, label: 'One-Time' },
+    { value: DeductionFrequency.MONTHLY, label: 'Monthly' },
+    { value: DeductionFrequency.QUARTERLY, label: 'Quarterly' },
+    { value: DeductionFrequency.ANNUALLY, label: 'Annually' },
   ];
 
   const getTypeConfig = (type: DeductionType) => {
-    return (
-      deductionTypeOptions.find((option) => option.value === type) ||
-      deductionTypeOptions[0]
-    );
+    return deductionTypeOptions.find((option) => option.value === type) || deductionTypeOptions[0];
   };
 
   return (
@@ -72,17 +69,10 @@ export function EmployeeDeductionsInlineEditor({
         <CardTitle className="text-lg flex items-center justify-between">
           <span className="flex items-center gap-2">
             📋 Deductions
-            {deductions.length > 0 && (
-              <Badge variant="outline">{deductions.length}</Badge>
-            )}
+            {deductions.length > 0 && <Badge variant="outline">{deductions.length}</Badge>}
           </span>
           {isEditing && (
-            <Button
-              onClick={onAdd}
-              size="sm"
-              variant="outline"
-              className="gap-2"
-            >
+            <Button onClick={onAdd} size="sm" variant="outline" className="gap-2">
               <Plus className="h-4 w-4" />
               Add Deduction
             </Button>
@@ -109,9 +99,7 @@ export function EmployeeDeductionsInlineEditor({
             {isEditing ? (
               <div>
                 <p>No deductions configured</p>
-                <p className="text-sm">
-                  Click &quot;Add Deduction&quot; to get started
-                </p>
+                <p className="text-sm">Click &quot;Add Deduction&quot; to get started</p>
               </div>
             ) : (
               <p>No deductions configured</p>
@@ -126,9 +114,7 @@ export function EmployeeDeductionsInlineEditor({
                     <Badge variant={getTypeConfig(deduction.type).variant}>
                       {getTypeConfig(deduction.type).label}
                     </Badge>
-                    {deduction.name && (
-                      <span className="font-medium">{deduction.name}</span>
-                    )}
+                    {deduction.name && <span className="font-medium">{deduction.name}</span>}
                   </div>
                   {isEditing && (
                     <Button
@@ -144,16 +130,12 @@ export function EmployeeDeductionsInlineEditor({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor={`deduction-name-${employeeId}-${index}`}>
-                      Name
-                    </Label>
+                    <Label htmlFor={`deduction-name-${employeeId}-${index}`}>Name</Label>
                     <Input
                       id={`deduction-name-${employeeId}-${index}`}
                       type="text"
-                      value={deduction.name || ""}
-                      onChange={(e) =>
-                        handleFieldChange(index, "name", e.target.value)
-                      }
+                      value={deduction.name || ''}
+                      onChange={(e) => handleFieldChange(index, 'name', e.target.value)}
                       placeholder="e.g., SSS, PhilHealth"
                       disabled={!isEditing}
                       className="mt-1"
@@ -161,14 +143,10 @@ export function EmployeeDeductionsInlineEditor({
                   </div>
 
                   <div>
-                    <Label htmlFor={`deduction-type-${employeeId}-${index}`}>
-                      Type
-                    </Label>
+                    <Label htmlFor={`deduction-type-${employeeId}-${index}`}>Type</Label>
                     <Select
                       value={deduction.type}
-                      onValueChange={(value) =>
-                        handleFieldChange(index, "type", value)
-                      }
+                      onValueChange={(value) => handleFieldChange(index, 'type', value)}
                       disabled={!isEditing}
                     >
                       <SelectTrigger className="mt-1">
@@ -185,16 +163,10 @@ export function EmployeeDeductionsInlineEditor({
                   </div>
 
                   <div>
-                    <Label
-                      htmlFor={`deduction-frequency-${employeeId}-${index}`}
-                    >
-                      Frequency
-                    </Label>
+                    <Label htmlFor={`deduction-frequency-${employeeId}-${index}`}>Frequency</Label>
                     <Select
                       value={deduction.frequency}
-                      onValueChange={(value) =>
-                        handleFieldChange(index, "frequency", value)
-                      }
+                      onValueChange={(value) => handleFieldChange(index, 'frequency', value)}
                       disabled={!isEditing}
                     >
                       <SelectTrigger className="mt-1">
@@ -213,20 +185,16 @@ export function EmployeeDeductionsInlineEditor({
                   {deduction.type === DeductionType.FIXED ||
                   deduction.type === DeductionType.RECURRING ? (
                     <div>
-                      <Label
-                        htmlFor={`deduction-amount-${employeeId}-${index}`}
-                      >
-                        Amount
-                      </Label>
+                      <Label htmlFor={`deduction-amount-${employeeId}-${index}`}>Amount</Label>
                       <Input
                         id={`deduction-amount-${employeeId}-${index}`}
                         type="number"
-                        value={deduction.amount || ""}
+                        value={deduction.amount || ''}
                         onChange={(e) =>
                           handleFieldChange(
                             index,
-                            "amount",
-                            e.target.value ? Number(e.target.value) : undefined,
+                            'amount',
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                         placeholder="0.00"
@@ -238,20 +206,18 @@ export function EmployeeDeductionsInlineEditor({
 
                   {deduction.type === DeductionType.PERCENTAGE ? (
                     <div>
-                      <Label
-                        htmlFor={`deduction-percentage-${employeeId}-${index}`}
-                      >
+                      <Label htmlFor={`deduction-percentage-${employeeId}-${index}`}>
                         Percentage (%)
                       </Label>
                       <Input
                         id={`deduction-percentage-${employeeId}-${index}`}
                         type="number"
-                        value={deduction.percentage || ""}
+                        value={deduction.percentage || ''}
                         onChange={(e) =>
                           handleFieldChange(
                             index,
-                            "percentage",
-                            e.target.value ? Number(e.target.value) : undefined,
+                            'percentage',
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                         placeholder="0"
@@ -264,43 +230,27 @@ export function EmployeeDeductionsInlineEditor({
                   ) : null}
 
                   <div>
-                    <Label
-                      htmlFor={`deduction-effective-date-${employeeId}-${index}`}
-                    >
+                    <Label htmlFor={`deduction-effective-date-${employeeId}-${index}`}>
                       Effective Date
                     </Label>
                     <Input
                       id={`deduction-effective-date-${employeeId}-${index}`}
                       type="date"
-                      value={deduction.effectiveDate || ""}
-                      onChange={(e) =>
-                        handleFieldChange(
-                          index,
-                          "effectiveDate",
-                          e.target.value,
-                        )
-                      }
+                      value={deduction.effectiveDate || ''}
+                      onChange={(e) => handleFieldChange(index, 'effectiveDate', e.target.value)}
                       disabled={!isEditing}
                       className="mt-1"
                     />
                   </div>
 
                   <div>
-                    <Label
-                      htmlFor={`deduction-end-date-${employeeId}-${index}`}
-                    >
-                      End Date
-                    </Label>
+                    <Label htmlFor={`deduction-end-date-${employeeId}-${index}`}>End Date</Label>
                     <Input
                       id={`deduction-end-date-${employeeId}-${index}`}
                       type="date"
-                      value={deduction.endDate || ""}
+                      value={deduction.endDate || ''}
                       onChange={(e) =>
-                        handleFieldChange(
-                          index,
-                          "endDate",
-                          e.target.value || undefined,
-                        )
+                        handleFieldChange(index, 'endDate', e.target.value || undefined)
                       }
                       placeholder="Leave empty for ongoing"
                       disabled={!isEditing}
@@ -309,21 +259,15 @@ export function EmployeeDeductionsInlineEditor({
                   </div>
 
                   <div className="md:col-span-2 lg:col-span-3">
-                    <Label
-                      htmlFor={`deduction-description-${employeeId}-${index}`}
-                    >
+                    <Label htmlFor={`deduction-description-${employeeId}-${index}`}>
                       Description
                     </Label>
                     <Input
                       id={`deduction-description-${employeeId}-${index}`}
                       type="text"
-                      value={deduction.description || ""}
+                      value={deduction.description || ''}
                       onChange={(e) =>
-                        handleFieldChange(
-                          index,
-                          "description",
-                          e.target.value || undefined,
-                        )
+                        handleFieldChange(index, 'description', e.target.value || undefined)
                       }
                       placeholder="Optional description"
                       disabled={!isEditing}

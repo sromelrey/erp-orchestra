@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 export function usePermissionSelection(initialPermissions: number[] = []) {
   const [selectedIds, setSelectedIds] = useState<number[]>(initialPermissions);
@@ -18,9 +18,7 @@ export function usePermissionSelection(initialPermissions: number[] = []) {
 
     if (allSelected) {
       // Deselect all in module
-      setSelectedIds((prev) =>
-        prev.filter((id) => !modulePermissionIds.includes(id))
-      );
+      setSelectedIds((prev) => prev.filter((id) => !modulePermissionIds.includes(id)));
     } else {
       // Select all in module
       setSelectedIds((prev) => [
@@ -35,9 +33,7 @@ export function usePermissionSelection(initialPermissions: number[] = []) {
 
     if (allSelected) {
       // Deselect all filtered
-      setSelectedIds((prev) =>
-        prev.filter((id) => !filteredPermissionIds.includes(id))
-      );
+      setSelectedIds((prev) => prev.filter((id) => !filteredPermissionIds.includes(id)));
     } else {
       // Select all filtered
       setSelectedIds((prev) => [
@@ -52,9 +48,7 @@ export function usePermissionSelection(initialPermissions: number[] = []) {
 
     if (allSelected) {
       // Deselect all of this action type
-      setSelectedIds((prev) =>
-        prev.filter((id) => !actionPermissionIds.includes(id))
-      );
+      setSelectedIds((prev) => prev.filter((id) => !actionPermissionIds.includes(id)));
     } else {
       // Select all of this action type
       setSelectedIds((prev) => [

@@ -2,9 +2,13 @@
 
 import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
-import { selectUserPermissions, selectIsAuthenticated, selectIsInitialized, selectCurrentUser } from '@/store/slices/authSlice';
+import {
+  selectUserPermissions,
+  selectIsAuthenticated,
+  selectIsInitialized,
+  selectCurrentUser,
+} from '@/store/slices/authSlice';
 import { useRouter } from 'next/navigation';
-
 
 interface HasPermissionProps {
   /**
@@ -52,7 +56,7 @@ export function HasPermission({
   const isInitialized = useSelector(selectIsInitialized);
   const userPermissions = useSelector(selectUserPermissions);
   const user = useSelector(selectCurrentUser);
-  
+
   // Wait for the AuthInit /auth/me call to complete before evaluating permissions.
   // Without this, full-page refreshes instantly fail because Redux starts empty.
   if (!isInitialized) {
@@ -68,9 +72,7 @@ export function HasPermission({
   // For now, we focus on permission gating as the primary shield
   const hasFeatureAccess = true; // Placeholder for future feature-gating logic
 
-  const hasPermissionAccess = permission 
-    ? userPermissions.includes(permission) 
-    : true;
+  const hasPermissionAccess = permission ? userPermissions.includes(permission) : true;
 
   const hasAccess = isAuthenticated && hasFeatureAccess && hasPermissionAccess;
 
@@ -80,13 +82,13 @@ export function HasPermission({
       router.push('/login');
       return null;
     }
-    
+
     // If they are logged in but lack the specific permission, go to the specified redirect path
     if (redirectTo) {
       router.push(redirectTo);
       return null;
     }
-    
+
     return <>{fallback}</>;
   }
 

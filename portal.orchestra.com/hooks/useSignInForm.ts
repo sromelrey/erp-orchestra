@@ -9,7 +9,7 @@ import { AuthResponse } from '@/types';
 export const useSignInForm = () => {
   const dispatch = useDispatch();
   const authError = useSelector(selectAuthError);
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -36,7 +36,7 @@ export const useSignInForm = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear field-specific error when user types
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({
@@ -44,7 +44,7 @@ export const useSignInForm = () => {
         [name]: undefined,
       }));
     }
-    
+
     // Clear global auth error when user starts typing again
     if (authError) {
       dispatch(setAuthError(null));
@@ -76,12 +76,12 @@ export const useSignInForm = () => {
     try {
       const result: AuthResponse = await login(formData).unwrap();
       console.log('[Login] API Response:', result);
-      
+
       // Set role cookie for middleware to use
       const role = result.roles?.[0] || 'ADMIN';
       console.log('[Login] Setting cookie with role:', role);
       document.cookie = `user_role=${role}; path=/; max-age=86400; SameSite=Lax`;
-      
+
       dispatch(setCredentials({ user: result }));
       console.log('[Login] Redirecting to /system/dashboard...');
       // Use hard navigation to ensure middleware can read the new cookie

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Cross } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { PermissionSidebarProps } from "./types";
+import * as React from 'react';
+import { Cross } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { PermissionSidebarProps } from './types';
 
 /**
  * PermissionSidebar - Module navigation sidebar for permission management
@@ -35,13 +35,8 @@ export function PermissionSidebar({
       <div className="p-4 border-b">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-muted-foreground">Modules</h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onToggleFullscreen}
-            className="lg:hidden"
-          >
-            {isFullscreen ? <Cross className="h-4 w-4" /> : "Fullscreen"}
+          <Button variant="ghost" size="sm" onClick={onToggleFullscreen} className="lg:hidden">
+            {isFullscreen ? <Cross className="h-4 w-4" /> : 'Fullscreen'}
           </Button>
         </div>
       </div>
@@ -55,10 +50,10 @@ export function PermissionSidebar({
               <button
                 onClick={() => onModuleSelect(module)}
                 className={cn(
-                  "w-full text-left p-3 rounded-lg border transition-colors",
+                  'w-full text-left p-3 rounded-lg border transition-colors',
                   isSelected
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "hover:bg-accent hover:text-accent-foreground border-border"
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'hover:bg-accent hover:text-accent-foreground border-border'
                 )}
               >
                 <div className="flex items-center justify-between w-full">
@@ -70,9 +65,7 @@ export function PermissionSidebar({
                       </Badge>
                     )}
                   </div>
-                  {isSelected && (
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                  )}
+                  {isSelected && <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />}
                 </div>
               </button>
             </div>

@@ -1,26 +1,26 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { EntityManager } from "@/components/entity-manager";
-import { columns as baseColumns } from "./column";
-import { userFormFields } from "./form-fields";
-import { Users as UsersIcon, UserCog, Shield } from "lucide-react";
+import { EntityManager } from '@/components/entity-manager';
+import { columns as baseColumns } from './column';
+import { userFormFields } from './form-fields';
+import { Users as UsersIcon, UserCog, Shield } from 'lucide-react';
 import {
   useGetUsersQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
-} from "@/store/api/usersApi";
-import { toast } from "sonner";
-import { UserRolesManager } from "@/components/users/UserRolesManager";
-import { UserPermissionManager } from "@/components/users/UserPermissionManager";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Column } from "@/components/ui/data-table";
-import { PermissionGuard } from "@/components/auth/PermissionGuard";
-import { HasPermission } from "@/components/auth/HasPermission";
-import { User, CreateUserRequest, UpdateUserRequest } from "@/types";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/store/api/usersApi';
+import { toast } from 'sonner';
+import { UserRolesManager } from '@/components/users/UserRolesManager';
+import { UserPermissionManager } from '@/components/users/UserPermissionManager';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Column } from '@/components/ui/data-table';
+import { PermissionGuard } from '@/components/auth/PermissionGuard';
+import { HasPermission } from '@/components/auth/HasPermission';
+import { User, CreateUserRequest, UpdateUserRequest } from '@/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
@@ -40,35 +40,38 @@ export default function UsersPage() {
 
   const stats = [
     {
-      label: "Total Users",
+      label: 'Total Users',
       value: users.length,
       icon: UsersIcon,
-      color: "bg-primary/10 text-primary",
+      color: 'bg-primary/10 text-primary',
     },
     {
-      label: "Active Users",
+      label: 'Active Users',
       value: users.filter((u: User) => u.status === 'ACTIVE').length,
       icon: UsersIcon,
-      color: "bg-green-500/10 text-green-600",
+      color: 'bg-green-500/10 text-green-600',
     },
   ];
 
   const handleCreate = async (formData: Partial<User>) => {
     try {
       await createUser(formData as unknown as CreateUserRequest).unwrap();
-      toast.success("User created successfully");
+      toast.success('User created successfully');
     } catch (error) {
-      toast.error("Failed to create user");
+      toast.error('Failed to create user');
       throw error;
     }
   };
 
   const handleUpdate = async (id: string | number, formData: Partial<User>) => {
     try {
-      await updateUser({ id: Number(id), ...(formData as unknown as Omit<UpdateUserRequest, 'id'>) }).unwrap();
-      toast.success("User updated successfully");
+      await updateUser({
+        id: Number(id),
+        ...(formData as unknown as Omit<UpdateUserRequest, 'id'>),
+      }).unwrap();
+      toast.success('User updated successfully');
     } catch (error) {
-      toast.error("Failed to update user");
+      toast.error('Failed to update user');
       throw error;
     }
   };
@@ -76,9 +79,9 @@ export default function UsersPage() {
   const handleDelete = async (id: string | number) => {
     try {
       await deleteUser(Number(id)).unwrap();
-      toast.success("User deleted successfully");
+      toast.success('User deleted successfully');
     } catch (error) {
-      toast.error("Failed to delete user");
+      toast.error('Failed to delete user');
       throw error;
     }
   };
@@ -98,8 +101,8 @@ export default function UsersPage() {
     return [
       ...baseColumns,
       {
-        header: "Manage",
-        className: "text-center",
+        header: 'Manage',
+        className: 'text-center',
         cell: (item: User) => (
           <HasPermission permission="system.user.manage">
             <div className="flex gap-2 justify-center">
@@ -144,10 +147,10 @@ export default function UsersPage() {
         searchPlaceholder="Search users..."
         isLoading={isLoading}
         permissions={{
-          create: "system.user.manage",
-          update: "system.user.manage",
-          delete: "system.user.manage",
-          view: "system.user.view",
+          create: 'system.user.manage',
+          update: 'system.user.manage',
+          delete: 'system.user.manage',
+          view: 'system.user.view',
         }}
       />
 
@@ -166,10 +169,7 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={isPermissionDialogOpen}
-        onOpenChange={setIsPermissionDialogOpen}
-      >
+      <Dialog open={isPermissionDialogOpen} onOpenChange={setIsPermissionDialogOpen}>
         <DialogContent className="min-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Manage User Permissions</DialogTitle>

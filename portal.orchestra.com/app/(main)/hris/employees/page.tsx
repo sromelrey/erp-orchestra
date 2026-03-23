@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Users, Save, X, AlertCircle } from "lucide-react";
-import { EntityManager } from "@/components/entity-manager";
-import { Button } from "@/components/ui/button";
-import { PermissionGuard } from "@/components/auth/PermissionGuard";
-import { HasPermission } from "@/components/auth/HasPermission";
-import { columns } from "./column";
-import { useEmployee } from "@/hooks/hris/useEmployee";
+import { Users, Save, X, AlertCircle } from 'lucide-react';
+import { EntityManager } from '@/components/entity-manager';
+import { Button } from '@/components/ui/button';
+import { PermissionGuard } from '@/components/auth/PermissionGuard';
+import { HasPermission } from '@/components/auth/HasPermission';
+import { columns } from './column';
+import { useEmployee } from '@/hooks/hris/useEmployee';
 
 export default function EmployeesPage() {
   const {
@@ -51,12 +51,7 @@ export default function EmployeesPage() {
               </div>
               <div className="flex items-center gap-2">
                 <HasPermission permission="hris.compensation.manage">
-                  <Button
-                    onClick={handleBulkDiscard}
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                  >
+                  <Button onClick={handleBulkDiscard} variant="outline" size="sm" className="gap-2">
                     <X className="h-4 w-4" />
                     Discard All
                   </Button>

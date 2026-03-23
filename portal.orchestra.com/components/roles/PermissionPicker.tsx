@@ -64,13 +64,16 @@ export function PermissionPicker({
   onChange,
 }: PermissionPickerProps) {
   // Group permissions by module
-  const groupedPermissions = permissions.reduce((acc, permission) => {
-    if (!acc[permission.module]) {
-      acc[permission.module] = [];
-    }
-    acc[permission.module].push(permission);
-    return acc;
-  }, {} as Record<string, Permission[]>);
+  const groupedPermissions = permissions.reduce(
+    (acc, permission) => {
+      if (!acc[permission.module]) {
+        acc[permission.module] = [];
+      }
+      acc[permission.module].push(permission);
+      return acc;
+    },
+    {} as Record<string, Permission[]>
+  );
 
   const handleToggle = (permissionId: number) => {
     const newSelected = selectedPermissionIds.includes(permissionId)
@@ -79,29 +82,20 @@ export function PermissionPicker({
     onChange(newSelected);
   };
 
-  const handleSelectAllModule = (
-    module: string,
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleSelectAllModule = (module: string, e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation(); // Prevent Accordion from toggling
     e.preventDefault();
 
     const modulePermissions = groupedPermissions[module];
     const modulePermissionIds = modulePermissions.map((p) => p.id);
-    const allSelected = modulePermissionIds.every((id) =>
-      selectedPermissionIds.includes(id)
-    );
+    const allSelected = modulePermissionIds.every((id) => selectedPermissionIds.includes(id));
 
     if (allSelected) {
-      onChange(
-        selectedPermissionIds.filter((id) => !modulePermissionIds.includes(id))
-      );
+      onChange(selectedPermissionIds.filter((id) => !modulePermissionIds.includes(id)));
     } else {
       const newSelected = [
         ...selectedPermissionIds,
-        ...modulePermissionIds.filter(
-          (id) => !selectedPermissionIds.includes(id)
-        ),
+        ...modulePermissionIds.filter((id) => !selectedPermissionIds.includes(id)),
       ];
       onChange(newSelected);
     }
@@ -113,9 +107,7 @@ export function PermissionPicker({
     const openModules: string[] = [];
     Object.entries(groupedPermissions).forEach(([module, modulePermissions]) => {
       const modulePermissionIds = modulePermissions.map((p) => p.id);
-      const someSelected = modulePermissionIds.some((id) =>
-        selectedPermissionIds.includes(id)
-      );
+      const someSelected = modulePermissionIds.some((id) => selectedPermissionIds.includes(id));
       if (someSelected) {
         openModules.push(module);
       }
@@ -129,29 +121,18 @@ export function PermissionPicker({
 
   return (
     <div className="space-y-4">
-      <Accordion
-        type="multiple"
-        defaultValue={getDefaultValue()}
-        className="w-full space-y-4"
-      >
+      <Accordion type="multiple" defaultValue={getDefaultValue()} className="w-full space-y-4">
         {Object.entries(groupedPermissions).map(([module, modulePermissions]) => {
           const modulePermissionIds = modulePermissions.map((p) => p.id);
-          const allSelected = modulePermissionIds.every((id) =>
-            selectedPermissionIds.includes(id)
-          );
+          const allSelected = modulePermissionIds.every((id) => selectedPermissionIds.includes(id));
           const someSelected =
-            !allSelected &&
-            modulePermissionIds.some((id) => selectedPermissionIds.includes(id));
+            !allSelected && modulePermissionIds.some((id) => selectedPermissionIds.includes(id));
           const selectedCount = modulePermissionIds.filter((id) =>
             selectedPermissionIds.includes(id)
           ).length;
 
           return (
-            <AccordionItem
-              value={module}
-              key={module}
-              className="border rounded-lg bg-card px-4"
-            >
+            <AccordionItem value={module} key={module} className="border rounded-lg bg-card px-4">
               <AccordionTrigger className="hover:no-underline py-4">
                 <div className="flex items-center justify-between w-full pr-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -188,9 +169,7 @@ export function PermissionPicker({
               <AccordionContent className="pt-2 pb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {modulePermissions.map((permission) => {
-                    const isChecked = selectedPermissionIds.includes(
-                      permission.id
-                    );
+                    const isChecked = selectedPermissionIds.includes(permission.id);
                     return (
                       <Label
                         key={permission.id}
@@ -209,10 +188,7 @@ export function PermissionPicker({
                         />
                         <div className="grid gap-1.5 leading-none min-w-0">
                           <span className="text-sm font-medium leading-none select-none">
-                            {formatPermissionLabel(
-                              permission.resource,
-                              permission.action
-                            )}
+                            {formatPermissionLabel(permission.resource, permission.action)}
                           </span>
                           <div className="flex items-center gap-2 flex-wrap">
                             <Badge

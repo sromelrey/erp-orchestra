@@ -3,14 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useGetAttendanceStatusQuery, useClockInMutation, useClockOutMutation } from '@/store/api/attendanceApi';
+import {
+  useGetAttendanceStatusQuery,
+  useClockInMutation,
+  useClockOutMutation,
+} from '@/store/api/attendanceApi';
 import { Loader2, MapPin, Clock, LogIn, LogOut, CheckCircle2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/types';
 
 export const TimeClock = () => {
-  const { data: status, isLoading, isError } = useGetAttendanceStatusQuery();
+  const { data: status, isLoading } = useGetAttendanceStatusQuery();
   const [clockIn, { isLoading: isClockingIn }] = useClockInMutation();
   const [clockOut, { isLoading: isClockingOut }] = useClockOutMutation();
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -24,14 +29,16 @@ export const TimeClock = () => {
   const handleClockAction = async (action: 'IN' | 'OUT') => {
     if (isProcessing) return;
     setIsProcessing(true);
-    
+
     try {
       // Basic location capture (optional but good practice)
       let location = undefined;
       if ('geolocation' in navigator) {
         try {
           const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              timeout: 5000,
+            });
           });
           location = {
             lat: position.coords.latitude,
@@ -50,8 +57,8 @@ export const TimeClock = () => {
         await clockOut({ location, deviceInfo: navigator.userAgent }).unwrap();
         toast.success('Successfully clocked out!');
       }
-    } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to record attendance');
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err) || 'Failed to record attendance');
     } finally {
       setIsProcessing(false);
     }
@@ -76,9 +83,7 @@ export const TimeClock = () => {
               <Clock className="h-6 w-6 text-primary" />
               Time Clock
             </CardTitle>
-            <CardDescription>
-              {format(currentTime, 'EEEE, MMMM do, yyyy')}
-            </CardDescription>
+            <CardDescription>{format(currentTime, 'EEEE, MMMM do, yyyy')}</CardDescription>
           </div>
           <Badge variant={isClockedIn ? 'default' : 'secondary'} className="px-3 py-1">
             {isClockedIn ? 'Clocked In' : 'Clocked Out'}

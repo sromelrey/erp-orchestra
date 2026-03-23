@@ -1,11 +1,17 @@
 import { baseApi } from './baseApi';
 
+export interface Location {
+  lat: number;
+  lng: number;
+  accuracy?: number;
+}
+
 export interface TimeEvent {
   id: number;
   employeeId: number;
   type: 'CLOCK_IN' | 'CLOCK_OUT';
   timestamp: string;
-  location?: { lat: number; lng: number; accuracy?: number };
+  location?: Location;
   ipAddress?: string;
   deviceInfo?: string;
 }
@@ -22,7 +28,7 @@ export const attendanceApi = baseApi.injectEndpoints({
       query: () => '/hris/attendance/status',
       providesTags: ['Attendance'],
     }),
-    clockIn: builder.mutation<TimeEvent, { location?: any; deviceInfo?: string }>({
+    clockIn: builder.mutation<TimeEvent, { location?: Location; deviceInfo?: string }>({
       query: (body) => ({
         url: '/hris/attendance/clock-in',
         method: 'POST',
@@ -30,7 +36,7 @@ export const attendanceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Attendance'],
     }),
-    clockOut: builder.mutation<TimeEvent, { location?: any; deviceInfo?: string }>({
+    clockOut: builder.mutation<TimeEvent, { location?: Location; deviceInfo?: string }>({
       query: (body) => ({
         url: '/hris/attendance/clock-out',
         method: 'POST',

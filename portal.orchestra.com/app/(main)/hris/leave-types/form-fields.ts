@@ -1,4 +1,4 @@
-import { FormField } from "@/components/entity-manager/types";
+import { FormField } from '@/components/entity-manager/types';
 
 export const formFields: FormField[] = [
   {
@@ -38,7 +38,7 @@ export const formFields: FormField[] = [
     type: 'number',
     required: true,
     defaultValue: 0,
-    placeholder: 'e.g. 3 for 3 days advance'
+    placeholder: 'e.g. 3 for 3 days advance',
   },
   {
     name: 'allowPastDates',

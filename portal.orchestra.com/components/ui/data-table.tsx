@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/table';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface Column<T> {
   header: string;
@@ -31,12 +31,10 @@ export function DataTable<T>({
   columns,
   data,
   keyExtractor,
-  emptyMessage = "No results.",
+  emptyMessage = 'No results.',
   expandedRow,
 }: DataTableProps<T>) {
-  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(
-    new Set(),
-  );
+  const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
 
   const toggleRow = (key: string | number) => {
     setExpandedRows((prev) => {
@@ -54,8 +52,8 @@ export function DataTable<T>({
   const tableColumns = expandedRow
     ? [
         {
-          header: "",
-          className: "w-8",
+          header: '',
+          className: 'w-8',
           cell: (row: T) => {
             const key = keyExtractor(row);
             const isExpanded = expandedRows.has(key);
@@ -104,18 +102,15 @@ export function DataTable<T>({
                       <TableCell key={index} className={column.className}>
                         {column.cell
                           ? column.cell(row)
-                          : "accessorKey" in column && column.accessorKey
-                            ? String(row[column.accessorKey] ?? "")
+                          : 'accessorKey' in column && column.accessorKey
+                            ? String(row[column.accessorKey] ?? '')
                             : null}
                       </TableCell>
                     ))}
                   </TableRow>
                   {expandedRow && isExpanded && (
                     <TableRow>
-                      <TableCell
-                        colSpan={tableColumns.length}
-                        className="p-0 bg-gray-50"
-                      >
+                      <TableCell colSpan={tableColumns.length} className="p-0 bg-gray-50">
                         <div className="p-4">{expandedRow(row)}</div>
                       </TableCell>
                     </TableRow>
@@ -125,10 +120,7 @@ export function DataTable<T>({
             })
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={tableColumns.length}
-                className="h-24 text-center"
-              >
+              <TableCell colSpan={tableColumns.length} className="h-24 text-center">
                 {emptyMessage}
               </TableCell>
             </TableRow>

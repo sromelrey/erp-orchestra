@@ -125,9 +125,7 @@ export const compensationApi = baseApi.injectEndpoints({
     // Compensation endpoints
     getEmployeeCompensation: builder.query<EmployeeCompensation[], number>({
       query: (employeeId) => `/hris/employees/${employeeId}/compensation`,
-      providesTags: (result, error, employeeId) => [
-        { type: 'Compensation', id: employeeId },
-      ],
+      providesTags: (result, error, employeeId) => [{ type: 'Compensation', id: employeeId }],
     }),
 
     createEmployeeCompensation: builder.mutation<
@@ -158,10 +156,7 @@ export const compensationApi = baseApi.injectEndpoints({
       ],
     }),
 
-    deleteEmployeeCompensation: builder.mutation<
-      void,
-      { employeeId: number; id: number }
-    >({
+    deleteEmployeeCompensation: builder.mutation<void, { employeeId: number; id: number }>({
       query: ({ employeeId, id }) => ({
         url: `/hris/employees/${employeeId}/compensation/${id}`,
         method: 'DELETE',
@@ -189,9 +184,7 @@ export const compensationApi = baseApi.injectEndpoints({
     // Deduction endpoints
     getEmployeeDeductions: builder.query<EmployeeDeduction[], number>({
       query: (employeeId) => `/hris/employees/${employeeId}/deductions`,
-      providesTags: (result, error, employeeId) => [
-        { type: 'Deductions', id: employeeId },
-      ],
+      providesTags: (result, error, employeeId) => [{ type: 'Deductions', id: employeeId }],
     }),
 
     createEmployeeDeduction: builder.mutation<
@@ -203,9 +196,7 @@ export const compensationApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (result, error, { employeeId }) => [
-        { type: 'Deductions', id: employeeId },
-      ],
+      invalidatesTags: (result, error, { employeeId }) => [{ type: 'Deductions', id: employeeId }],
     }),
 
     updateEmployeeDeduction: builder.mutation<
@@ -217,30 +208,19 @@ export const compensationApi = baseApi.injectEndpoints({
         method: 'PUT',
         body,
       }),
-      invalidatesTags: (result, error, { employeeId }) => [
-        { type: 'Deductions', id: employeeId },
-      ],
+      invalidatesTags: (result, error, { employeeId }) => [{ type: 'Deductions', id: employeeId }],
     }),
 
-    deleteEmployeeDeduction: builder.mutation<
-      void,
-      { employeeId: number; id: number }
-    >({
+    deleteEmployeeDeduction: builder.mutation<void, { employeeId: number; id: number }>({
       query: ({ employeeId, id }) => ({
         url: `/hris/employees/${employeeId}/deductions/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, { employeeId }) => [
-        { type: 'Deductions', id: employeeId },
-      ],
+      invalidatesTags: (result, error, { employeeId }) => [{ type: 'Deductions', id: employeeId }],
     }),
 
-    calculateDeductions: builder.query<
-      DeductionCalculation,
-      { employeeId: number; date: string }
-    >({
-      query: ({ employeeId, date }) =>
-        `/hris/employees/${employeeId}/deductions/calculate/${date}`,
+    calculateDeductions: builder.query<DeductionCalculation, { employeeId: number; date: string }>({
+      query: ({ employeeId, date }) => `/hris/employees/${employeeId}/deductions/calculate/${date}`,
     }),
   }),
 });

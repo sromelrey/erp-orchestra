@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 /**
  * PermissionToggle - Individual toggle button for permission actions
@@ -27,7 +27,7 @@ export function PermissionToggle({ enabled, onChange, action }: PermissionToggle
     if (!enabled) {
       return 'bg-muted border-border';
     }
-    
+
     switch (action) {
       case 'view':
         return 'bg-sky-500 border-sky-600 hover:bg-sky-600';
@@ -48,9 +48,9 @@ export function PermissionToggle({ enabled, onChange, action }: PermissionToggle
     <button
       onClick={onChange}
       className={cn(
-        "w-12 h-6 rounded-full border-2 transition-all duration-200",
-        "relative flex items-center shrink-0",
-        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+        'w-12 h-6 rounded-full border-2 transition-all duration-200',
+        'relative flex items-center shrink-0',
+        'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
         getActionColors(action, enabled)
       )}
       aria-pressed={enabled}
@@ -58,8 +58,8 @@ export function PermissionToggle({ enabled, onChange, action }: PermissionToggle
     >
       <div
         className={cn(
-          "w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200",
-          enabled ? "translate-x-6" : "translate-x-1"
+          'w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200',
+          enabled ? 'translate-x-6' : 'translate-x-1'
         )}
       />
     </button>

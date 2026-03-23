@@ -10,16 +10,16 @@ export default function UnauthorizedPage() {
       <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-100 text-red-600">
         <ShieldAlert size={40} />
       </div>
-      
+
       <h1 className="mb-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
         Access Denied
       </h1>
-      
+
       <p className="mb-8 max-w-md text-lg text-muted-foreground">
-        You don&apos;t have the required permissions to access this page. 
-        Please contact your administrator if you believe this is an error.
+        You don&apos;t have the required permissions to access this page. Please contact your
+        administrator if you believe this is an error.
       </p>
-      
+
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button variant="outline" asChild className="gap-2">
           <Link href="javascript:history.back()">
@@ -27,7 +27,7 @@ export default function UnauthorizedPage() {
             Go Back
           </Link>
         </Button>
-        
+
         <Button asChild className="gap-2">
           <Link href="/system/dashboard">
             <Home size={18} />

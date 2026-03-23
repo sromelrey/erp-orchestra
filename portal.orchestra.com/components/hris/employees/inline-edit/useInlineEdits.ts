@@ -1,16 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 import {
   EmployeeCompensation,
   EmployeeDeduction,
   DeductionType,
   DeductionFrequency,
-} from "@/store/api/compensationApi";
-import {
-  InlineEditsState,
-  UseInlineEditsReturn,
-  DraftCompensation,
-  DraftDeduction,
-} from "./types";
+} from '@/store/api/compensationApi';
+import { InlineEditsState, UseInlineEditsReturn, DraftCompensation, DraftDeduction } from './types';
 
 const initialState: InlineEditsState = {
   dirtyByEmployeeId: {},
@@ -22,67 +17,66 @@ const initialState: InlineEditsState = {
 export function useInlineEdits(): UseInlineEditsReturn {
   const [state, setState] = useState<InlineEditsState>(initialState);
 
-  const updateEmployeeCompensation = useCallback((
-    employeeId: number,
-    updates: Partial<DraftCompensation>
-  ) => {
-    setState((prev) => {
-      const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
-      const updatedEdits = {
-        ...currentEdits,
-        compensation: {
-          ...currentEdits.compensation,
-          ...updates,
-        },
-      };
-
-      return {
-        ...prev,
-        dirtyByEmployeeId: {
-          ...prev.dirtyByEmployeeId,
-          [employeeId]: updatedEdits,
-        },
-      };
-    });
-  }, []);
-
-  const updateEmployeeDeduction = useCallback((
-    employeeId: number,
-    deductionIndex: number,
-    updates: Partial<DraftDeduction>
-  ) => {
-    setState((prev) => {
-      const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
-      const currentDeductions = currentEdits.deductions || [];
-      
-      const updatedDeductions = [...currentDeductions];
-      if (updatedDeductions[deductionIndex]) {
-        updatedDeductions[deductionIndex] = {
-          ...updatedDeductions[deductionIndex],
-          ...updates,
-        };
-      }
-
-      return {
-        ...prev,
-        dirtyByEmployeeId: {
-          ...prev.dirtyByEmployeeId,
-          [employeeId]: {
-            ...currentEdits,
-            deductions: updatedDeductions,
+  const updateEmployeeCompensation = useCallback(
+    (employeeId: number, updates: Partial<DraftCompensation>) => {
+      setState((prev) => {
+        const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
+        const updatedEdits = {
+          ...currentEdits,
+          compensation: {
+            ...currentEdits.compensation,
+            ...updates,
           },
-        },
-      };
-    });
-  }, []);
+        };
+
+        return {
+          ...prev,
+          dirtyByEmployeeId: {
+            ...prev.dirtyByEmployeeId,
+            [employeeId]: updatedEdits,
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const updateEmployeeDeduction = useCallback(
+    (employeeId: number, deductionIndex: number, updates: Partial<DraftDeduction>) => {
+      setState((prev) => {
+        const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
+        const currentDeductions = currentEdits.deductions || [];
+
+        const updatedDeductions = [...currentDeductions];
+        if (updatedDeductions[deductionIndex]) {
+          updatedDeductions[deductionIndex] = {
+            ...updatedDeductions[deductionIndex],
+            ...updates,
+          };
+        }
+
+        return {
+          ...prev,
+          dirtyByEmployeeId: {
+            ...prev.dirtyByEmployeeId,
+            [employeeId]: {
+              ...currentEdits,
+              deductions: updatedDeductions,
+            },
+          },
+        };
+      });
+    },
+    []
+  );
 
   const addEmployeeDeduction = useCallback((employeeId: number) => {
     setState((prev) => {
       const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
       const currentDeductions = currentEdits.deductions || [];
-      
+
       const newDeduction: DraftDeduction = {
-        name: "",
+        name: '',
         type: DeductionType.FIXED,
         amount: 0,
         frequency: DeductionFrequency.MONTHLY,
@@ -106,7 +100,7 @@ export function useInlineEdits(): UseInlineEditsReturn {
     setState((prev) => {
       const currentEdits = prev.dirtyByEmployeeId[employeeId] || {};
       const currentDeductions = currentEdits.deductions || [];
-      
+
       const updatedDeductions = currentDeductions.filter((_, index) => index !== deductionIndex);
 
       return {
@@ -126,7 +120,7 @@ export function useInlineEdits(): UseInlineEditsReturn {
     setState((prev) => {
       const newDirtyByEmployeeId = { ...prev.dirtyByEmployeeId };
       delete newDirtyByEmployeeId[employeeId];
-      
+
       const newErrorsByEmployeeId = { ...prev.errorsByEmployeeId };
       delete newErrorsByEmployeeId[employeeId];
 
@@ -138,111 +132,121 @@ export function useInlineEdits(): UseInlineEditsReturn {
     });
   }, []);
 
-  const getEmployeeEdits = useCallback((employeeId: number) => {
-    return state.dirtyByEmployeeId[employeeId];
-  }, [state.dirtyByEmployeeId]);
+  const getEmployeeEdits = useCallback(
+    (employeeId: number) => {
+      return state.dirtyByEmployeeId[employeeId];
+    },
+    [state.dirtyByEmployeeId]
+  );
 
-  const isEmployeeDirty = useCallback((employeeId: number) => {
-    return !!state.dirtyByEmployeeId[employeeId];
-  }, [state.dirtyByEmployeeId]);
+  const isEmployeeDirty = useCallback(
+    (employeeId: number) => {
+      return !!state.dirtyByEmployeeId[employeeId];
+    },
+    [state.dirtyByEmployeeId]
+  );
 
   const getDirtyEmployeeIds = useCallback(() => {
     return Object.keys(state.dirtyByEmployeeId).map(Number);
   }, [state.dirtyByEmployeeId]);
 
-  const validateEmployeeEdits = useCallback((employeeId: number) => {
-    const edits = state.dirtyByEmployeeId[employeeId];
-    if (!edits) return true;
+  const validateEmployeeEdits = useCallback(
+    (employeeId: number) => {
+      const edits = state.dirtyByEmployeeId[employeeId];
+      if (!edits) return true;
 
-    const errors: { compensation?: string; deductions?: string[] } = {};
+      const errors: { compensation?: string; deductions?: string[] } = {};
 
-    // Validate compensation
-    if (edits.compensation) {
-      const comp = edits.compensation;
-      if (!comp.effectiveDate) {
-        errors.compensation = "Effective date is required";
+      // Validate compensation
+      if (edits.compensation) {
+        const comp = edits.compensation;
+        if (!comp.effectiveDate) {
+          errors.compensation = 'Effective date is required';
+        }
+        if (comp.baseSalary !== undefined && comp.baseSalary < 0) {
+          errors.compensation = 'Base salary cannot be negative';
+        }
+        if (comp.hourlyRate !== undefined && comp.hourlyRate < 0) {
+          errors.compensation = 'Hourly rate cannot be negative';
+        }
       }
-      if (comp.baseSalary !== undefined && comp.baseSalary < 0) {
-        errors.compensation = "Base salary cannot be negative";
-      }
-      if (comp.hourlyRate !== undefined && comp.hourlyRate < 0) {
-        errors.compensation = "Hourly rate cannot be negative";
-      }
-    }
 
-    // Validate deductions
-    if (edits.deductions) {
-      const deductionErrors: string[] = [];
-      edits.deductions.forEach((deduction, index) => {
-        if (!deduction.name) {
-          deductionErrors.push(`Deduction ${index + 1}: Name is required`);
+      // Validate deductions
+      if (edits.deductions) {
+        const deductionErrors: string[] = [];
+        edits.deductions.forEach((deduction, index) => {
+          if (!deduction.name) {
+            deductionErrors.push(`Deduction ${index + 1}: Name is required`);
+          }
+          if (deduction.amount !== undefined && deduction.amount < 0) {
+            deductionErrors.push(`Deduction ${index + 1}: Amount cannot be negative`);
+          }
+          if (
+            deduction.percentage !== undefined &&
+            (deduction.percentage < 0 || deduction.percentage > 100)
+          ) {
+            deductionErrors.push(`Deduction ${index + 1}: Percentage must be between 0 and 100`);
+          }
+          if (!deduction.effectiveDate) {
+            deductionErrors.push(`Deduction ${index + 1}: Effective date is required`);
+          }
+        });
+        if (deductionErrors.length > 0) {
+          errors.deductions = deductionErrors;
         }
-        if (deduction.amount !== undefined && deduction.amount < 0) {
-          deductionErrors.push(`Deduction ${index + 1}: Amount cannot be negative`);
+      }
+
+      setState((prev) => ({
+        ...prev,
+        errorsByEmployeeId: {
+          ...prev.errorsByEmployeeId,
+          [employeeId]: errors,
+        },
+      }));
+
+      return Object.keys(errors).length === 0;
+    },
+    [state.dirtyByEmployeeId]
+  );
+
+  const setEmployeeError = useCallback(
+    (employeeId: number, error: string, field?: 'compensation' | 'deductions', index?: number) => {
+      setState((prev) => {
+        const currentErrors = prev.errorsByEmployeeId[employeeId] || {};
+
+        if (field === 'deductions' && index !== undefined) {
+          const deductionErrors = currentErrors.deductions || [];
+          const newDeductionErrors = [...deductionErrors];
+          newDeductionErrors[index] = error;
+
+          return {
+            ...prev,
+            errorsByEmployeeId: {
+              ...prev.errorsByEmployeeId,
+              [employeeId]: {
+                ...currentErrors,
+                deductions: newDeductionErrors,
+              },
+            },
+          };
+        } else if (field) {
+          return {
+            ...prev,
+            errorsByEmployeeId: {
+              ...prev.errorsByEmployeeId,
+              [employeeId]: {
+                ...currentErrors,
+                [field]: error,
+              },
+            },
+          };
         }
-        if (deduction.percentage !== undefined && (deduction.percentage < 0 || deduction.percentage > 100)) {
-          deductionErrors.push(`Deduction ${index + 1}: Percentage must be between 0 and 100`);
-        }
-        if (!deduction.effectiveDate) {
-          deductionErrors.push(`Deduction ${index + 1}: Effective date is required`);
-        }
+
+        return prev;
       });
-      if (deductionErrors.length > 0) {
-        errors.deductions = deductionErrors;
-      }
-    }
-
-    setState((prev) => ({
-      ...prev,
-      errorsByEmployeeId: {
-        ...prev.errorsByEmployeeId,
-        [employeeId]: errors,
-      },
-    }));
-
-    return Object.keys(errors).length === 0;
-  }, [state.dirtyByEmployeeId]);
-
-  const setEmployeeError = useCallback((
-    employeeId: number,
-    error: string,
-    field?: 'compensation' | 'deductions',
-    index?: number
-  ) => {
-    setState((prev) => {
-      const currentErrors = prev.errorsByEmployeeId[employeeId] || {};
-      
-      if (field === 'deductions' && index !== undefined) {
-        const deductionErrors = currentErrors.deductions || [];
-        const newDeductionErrors = [...deductionErrors];
-        newDeductionErrors[index] = error;
-        
-        return {
-          ...prev,
-          errorsByEmployeeId: {
-            ...prev.errorsByEmployeeId,
-            [employeeId]: {
-              ...currentErrors,
-              deductions: newDeductionErrors,
-            },
-          },
-        };
-      } else if (field) {
-        return {
-          ...prev,
-          errorsByEmployeeId: {
-            ...prev.errorsByEmployeeId,
-            [employeeId]: {
-              ...currentErrors,
-              [field]: error,
-            },
-          },
-        };
-      }
-
-      return prev;
-    });
-  }, []);
+    },
+    []
+  );
 
   const clearEmployeeErrors = useCallback((employeeId: number) => {
     setState((prev) => {
@@ -266,22 +270,21 @@ export function useInlineEdits(): UseInlineEditsReturn {
     }));
   }, []);
 
-  const initializeEmployeeData = useCallback((
-    employeeId: number,
-    compensation?: EmployeeCompensation,
-    deductions?: EmployeeDeduction[]
-  ) => {
-    setState((prev) => ({
-      ...prev,
-      originalDataByEmployeeId: {
-        ...prev.originalDataByEmployeeId,
-        [employeeId]: {
-          compensation,
-          deductions,
+  const initializeEmployeeData = useCallback(
+    (employeeId: number, compensation?: EmployeeCompensation, deductions?: EmployeeDeduction[]) => {
+      setState((prev) => ({
+        ...prev,
+        originalDataByEmployeeId: {
+          ...prev.originalDataByEmployeeId,
+          [employeeId]: {
+            compensation,
+            deductions,
+          },
         },
-      },
-    }));
-  }, []);
+      }));
+    },
+    []
+  );
 
   return {
     state,

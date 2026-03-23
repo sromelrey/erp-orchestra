@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
+import * as React from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import {
   Sidebar,
   SidebarContent,
@@ -17,56 +17,53 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
-} from "@/components/ui/sidebar"
-import { CUSTOMER_PORTAL_MENU_ITEMS } from "./sidebar.config"
-import { useLogout } from "../../hooks/useLogout"
-import { LogOut, ChevronRight } from "lucide-react"
-import { useSelector } from "react-redux"
+} from '@/components/ui/sidebar';
+import { CUSTOMER_PORTAL_MENU_ITEMS } from './sidebar.config';
+import { useLogout } from '../../hooks/useLogout';
+import { LogOut, ChevronRight } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import {
   selectUserPermissions,
   selectCurrentUser,
   selectIsInitialized,
-} from "@/store/slices/authSlice";
+} from '@/store/slices/authSlice';
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export function AppSidebar() {
-  const pathname = usePathname()
-  const { logout } = useLogout()
-  const permissions = useSelector(selectUserPermissions)
-  const user = useSelector(selectCurrentUser)
+  const pathname = usePathname();
+  const { logout } = useLogout();
+  const permissions = useSelector(selectUserPermissions);
+  const user = useSelector(selectCurrentUser);
   const isInitialized = useSelector(selectIsInitialized);
-  const isSystemAdmin = user?.isSystemAdmin
+  const isSystemAdmin = user?.isSystemAdmin;
 
   // Filter menu items based on permissions (System Admins see everything)
   const filteredItems = React.useMemo(() => {
-    return CUSTOMER_PORTAL_MENU_ITEMS.map(item => {
+    return CUSTOMER_PORTAL_MENU_ITEMS.map((item) => {
       // 1. Check parent permission
-      const hasParentAccess = isSystemAdmin || !item.permission || permissions.includes(item.permission)
-      
+      const hasParentAccess =
+        isSystemAdmin || !item.permission || permissions.includes(item.permission);
+
       // 2. Filter children if they exist
       if (item.children) {
-        const visibleChildren = item.children.filter(child => 
-          isSystemAdmin || !child.permission || permissions.includes(child.permission)
-        )
-        
+        const visibleChildren = item.children.filter(
+          (child) => isSystemAdmin || !child.permission || permissions.includes(child.permission)
+        );
+
         // Return item with filtered children if it should be visible
         if (visibleChildren.length > 0) {
-          return { ...item, children: visibleChildren }
+          return { ...item, children: visibleChildren };
         }
-        
+
         // If parent has no visible children and no direct href, hide it
-        if (!item.href) return null
+        if (!item.href) return null;
       }
 
       // 3. For items without children (or only parent fallback), check parent access
-      return hasParentAccess ? item : null
-    }).filter((item): item is NonNullable<typeof item> => item !== null)
-  }, [permissions, isSystemAdmin])
+      return hasParentAccess ? item : null;
+    }).filter((item): item is NonNullable<typeof item> => item !== null);
+  }, [permissions, isSystemAdmin]);
 
   if (!isInitialized) {
     return null;
@@ -85,20 +82,22 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+            Menu
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {filteredItems.map((item) => {
                 const isActive =
                   (item.href ? pathname.startsWith(item.href) : false) ||
                   (item.children?.some((child) =>
-                    child.href ? pathname.startsWith(child.href) : false,
+                    child.href ? pathname.startsWith(child.href) : false
                   ) ??
                     false);
-                
+
                 if (item.children) {
                   return (
                     <Collapsible
@@ -112,15 +111,12 @@ export function AppSidebar() {
                           <SidebarMenuButton
                             isActive={isActive}
                             onClick={() => {
-                              if (item.menu_code === "CP-04-04") {
-                                console.log(
-                                  "[Sidebar] Employees menu clicked",
-                                  {
-                                    pathname,
-                                    isActive,
-                                    childrenCount: item.children?.length ?? 0,
-                                  },
-                                );
+                              if (item.menu_code === 'CP-04-04') {
+                                console.log('[Sidebar] Employees menu clicked', {
+                                  pathname,
+                                  isActive,
+                                  childrenCount: item.children?.length ?? 0,
+                                });
                               }
                             }}
                           >
@@ -139,20 +135,13 @@ export function AppSidebar() {
                           <SidebarMenuSub>
                             {item.children.map((subItem) => {
                               const subItemIsActive =
-                                (subItem.href
-                                  ? pathname.startsWith(subItem.href)
-                                  : false) ||
+                                (subItem.href ? pathname.startsWith(subItem.href) : false) ||
                                 (subItem.children?.some((child) =>
-                                  child.href
-                                    ? pathname.startsWith(child.href)
-                                    : false,
+                                  child.href ? pathname.startsWith(child.href) : false
                                 ) ??
                                   false);
 
-                              if (
-                                subItem.children &&
-                                subItem.children.length > 0
-                              ) {
+                              if (subItem.children && subItem.children.length > 0) {
                                 // Nested collapsible
                                 return (
                                   <Collapsible
@@ -167,63 +156,40 @@ export function AppSidebar() {
                                           size="sm"
                                           isActive={subItemIsActive}
                                           onClick={() => {
-                                            if (
-                                              subItem.menu_code === "CP-04-04"
-                                            ) {
-                                              console.log(
-                                                "[Sidebar] Employees submenu clicked",
-                                                {
-                                                  pathname,
-                                                  isActive: subItemIsActive,
-                                                  childrenCount:
-                                                    subItem.children?.length ??
-                                                    0,
-                                                },
-                                              );
+                                            if (subItem.menu_code === 'CP-04-04') {
+                                              console.log('[Sidebar] Employees submenu clicked', {
+                                                pathname,
+                                                isActive: subItemIsActive,
+                                                childrenCount: subItem.children?.length ?? 0,
+                                              });
                                             }
                                           }}
                                         >
                                           {subItem.icon && <subItem.icon />}
-                                          <span className="flex-1">
-                                            {subItem.label}
-                                          </span>
+                                          <span className="flex-1">{subItem.label}</span>
                                           <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/nested-collapsible:rotate-90" />
                                         </SidebarMenuButton>
                                       </CollapsibleTrigger>
                                       <CollapsibleContent>
                                         <SidebarMenuSub>
-                                          {subItem.children.map(
-                                            (nestedItem) => (
-                                              <SidebarMenuSubItem
-                                                key={nestedItem.menu_code}
+                                          {subItem.children.map((nestedItem) => (
+                                            <SidebarMenuSubItem key={nestedItem.menu_code}>
+                                              <SidebarMenuSubButton
+                                                asChild
+                                                size="sm"
+                                                isActive={
+                                                  nestedItem.href
+                                                    ? pathname.startsWith(nestedItem.href)
+                                                    : false
+                                                }
                                               >
-                                                <SidebarMenuSubButton
-                                                  asChild
-                                                  size="sm"
-                                                  isActive={
-                                                    nestedItem.href
-                                                      ? pathname.startsWith(
-                                                          nestedItem.href,
-                                                        )
-                                                      : false
-                                                  }
-                                                >
-                                                  <Link
-                                                    href={
-                                                      nestedItem.href || "#"
-                                                    }
-                                                  >
-                                                    {nestedItem.icon && (
-                                                      <nestedItem.icon />
-                                                    )}
-                                                    <span>
-                                                      {nestedItem.label}
-                                                    </span>
-                                                  </Link>
-                                                </SidebarMenuSubButton>
-                                              </SidebarMenuSubItem>
-                                            ),
-                                          )}
+                                                <Link href={nestedItem.href || '#'}>
+                                                  {nestedItem.icon && <nestedItem.icon />}
+                                                  <span>{nestedItem.label}</span>
+                                                </Link>
+                                              </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                          ))}
                                         </SidebarMenuSub>
                                       </CollapsibleContent>
                                     </SidebarMenuSubItem>
@@ -237,12 +203,10 @@ export function AppSidebar() {
                                   <SidebarMenuSubButton
                                     asChild
                                     isActive={
-                                      subItem.href
-                                        ? pathname.startsWith(subItem.href)
-                                        : false
+                                      subItem.href ? pathname.startsWith(subItem.href) : false
                                     }
                                   >
-                                    <Link href={subItem.href || "#"}>
+                                    <Link href={subItem.href || '#'}>
                                       {subItem.icon && <subItem.icon />}
                                       <span>{subItem.label}</span>
                                     </Link>
@@ -259,14 +223,18 @@ export function AppSidebar() {
 
                 return (
                   <SidebarMenuItem key={item.menu_code}>
-                    <SidebarMenuButton asChild tooltip={item.label} isActive={pathname === item.href}>
-                      <Link href={item.href || "#"}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.label}
+                      isActive={pathname === item.href}
+                    >
+                      <Link href={item.href || '#'}>
                         {item.icon && <item.icon />}
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -276,7 +244,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 shadow-[0_-1px_2px_0_rgba(0,0,0,0.05)]">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton 
+            <SidebarMenuButton
               onClick={() => logout()}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
               tooltip="Sign Out"
@@ -288,5 +256,5 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

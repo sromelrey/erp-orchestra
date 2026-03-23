@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge';
 
 interface StepProgressProps {
   steps: readonly { id: string; label: string; optional?: boolean }[];
@@ -23,18 +23,20 @@ export function StepProgress({ steps, currentStepIndex, completedSteps }: StepPr
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   isCompleted
-                    ? "bg-green-500 text-white"
+                    ? 'bg-green-500 text-white'
                     : isCurrent
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-gray-600"
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-200 text-gray-600'
                 }`}
               >
-                {isCompleted ? "✓" : index + 1}
+                {isCompleted ? '✓' : index + 1}
               </div>
 
               {/* Step Label */}
               <div className="ml-2">
-                <div className={`text-sm font-medium ${isCurrent ? "text-blue-600" : "text-gray-600"}`}>
+                <div
+                  className={`text-sm font-medium ${isCurrent ? 'text-blue-600' : 'text-gray-600'}`}
+                >
                   {step.label}
                   {isOptional && (
                     <Badge variant="outline" className="ml-2 text-xs">
@@ -47,9 +49,7 @@ export function StepProgress({ steps, currentStepIndex, completedSteps }: StepPr
               {/* Connector Line */}
               {index < steps.length - 1 && (
                 <div
-                  className={`w-12 h-0.5 ml-4 ${
-                    isCompleted ? "bg-green-500" : "bg-gray-200"
-                  }`}
+                  className={`w-12 h-0.5 ml-4 ${isCompleted ? 'bg-green-500' : 'bg-gray-200'}`}
                 />
               )}
             </div>

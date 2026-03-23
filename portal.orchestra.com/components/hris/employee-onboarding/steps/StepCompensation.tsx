@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { EmployeeOnboardingState } from "../EmployeeOnboardingWizard";
+} from '@/components/ui/select';
+import { EmployeeOnboardingState } from '../EmployeeOnboardingWizard';
 
 interface StepCompensationProps {
   data: EmployeeOnboardingState;
@@ -18,24 +18,19 @@ interface StepCompensationProps {
 
 export function StepCompensation({ data, updateData }: StepCompensationProps) {
   const handleChange =
-    (field: keyof EmployeeOnboardingState["compensation"]) =>
-    (value: string | number) => {
+    (field: keyof EmployeeOnboardingState['compensation']) => (value: string | number) => {
       updateData({
         compensation: {
           ...data.compensation,
-          [field]:
-            field === "basicSalary" || field === "allowances"
-              ? Number(value)
-              : value,
+          [field]: field === 'basicSalary' || field === 'allowances' ? Number(value) : value,
         },
       });
     };
 
   const handleInputChange =
-    (field: keyof EmployeeOnboardingState["compensation"]) =>
+    (field: keyof EmployeeOnboardingState['compensation']) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value =
-        e.target.type === "number" ? Number(e.target.value) : e.target.value;
+      const value = e.target.type === 'number' ? Number(e.target.value) : e.target.value;
       handleChange(field)(value);
     };
 
@@ -46,16 +41,14 @@ export function StepCompensation({ data, updateData }: StepCompensationProps) {
         <Input
           id="basicSalary"
           type="number"
-          value={data.compensation.basicSalary || ""}
-          onChange={handleInputChange("basicSalary")}
+          value={data.compensation.basicSalary || ''}
+          onChange={handleInputChange('basicSalary')}
           placeholder="Enter basic salary in pesos"
           min="0"
           step="0.01"
           required
         />
-        <p className="text-sm text-gray-500 mt-1">
-          Monthly basic salary amount
-        </p>
+        <p className="text-sm text-gray-500 mt-1">Monthly basic salary amount</p>
       </div>
 
       <div>
@@ -63,8 +56,8 @@ export function StepCompensation({ data, updateData }: StepCompensationProps) {
         <Input
           id="allowances"
           type="number"
-          value={data.compensation.allowances || ""}
-          onChange={handleInputChange("allowances")}
+          value={data.compensation.allowances || ''}
+          onChange={handleInputChange('allowances')}
           placeholder="Enter total allowances"
           min="0"
           step="0.01"
@@ -78,9 +71,9 @@ export function StepCompensation({ data, updateData }: StepCompensationProps) {
         <Label htmlFor="payFrequency">Payment Frequency</Label>
         <Select
           value={data.compensation.payFrequency}
-          onValueChange={(
-            value: EmployeeOnboardingState["compensation"]["payFrequency"],
-          ) => handleChange("payFrequency")(value)}
+          onValueChange={(value: EmployeeOnboardingState['compensation']['payFrequency']) =>
+            handleChange('payFrequency')(value)
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Select payment frequency" />
@@ -100,12 +93,10 @@ export function StepCompensation({ data, updateData }: StepCompensationProps) {
           id="effectiveDate"
           type="date"
           value={data.compensation.effectiveDate}
-          onChange={handleInputChange("effectiveDate")}
+          onChange={handleInputChange('effectiveDate')}
           required
         />
-        <p className="text-sm text-gray-500 mt-1">
-          When this compensation becomes effective
-        </p>
+        <p className="text-sm text-gray-500 mt-1">When this compensation becomes effective</p>
       </div>
 
       <div className="bg-blue-50 p-4 rounded-lg">
@@ -113,13 +104,12 @@ export function StepCompensation({ data, updateData }: StepCompensationProps) {
         <p className="text-lg font-bold text-blue-900">
           ₱
           {(
-            (data.compensation.basicSalary || 0) +
-            (data.compensation.allowances || 0)
+            (data.compensation.basicSalary || 0) + (data.compensation.allowances || 0)
           ).toLocaleString()}
         </p>
         <p className="text-sm text-blue-700 mt-1">
-          Basic: ₱{(data.compensation.basicSalary || 0).toLocaleString()} +
-          Allowances: ₱{(data.compensation.allowances || 0).toLocaleString()}
+          Basic: ₱{(data.compensation.basicSalary || 0).toLocaleString()} + Allowances: ₱
+          {(data.compensation.allowances || 0).toLocaleString()}
         </p>
       </div>
     </div>

@@ -1,7 +1,14 @@
-import { Column } from "@/components/ui/data-table";
-import { ReactNode } from "react";
+import { Column } from '@/components/ui/data-table';
+import { ReactNode } from 'react';
 
-export type FormFieldType = "text" | "email" | "number" | "select" | "textarea" | "date" | 'password';
+export type FormFieldType =
+  | 'text'
+  | 'email'
+  | 'number'
+  | 'select'
+  | 'textarea'
+  | 'date'
+  | 'password';
 
 export interface FormFieldOption {
   label: string;
@@ -19,8 +26,8 @@ export interface FormField {
   disabled?: boolean;
   suffix?: ReactNode; // For custom suffixes like ".orchestra.com"
   description?: string; // Helper text below the field
-  width?: "full" | "half";
-  valueType?: "string" | "number" | "boolean";
+  width?: 'full' | 'half';
+  valueType?: 'string' | 'number' | 'boolean';
 }
 
 export interface StatCard {
@@ -30,7 +37,7 @@ export interface StatCard {
   color: string; // Tailwind color classes
 }
 
-export type FormMode = "create" | "edit" | "view";
+export type FormMode = 'create' | 'edit' | 'view';
 
 export interface EntityManagerProps<T> {
   // Data

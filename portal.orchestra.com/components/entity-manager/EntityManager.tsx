@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useMemo } from "react";
-import { Plus, Search, Loader2, Eye, Edit, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTable, Column } from "@/components/ui/data-table";
-import { SliderForm } from "@/components/ui/slider-form";
-import { FormRenderer } from "./FormRenderer";
-import { EntityManagerProps } from "./types";
-import { useEntityManager } from "./useEntityManager";
-import { HasPermission } from "@/components/auth/HasPermission";
+import React, { useMemo } from 'react';
+import { Plus, Search, Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { DataTable, Column } from '@/components/ui/data-table';
+import { SliderForm } from '@/components/ui/slider-form';
+import { FormRenderer } from './FormRenderer';
+import { EntityManagerProps } from './types';
+import { useEntityManager } from './useEntityManager';
+import { HasPermission } from '@/components/auth/HasPermission';
 
 function EntityManager<T>(props: EntityManagerProps<T>) {
   const {
@@ -58,8 +58,8 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
     return [
       ...columns,
       {
-        header: "Actions",
-        className: "text-right",
+        header: 'Actions',
+        className: 'text-right',
         cell: (item: T) => (
           <div className="flex items-center justify-end gap-2">
             {showViewButton && (
@@ -102,16 +102,26 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         ),
       },
     ];
-  }, [columns, showViewButton, showEditButton, showDeleteButton, onDelete, handleView, handleEdit, handleDelete, permissions?.delete, permissions?.update, permissions?.view]);
+  }, [
+    columns,
+    showViewButton,
+    showEditButton,
+    showDeleteButton,
+    onDelete,
+    handleView,
+    handleEdit,
+    handleDelete,
+    permissions?.delete,
+    permissions?.update,
+    permissions?.view,
+  ]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            {plural} Management
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">{plural} Management</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Manage all {plural.toLowerCase()} and their configurations
           </p>
@@ -131,9 +141,7 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder={
-              searchPlaceholder || `Search ${plural.toLowerCase()}...`
-            }
+            placeholder={searchPlaceholder || `Search ${plural.toLowerCase()}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -147,20 +155,16 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         onOpenChange={(open) => !open && setFormMode(null)}
         title={formTitle}
         description={formDescription}
-        onSubmit={formMode !== "view" ? handleFormSubmit : undefined}
+        onSubmit={formMode !== 'view' ? handleFormSubmit : undefined}
         isLoading={isSubmitting}
-        submitLabel={
-          formMode === "create" ? `Create ${entityName}` : `Save Changes`
-        }
+        submitLabel={formMode === 'create' ? `Create ${entityName}` : `Save Changes`}
         // Only show footer buttons if not in view mode
-        footer={formMode === "view" ? <div /> : undefined}
+        footer={formMode === 'view' ? <div /> : undefined}
       >
         <div className="grid gap-4 py-4 px-6">
           <FormRenderer
             fields={formFields}
-            formData={
-              formData as Record<string, string | number | boolean | undefined>
-            }
+            formData={formData as Record<string, string | number | boolean | undefined>}
             formMode={formMode}
             onFieldChange={handleFieldChange}
           />
@@ -186,10 +190,7 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
       {!isLoading && !error && stats && stats.length > 0 && (
         <div className="grid gap-4 md:grid-cols-4">
           {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200"
-            >
+            <div key={index} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">
               <div className="flex items-center gap-3">
                 <div
                   className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.color}`}

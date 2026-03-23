@@ -1,4 +1,5 @@
 import { baseApi } from './baseApi';
+import { Employee } from '@/types';
 
 export interface LeaveType {
   id: number;
@@ -11,7 +12,7 @@ export interface LeaveType {
 export interface LeaveRequest {
   id: number;
   employeeId: number;
-  employee?: any;
+  employee?: Employee;
   leaveTypeId: number;
   leaveType?: LeaveType;
   startDate: string;
@@ -19,7 +20,7 @@ export interface LeaveRequest {
   reason: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'CANCELLED';
   approvedById?: number;
-  approver?: any;
+  approver?: Employee;
   approvedAt?: string;
   comments?: string;
   createdAt: string;
@@ -74,7 +75,10 @@ export const leaveApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['LeaveRequests'],
     }),
-    updateLeaveRequestStatus: builder.mutation<LeaveRequest, { id: number; status: string; comment?: string }>({
+    updateLeaveRequestStatus: builder.mutation<
+      LeaveRequest,
+      { id: number; status: string; comment?: string }
+    >({
       query: ({ id, ...body }) => ({
         url: `/hris/leave-requests/${id}/status`,
         method: 'PATCH',

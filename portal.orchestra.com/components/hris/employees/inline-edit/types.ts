@@ -4,8 +4,8 @@ import {
   PaymentFrequency,
   DeductionType,
   DeductionFrequency,
-} from "@/store/api/compensationApi";
-import { Employee } from "@/types";
+} from '@/store/api/compensationApi';
+import { Employee } from '@/types';
 
 export interface DraftCompensation {
   id?: number;
@@ -57,14 +57,11 @@ export interface InlineEditsState {
 
 export interface UseInlineEditsReturn {
   state: InlineEditsState;
-  updateEmployeeCompensation: (
-    employeeId: number,
-    updates: Partial<DraftCompensation>,
-  ) => void;
+  updateEmployeeCompensation: (employeeId: number, updates: Partial<DraftCompensation>) => void;
   updateEmployeeDeduction: (
     employeeId: number,
     deductionIndex: number,
-    updates: Partial<DraftDeduction>,
+    updates: Partial<DraftDeduction>
   ) => void;
   addEmployeeDeduction: (employeeId: number) => void;
   removeEmployeeDeduction: (employeeId: number, deductionIndex: number) => void;
@@ -76,15 +73,15 @@ export interface UseInlineEditsReturn {
   setEmployeeError: (
     employeeId: number,
     error: string,
-    field?: "compensation" | "deductions",
-    index?: number,
+    field?: 'compensation' | 'deductions',
+    index?: number
   ) => void;
   clearEmployeeErrors: (employeeId: number) => void;
   setEmployeeSaving: (employeeId: number, isSaving: boolean) => void;
   initializeEmployeeData: (
     employeeId: number,
     compensation?: EmployeeCompensation,
-    deductions?: EmployeeDeduction[],
+    deductions?: EmployeeDeduction[]
   ) => void;
 }
 

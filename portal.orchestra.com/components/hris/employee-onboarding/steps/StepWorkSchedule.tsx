@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Clock } from "lucide-react";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Clock } from 'lucide-react';
 
 interface WorkScheduleData {
   workDays: string[];
@@ -29,60 +29,50 @@ interface StepWorkScheduleProps {
 }
 
 const daysOfWeek = [
-  { id: "monday", label: "Monday" },
-  { id: "tuesday", label: "Tuesday" },
-  { id: "wednesday", label: "Wednesday" },
-  { id: "thursday", label: "Thursday" },
-  { id: "friday", label: "Friday" },
-  { id: "saturday", label: "Saturday" },
-  { id: "sunday", label: "Sunday" },
+  { id: 'monday', label: 'Monday' },
+  { id: 'tuesday', label: 'Tuesday' },
+  { id: 'wednesday', label: 'Wednesday' },
+  { id: 'thursday', label: 'Thursday' },
+  { id: 'friday', label: 'Friday' },
+  { id: 'saturday', label: 'Saturday' },
+  { id: 'sunday', label: 'Sunday' },
 ];
 
 const timeOptions = [
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-  "19:00",
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+  '16:00',
+  '16:30',
+  '17:00',
+  '17:30',
+  '18:00',
+  '18:30',
+  '19:00',
 ];
 
 export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
   const [workDays, setWorkDays] = useState<string[]>(
-    data.workSchedule?.workDays || [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-    ],
+    data.workSchedule?.workDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
   );
-  const [startTime, setStartTime] = useState(
-    data.workSchedule?.startTime || "09:00",
-  );
-  const [endTime, setEndTime] = useState(data.workSchedule?.endTime || "17:00");
+  const [startTime, setStartTime] = useState(data.workSchedule?.startTime || '09:00');
+  const [endTime, setEndTime] = useState(data.workSchedule?.endTime || '17:00');
 
   const handleDayToggle = (dayId: string, checked: boolean) => {
-    const newWorkDays = checked
-      ? [...workDays, dayId]
-      : workDays.filter((d) => d !== dayId);
+    const newWorkDays = checked ? [...workDays, dayId] : workDays.filter((d) => d !== dayId);
 
     setWorkDays(newWorkDays);
     updateData({
@@ -94,10 +84,10 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
     });
   };
 
-  type TimeField = "startTime" | "endTime";
+  type TimeField = 'startTime' | 'endTime';
 
   const handleTimeChange = (field: TimeField, value: string) => {
-    if (field === "startTime") {
+    if (field === 'startTime') {
       setStartTime(value);
     } else {
       setEndTime(value);
@@ -106,8 +96,8 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
     updateData({
       workSchedule: {
         workDays,
-        startTime: field === "startTime" ? value : startTime,
-        endTime: field === "endTime" ? value : endTime,
+        startTime: field === 'startTime' ? value : startTime,
+        endTime: field === 'endTime' ? value : endTime,
       },
     });
   };
@@ -133,9 +123,7 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
                 <Checkbox
                   id={day.id}
                   checked={workDays.includes(day.id)}
-                  onCheckedChange={(checked) =>
-                    handleDayToggle(day.id, checked as boolean)
-                  }
+                  onCheckedChange={(checked) => handleDayToggle(day.id, checked as boolean)}
                 />
                 <Label htmlFor={day.id} className="text-sm font-medium">
                   {day.label}
@@ -158,7 +146,7 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
               <select
                 id="start-time"
                 value={startTime}
-                onChange={(e) => handleTimeChange("startTime", e.target.value)}
+                onChange={(e) => handleTimeChange('startTime', e.target.value)}
                 className="w-full p-2 border border-input rounded-md bg-background"
               >
                 {timeOptions.map((time) => (
@@ -174,7 +162,7 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
               <select
                 id="end-time"
                 value={endTime}
-                onChange={(e) => handleTimeChange("endTime", e.target.value)}
+                onChange={(e) => handleTimeChange('endTime', e.target.value)}
                 className="w-full p-2 border border-input rounded-md bg-background"
               >
                 {timeOptions.map((time) => (
@@ -189,8 +177,8 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
           {workDays.length > 0 && (
             <div className="mt-4 p-4 bg-muted/50 rounded-md">
               <p className="text-sm text-muted-foreground">
-                <strong>Schedule Summary:</strong> {workDays.length} day(s) per
-                week, from {startTime} to {endTime}
+                <strong>Schedule Summary:</strong> {workDays.length} day(s) per week, from{' '}
+                {startTime} to {endTime}
               </p>
             </div>
           )}

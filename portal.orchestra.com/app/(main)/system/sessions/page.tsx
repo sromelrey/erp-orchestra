@@ -52,7 +52,7 @@ function AdminSessionsContent() {
   const currentUser = useSelector(selectCurrentUser);
   const { data: sessions = [], isLoading, isError } = useGetAllSessionsQuery();
   const [revokeUserSessions] = useRevokeUserSessionsMutation();
-  
+
   // Track which user is currently being revoked to show row-specific loading state
   const [revokingUserId, setRevokingUserId] = React.useState<number | null>(null);
 
@@ -81,29 +81,29 @@ function AdminSessionsContent() {
     }
 
     return Array.from(grouped.values()).sort((a, b) =>
-      (a.user.lastName || '').localeCompare(b.user.lastName || ''),
+      (a.user.lastName || '').localeCompare(b.user.lastName || '')
     );
   }, [sessions]);
 
   // Page stats following EntityManager pattern
   const stats = [
     {
-      label: "Total Active Sessions",
+      label: 'Total Active Sessions',
       value: sessions.length,
       icon: Activity,
-      color: "bg-primary/10 text-primary",
+      color: 'bg-primary/10 text-primary',
     },
     {
-      label: "Users with Sessions",
+      label: 'Users with Sessions',
       value: sessionsByUser.length,
       icon: Users,
-      color: "bg-green-500/10 text-green-600",
+      color: 'bg-green-500/10 text-green-600',
     },
     {
-      label: "System Admins",
-      value: sessionsByUser.filter(s => s.user.isSystemAdmin).length,
+      label: 'System Admins',
+      value: sessionsByUser.filter((s) => s.user.isSystemAdmin).length,
       icon: Shield,
-      color: "bg-blue-500/10 text-blue-600",
+      color: 'bg-blue-500/10 text-blue-600',
     },
   ];
 
@@ -162,7 +162,9 @@ function AdminSessionsContent() {
         {stats.map((stat, index) => (
           <div key={index} className="rounded-xl border bg-card p-4 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.color}`}>
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.color}`}
+              >
                 <stat.icon className="h-5 w-5" />
               </div>
               <div>
@@ -203,9 +205,7 @@ function AdminSessionsContent() {
                         <p className="font-medium text-gray-900">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {user.email}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
                         {user.isSystemAdmin && (
                           <span className="mt-1 inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
                             System Admin
@@ -217,10 +217,7 @@ function AdminSessionsContent() {
                   <TableCell className="pt-4">
                     <div className="space-y-3">
                       {sessions.map((session) => (
-                        <div
-                          key={session.id}
-                          className="flex items-center gap-4 text-xs"
-                        >
+                        <div key={session.id} className="flex items-center gap-4 text-xs">
                           <div className="flex items-center gap-1.5 text-gray-600 font-mono bg-gray-50 px-2 py-0.5 rounded border border-gray-100">
                             <KeyRound className="h-3 w-3" />
                             {session.id.substring(0, 8)}...
@@ -240,10 +237,7 @@ function AdminSessionsContent() {
                         size="sm"
                         className="h-8 gap-2 shadow-sm"
                         onClick={() =>
-                          handleRevokeUser(
-                            user.id,
-                            `${user.firstName} ${user.lastName}`,
-                          )
+                          handleRevokeUser(user.id, `${user.firstName} ${user.lastName}`)
                         }
                         disabled={revokingUserId === user.id}
                       >

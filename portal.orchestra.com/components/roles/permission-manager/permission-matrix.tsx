@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { PermissionModule } from "./permission-module";
-import { PermissionMatrixProps } from "./types";
+import * as React from 'react';
+import { PermissionModule } from './permission-module';
+import { PermissionMatrixProps } from './types';
 
 const ACTION_TYPES = ['view', 'create', 'update', 'delete', 'manage'] as const;
 
@@ -25,13 +25,13 @@ export function PermissionMatrix({
   groupedPermissions,
   selectedPermissions,
   onTogglePermission,
-  searchQuery
+  searchQuery,
 }: PermissionMatrixProps) {
   const hasResults = React.useMemo(() => {
     if (!searchQuery) return true;
-    
-    return Object.values(groupedPermissions).some(resources =>
-      resources.some(resource =>
+
+    return Object.values(groupedPermissions).some((resources) =>
+      resources.some((resource) =>
         resource.resource.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
@@ -57,7 +57,7 @@ export function PermissionMatrix({
       <div className="sticky top-0 bg-background/95 backdrop-blur-sm border-b mb-6 pb-4 z-10">
         <div className="grid grid-cols-6 gap-4 text-sm font-medium text-muted-foreground">
           <div className="font-semibold">Resource</div>
-          {ACTION_TYPES.map(action => (
+          {ACTION_TYPES.map((action) => (
             <div key={action} className="text-center capitalize">
               {action}
             </div>
@@ -83,12 +83,14 @@ export function PermissionMatrix({
       <div className="mt-8 pt-6 border-t">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div>
-            Showing {Object.keys(groupedPermissions).length} modules with{" "}
-            {Object.values(groupedPermissions).reduce((total, resources) => total + resources.length, 0)} resources
+            Showing {Object.keys(groupedPermissions).length} modules with{' '}
+            {Object.values(groupedPermissions).reduce(
+              (total, resources) => total + resources.length,
+              0
+            )}{' '}
+            resources
           </div>
-          <div>
-            {selectedPermissions.size} permissions currently enabled
-          </div>
+          <div>{selectedPermissions.size} permissions currently enabled</div>
         </div>
       </div>
     </div>

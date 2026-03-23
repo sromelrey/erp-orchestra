@@ -1,5 +1,5 @@
-import { Column } from "@/components/ui/data-table";
-import { Badge } from "@/components/ui/badge";
+import { Column } from '@/components/ui/data-table';
+import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 
 export const columns: Column<any>[] = [
@@ -22,7 +22,8 @@ export const columns: Column<any>[] = [
     header: 'Period',
     cell: (item) => (
       <div className="text-sm">
-        {format(new Date(item.startDate), 'MMM d')} - {format(new Date(item.endDate), 'MMM d, yyyy')}
+        {format(new Date(item.startDate), 'MMM d')} -{' '}
+        {format(new Date(item.endDate), 'MMM d, yyyy')}
       </div>
     ),
   },

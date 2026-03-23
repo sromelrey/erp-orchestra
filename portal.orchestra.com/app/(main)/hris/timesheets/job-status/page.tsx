@@ -1,15 +1,12 @@
-"use client";
+'use client';
 
-import { EntityManager, StatCard } from "@/components/entity-manager";
-import { columns } from "./column";
-import { formFields } from "./form-fields";
-import { Activity, Clock, AlertCircle, CheckCircle } from "lucide-react";
-import { toast } from "@/lib/toast";
-import {
-  useGetJobStatusQuery,
-  useTriggerCronMutation,
-} from "@/store/api/timesheetsApi";
-import { JobExecutionLog } from "@/store/api/timesheetsApi";
+import { EntityManager, StatCard } from '@/components/entity-manager';
+import { columns } from './column';
+import { formFields } from './form-fields';
+import { Activity, Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import { toast } from '@/lib/toast';
+import { useGetJobStatusQuery, useTriggerCronMutation } from '@/store/api/timesheetsApi';
+import { JobExecutionLog } from '@/store/api/timesheetsApi';
 
 export default function JobStatusPage() {
   const { data: jobStatusData, isLoading, refetch } = useGetJobStatusQuery();
@@ -18,49 +15,39 @@ export default function JobStatusPage() {
   // Calculate stats
   const stats: StatCard[] = [
     {
-      label: "Total Jobs",
+      label: 'Total Jobs',
       value: jobStatusData?.length || 0,
       icon: Activity,
-      color: "bg-blue-100 text-blue-600",
+      color: 'bg-blue-100 text-blue-600',
     },
     {
-      label: "Successful",
-      value:
-        jobStatusData?.filter(
-          (job: JobExecutionLog) => job.status === "SUCCESS",
-        ).length || 0,
+      label: 'Successful',
+      value: jobStatusData?.filter((job: JobExecutionLog) => job.status === 'SUCCESS').length || 0,
       icon: CheckCircle,
-      color: "bg-green-100 text-green-600",
+      color: 'bg-green-100 text-green-600',
     },
     {
-      label: "Failed",
-      value:
-        jobStatusData?.filter((job: JobExecutionLog) => job.status === "FAILED")
-          .length || 0,
+      label: 'Failed',
+      value: jobStatusData?.filter((job: JobExecutionLog) => job.status === 'FAILED').length || 0,
       icon: AlertCircle,
-      color: "bg-red-100 text-red-600",
+      color: 'bg-red-100 text-red-600',
     },
     {
-      label: "Partial",
-      value:
-        jobStatusData?.filter(
-          (job: JobExecutionLog) => job.status === "PARTIAL",
-        ).length || 0,
+      label: 'Partial',
+      value: jobStatusData?.filter((job: JobExecutionLog) => job.status === 'PARTIAL').length || 0,
       icon: Clock,
-      color: "bg-yellow-100 text-yellow-600",
+      color: 'bg-yellow-100 text-yellow-600',
     },
   ];
 
   const handleTriggerCron = async () => {
     try {
       await triggerCron().unwrap();
-      toast.success("Timesheet generation triggered successfully");
+      toast.success('Timesheet generation triggered successfully');
       refetch(); // Refresh the data
     } catch (error: unknown) {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to trigger timesheet generation";
+        error instanceof Error ? error.message : 'Failed to trigger timesheet generation';
       toast.error(errorMessage);
     }
   };
@@ -71,8 +58,7 @@ export default function JobStatusPage() {
         <div>
           <h1 className="text-2xl font-bold">Timesheet Job Status</h1>
           <p className="text-muted-foreground">
-            Monitor automated timesheet generation jobs and their execution
-            status
+            Monitor automated timesheet generation jobs and their execution status
           </p>
         </div>
         <button
@@ -80,7 +66,7 @@ export default function JobStatusPage() {
           disabled={isTriggering}
           className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
         >
-          {isTriggering ? "Triggering..." : "Trigger Manual Generation"}
+          {isTriggering ? 'Triggering...' : 'Trigger Manual Generation'}
         </button>
       </div>
 

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Check, ChevronsUpDown, Search, X } from "lucide-react";
-import { Command } from "cmdk";
-import * as Popover from "@radix-ui/react-popover";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { Check, ChevronsUpDown, Search, X } from 'lucide-react';
+import { Command } from 'cmdk';
+import * as Popover from '@radix-ui/react-popover';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface Option {
   label: string;
@@ -25,7 +25,7 @@ export function SearchableSelect({
   options,
   value,
   onValueChange,
-  placeholder = "Select an option...",
+  placeholder = 'Select an option...',
   disabled = false,
   className,
 }: SearchableSelectProps) {
@@ -42,15 +42,13 @@ export function SearchableSelect({
           aria-expanded={open}
           disabled={disabled}
           className={cn(
-            "w-full h-11 justify-between rounded-xl bg-white/50 border-input shadow-sm transition-all duration-200 hover:bg-white hover:border-gray-300 focus:ring-2 focus:ring-ring focus:ring-offset-2 font-normal",
-            !value && "text-muted-foreground",
-            disabled && "bg-gray-50 text-gray-500 opacity-100 cursor-not-allowed",
+            'w-full h-11 justify-between rounded-xl bg-white/50 border-input shadow-sm transition-all duration-200 hover:bg-white hover:border-gray-300 focus:ring-2 focus:ring-ring focus:ring-offset-2 font-normal',
+            !value && 'text-muted-foreground',
+            disabled && 'bg-gray-50 text-gray-500 opacity-100 cursor-not-allowed',
             className
           )}
         >
-          <span className="truncate">
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
+          <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </Popover.Trigger>
@@ -71,7 +69,7 @@ export function SearchableSelect({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    onValueChange("");
+                    onValueChange('');
                     setOpen(false);
                   }}
                   className="ml-2 p-1 rounded-full hover:bg-gray-100 text-muted-foreground transition-colors"
@@ -94,14 +92,14 @@ export function SearchableSelect({
                       setOpen(false);
                     }}
                     className={cn(
-                      "relative flex cursor-pointer select-none items-center rounded-lg px-2 py-2.5 text-sm outline-none hover:bg-primary/5 data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary transition-colors",
-                      value === option.value && "bg-primary/10 text-primary font-medium"
+                      'relative flex cursor-pointer select-none items-center rounded-lg px-2 py-2.5 text-sm outline-none hover:bg-primary/5 data-[selected=true]:bg-primary/10 data-[selected=true]:text-primary transition-colors',
+                      value === option.value && 'bg-primary/10 text-primary font-medium'
                     )}
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4 transition-all duration-200",
-                        value === option.value ? "opacity-100 scale-100" : "opacity-0 scale-50"
+                        'mr-2 h-4 w-4 transition-all duration-200',
+                        value === option.value ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
                       )}
                     />
                     <span className="truncate">{option.label}</span>

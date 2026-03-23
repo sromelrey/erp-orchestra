@@ -1,4 +1,4 @@
-import { FormField } from "@/components/entity-manager/types";
+import { FormField } from '@/components/entity-manager/types';
 
 export const getFormFields = (leaveTypes: any[] = []): FormField[] => [
   {
@@ -7,7 +7,7 @@ export const getFormFields = (leaveTypes: any[] = []): FormField[] => [
     type: 'select',
     required: true,
     valueType: 'number',
-    options: leaveTypes.map(t => ({ label: t.name, value: t.id.toString() })),
+    options: leaveTypes.map((t) => ({ label: t.name, value: t.id.toString() })),
     placeholder: 'Select leave type...',
   },
   {

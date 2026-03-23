@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Permission } from "@/types";
-import { PermissionContentProps } from "./types";
+import * as React from 'react';
+import { Search, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Permission } from '@/types';
+import { PermissionContentProps } from './types';
 
 /**
  * PermissionContent - Main content area for permission management
@@ -24,22 +24,14 @@ import { PermissionContentProps } from "./types";
  * @param selectedModule - Currently selected module name
  * @param isFullscreen - Whether the interface is in fullscreen mode
  */
-export function PermissionContent({
-  role,
-  selectedModule,
-  isFullscreen,
-}: PermissionContentProps) {
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [activeActionTypes, setActiveActionTypes] = React.useState<string[]>(
-    [],
-  );
+export function PermissionContent({ role, selectedModule, isFullscreen }: PermissionContentProps) {
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [activeActionTypes, setActiveActionTypes] = React.useState<string[]>([]);
 
   // Mock permissions data - in real app, this would come from API
   const allPermissions: Permission[] = React.useMemo(() => {
     if (!role?.rolePermissions) return [];
-    return role.rolePermissions.map(
-      (rp: { permission: Permission }) => rp.permission,
-    );
+    return role.rolePermissions.map((rp: { permission: Permission }) => rp.permission);
   }, [role.rolePermissions]);
 
   // Filter permissions based on search and filters
@@ -51,28 +43,20 @@ export function PermissionContent({
       filtered = filtered.filter(
         (permission) =>
           permission.slug?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          permission.description
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          permission.resource
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          permission.action.toLowerCase().includes(searchQuery.toLowerCase()),
+          permission.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          permission.resource.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          permission.action.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply action type filter
     if (activeActionTypes.length > 0) {
-      filtered = filtered.filter((permission) =>
-        activeActionTypes.includes(permission.action),
-      );
+      filtered = filtered.filter((permission) => activeActionTypes.includes(permission.action));
     }
 
     // Apply module filter
     if (selectedModule) {
-      filtered = filtered.filter(
-        (permission) => permission.module === selectedModule,
-      );
+      filtered = filtered.filter((permission) => permission.module === selectedModule);
     }
 
     return filtered;
@@ -82,9 +66,7 @@ export function PermissionContent({
   const actionGroups = React.useMemo(() => {
     if (!selectedModule) return {};
 
-    const modulePermissions = filteredPermissions.filter(
-      (p) => p.module === selectedModule,
-    );
+    const modulePermissions = filteredPermissions.filter((p) => p.module === selectedModule);
 
     return modulePermissions.reduce(
       (acc, permission) => {
@@ -95,41 +77,39 @@ export function PermissionContent({
         acc[actionType].push(permission);
         return acc;
       },
-      {} as Record<string, Permission[]>,
+      {} as Record<string, Permission[]>
     );
   }, [filteredPermissions, selectedModule]);
 
   const handleActionFilterToggle = (actionType: string) => {
     setActiveActionTypes((prev) =>
-      prev.includes(actionType)
-        ? prev.filter((t) => t !== actionType)
-        : [...prev, actionType],
+      prev.includes(actionType) ? prev.filter((t) => t !== actionType) : [...prev, actionType]
     );
   };
 
   const clearFilters = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     setActiveActionTypes([]);
   };
 
   const getActionBadgeClasses = (action: string) => {
     switch (action.toLowerCase()) {
-      case "view":
-      case "read":
-        return "bg-sky-100 text-sky-700 border-sky-200";
-      case "create":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200";
-      case "update":
-      case "edit":
-        return "bg-amber-100 text-amber-700 border-amber-200";
-      case "delete":
-      case "remove":
-        return "bg-rose-100 text-rose-700 border-rose-200";
-      case "manage":
-      case "admin":
-        return "bg-purple-100 text-purple-700 border-purple-200";
+      case 'view':
+      case 'read':
+        return 'bg-sky-100 text-sky-700 border-sky-200';
+      case 'create':
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'update':
+      case 'edit':
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'delete':
+      case 'remove':
+        return 'bg-rose-100 text-rose-700 border-rose-200';
+      case 'manage':
+      case 'admin':
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       default:
-        return "bg-muted text-muted-foreground border-border";
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -143,9 +123,7 @@ export function PermissionContent({
             <Input
               placeholder="Search permissions..."
               value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchQuery(e.target.value)
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
@@ -157,18 +135,15 @@ export function PermissionContent({
 
         {/* Action Type Filters */}
         <div className="flex flex-wrap gap-2">
-          {["view", "create", "update", "delete", "manage"].map((action) => (
+          {['view', 'create', 'update', 'delete', 'manage'].map((action) => (
             <Button
               key={action}
-              variant={
-                activeActionTypes.includes(action) ? "default" : "outline"
-              }
+              variant={activeActionTypes.includes(action) ? 'default' : 'outline'}
               size="sm"
               onClick={() => handleActionFilterToggle(action)}
               className={cn(
-                "capitalize",
-                activeActionTypes.includes(action) &&
-                  getActionBadgeClasses(action),
+                'capitalize',
+                activeActionTypes.includes(action) && getActionBadgeClasses(action)
               )}
             >
               {action}
@@ -187,8 +162,7 @@ export function PermissionContent({
               </div>
               <h3 className="text-lg font-semibold mb-2">Select a Module</h3>
               <p className="text-muted-foreground max-w-md">
-                Choose a module from the sidebar to view and manage its
-                permissions.
+                Choose a module from the sidebar to view and manage its permissions.
               </p>
             </div>
           </div>
@@ -198,13 +172,11 @@ export function PermissionContent({
               <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
                 <X className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">
-                No Permissions Found
-              </h3>
+              <h3 className="text-lg font-semibold mb-2">No Permissions Found</h3>
               <p className="text-muted-foreground max-w-md">
                 {searchQuery || activeActionTypes.length > 0
-                  ? "Try adjusting your search or filters to find permissions."
-                  : "No permissions available for this module."}
+                  ? 'Try adjusting your search or filters to find permissions.'
+                  : 'No permissions available for this module.'}
               </p>
             </div>
           </div>
@@ -230,8 +202,7 @@ export function PermissionContent({
                   <div
                     className="grid gap-3"
                     style={{
-                      gridTemplateColumns:
-                        "repeat(auto-fill, minmax(300px, 1fr))",
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
                     }}
                   >
                     {permissions.map((permission) => (
@@ -242,8 +213,8 @@ export function PermissionContent({
                         <div className="flex items-start gap-3">
                           <div
                             className={cn(
-                              "w-5 h-5 rounded border flex items-center justify-center",
-                              getActionBadgeClasses(permission.action),
+                              'w-5 h-5 rounded border flex items-center justify-center',
+                              getActionBadgeClasses(permission.action)
                             )}
                           >
                             <span className="text-xs font-bold uppercase">
@@ -252,8 +223,7 @@ export function PermissionContent({
                           </div>
                           <div className="flex-1">
                             <h4 className="font-medium text-sm">
-                              {permission.slug ||
-                                `${permission.action} ${permission.resource}`}
+                              {permission.slug || `${permission.action} ${permission.resource}`}
                             </h4>
                             {permission.description && (
                               <p className="text-xs text-muted-foreground mt-1">

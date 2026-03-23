@@ -7,9 +7,7 @@ import { AuthInit } from './AuthInit';
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <AuthInit>
-        {children}
-      </AuthInit>
+      <AuthInit>{children}</AuthInit>
     </Provider>
   );
 }

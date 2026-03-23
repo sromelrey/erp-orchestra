@@ -41,16 +41,11 @@ export function Header() {
             </p>
           </div>
           <div className="h-9 w-9 overflow-hidden rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold border border-indigo-200 relative">
-             {user?.avatarUrl ? (
-                <Image 
-                  src={user.avatarUrl} 
-                  alt="User Avatar" 
-                  fill 
-                  className="object-cover" 
-                />
-             ) : (
-                <User className="h-5 w-5" />
-             )}
+            {user?.avatarUrl ? (
+              <Image src={user.avatarUrl} alt="User Avatar" fill className="object-cover" />
+            ) : (
+              <User className="h-5 w-5" />
+            )}
           </div>
         </div>
       </div>

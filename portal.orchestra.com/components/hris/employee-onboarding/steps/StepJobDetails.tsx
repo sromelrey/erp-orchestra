@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { EmployeeOnboardingState } from "../EmployeeOnboardingWizard";
-import { Department, Designation, Branch } from "@/types";
+} from '@/components/ui/select';
+import { EmployeeOnboardingState } from '../EmployeeOnboardingWizard';
+import { Department, Designation, Branch } from '@/types';
 
 interface StepJobDetailsProps {
   data: EmployeeOnboardingState;
@@ -22,20 +22,15 @@ interface StepJobDetailsProps {
   };
 }
 
-export function StepJobDetails({
-  data,
-  updateData,
-  dropdownData,
-}: StepJobDetailsProps) {
-  const handleChange =
-    (field: keyof EmployeeOnboardingState["jobDetails"]) => (value: string) => {
-      updateData({
-        jobDetails: {
-          ...data.jobDetails,
-          [field]: value,
-        },
-      });
-    };
+export function StepJobDetails({ data, updateData, dropdownData }: StepJobDetailsProps) {
+  const handleChange = (field: keyof EmployeeOnboardingState['jobDetails']) => (value: string) => {
+    updateData({
+      jobDetails: {
+        ...data.jobDetails,
+        [field]: value,
+      },
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -45,7 +40,7 @@ export function StepJobDetails({
           id="employeeCode"
           type="text"
           value={data.jobDetails.employeeCode}
-          onChange={(e) => handleChange("employeeCode")(e.target.value)}
+          onChange={(e) => handleChange('employeeCode')(e.target.value)}
           placeholder="EMP-001 (Optional)"
         />
       </div>
@@ -56,7 +51,7 @@ export function StepJobDetails({
           id="hireDate"
           type="date"
           value={data.jobDetails.hireDate}
-          onChange={(e) => handleChange("hireDate")(e.target.value)}
+          onChange={(e) => handleChange('hireDate')(e.target.value)}
           required
         />
       </div>
@@ -65,8 +60,8 @@ export function StepJobDetails({
         <div>
           <Label htmlFor="department">Department</Label>
           <Select
-            value={data.jobDetails.departmentId || ""}
-            onValueChange={handleChange("departmentId")}
+            value={data.jobDetails.departmentId || ''}
+            onValueChange={handleChange('departmentId')}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select department" />
@@ -84,8 +79,8 @@ export function StepJobDetails({
         <div>
           <Label htmlFor="designation">Designation</Label>
           <Select
-            value={data.jobDetails.designationId || ""}
-            onValueChange={handleChange("designationId")}
+            value={data.jobDetails.designationId || ''}
+            onValueChange={handleChange('designationId')}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select designation" />
@@ -104,10 +99,7 @@ export function StepJobDetails({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="branch">Branch</Label>
-          <Select
-            value={data.jobDetails.branchId || ""}
-            onValueChange={handleChange("branchId")}
-          >
+          <Select value={data.jobDetails.branchId || ''} onValueChange={handleChange('branchId')}>
             <SelectTrigger>
               <SelectValue placeholder="Select branch" />
             </SelectTrigger>
@@ -125,9 +117,7 @@ export function StepJobDetails({
           <Label htmlFor="status">Status</Label>
           <Select
             value={data.jobDetails.status}
-            onValueChange={(value: "ACTIVE" | "INACTIVE") =>
-              handleChange("status")(value)
-            }
+            onValueChange={(value: 'ACTIVE' | 'INACTIVE') => handleChange('status')(value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select status" />
@@ -143,8 +133,8 @@ export function StepJobDetails({
       <div>
         <Label htmlFor="employmentType">Employment Type</Label>
         <Select
-          value={data.jobDetails.employmentType || ""}
-          onValueChange={handleChange("employmentType")}
+          value={data.jobDetails.employmentType || ''}
+          onValueChange={handleChange('employmentType')}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select employment type" />

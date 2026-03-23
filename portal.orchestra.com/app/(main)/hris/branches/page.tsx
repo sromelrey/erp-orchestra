@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { MapPin } from "lucide-react";
-import { EntityManager, StatCard } from "@/components/entity-manager";
-import { columns } from "./column";
-import { formFields } from "./form-fields";
-import { 
-  useGetBranchesQuery, 
-  useCreateBranchMutation, 
-  useUpdateBranchMutation, 
-  useDeleteBranchMutation 
-} from "@/store/api/branchesApi";
-import { PermissionGuard } from "@/components/auth/PermissionGuard";
-import { toast } from "sonner";
-import { Branch } from "@/types";
+import { MapPin } from 'lucide-react';
+import { EntityManager, StatCard } from '@/components/entity-manager';
+import { columns } from './column';
+import { formFields } from './form-fields';
+import {
+  useGetBranchesQuery,
+  useCreateBranchMutation,
+  useUpdateBranchMutation,
+  useDeleteBranchMutation,
+} from '@/store/api/branchesApi';
+import { PermissionGuard } from '@/components/auth/PermissionGuard';
+import { toast } from 'sonner';
+import { Branch } from '@/types';
 
 export default function BranchesPage() {
   const { data: response, isLoading } = useGetBranchesQuery({});
@@ -25,43 +25,43 @@ export default function BranchesPage() {
 
   const stats: StatCard[] = [
     {
-      label: "Total Branches",
+      label: 'Total Branches',
       value: data.length,
       icon: MapPin,
-      color: "bg-primary/10 text-primary",
+      color: 'bg-primary/10 text-primary',
     },
     {
-      label: "Active Branches",
+      label: 'Active Branches',
       value: activeCount,
       icon: MapPin,
-      color: "bg-green-100 text-green-700",
-    }
+      color: 'bg-green-100 text-green-700',
+    },
   ];
 
   const handleCreate = async (formData: Partial<Branch>) => {
     try {
       await createBranch(formData).unwrap();
-      toast.success("Branch created successfully");
+      toast.success('Branch created successfully');
     } catch {
-      toast.error("Failed to create branch");
+      toast.error('Failed to create branch');
     }
   };
 
   const handleUpdate = async (id: string | number, formData: Partial<Branch>) => {
     try {
       await updateBranch({ id, body: formData }).unwrap();
-      toast.success("Branch updated successfully");
+      toast.success('Branch updated successfully');
     } catch {
-      toast.error("Failed to update branch");
+      toast.error('Failed to update branch');
     }
   };
 
   const handleDelete = async (id: string | number) => {
     try {
       await deleteBranch(id).unwrap();
-      toast.success("Branch deleted successfully");
+      toast.success('Branch deleted successfully');
     } catch {
-      toast.error("Failed to delete branch");
+      toast.error('Failed to delete branch');
     }
   };
 

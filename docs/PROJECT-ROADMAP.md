@@ -36,12 +36,19 @@ Build the foundational operational modules that drive daily business logic.
 - 🚧 **EPIC-05: HRIS API Completion** (partially delivered; parked)
   - Done: import/export entities, migrations, permissions, endpoints scaffold
   - Pending (parked): reporting/analytics, import/export workers & FilesService, notifications/webhooks, audit trail, API v2/docs (see tech-debt)
-- � **EPIC-04: Operations Master Data** (in progress; ~80% complete)
+- ✅ **EPIC-04: Operations Master Data** (delivered)
   - Material Master (Items, Stock levels) - ✅ Complete
   - Warehouse & Location Management - ✅ Complete
   - Stock Ledger & Movements - ✅ Complete
-  - Bill of Materials (BOM) - 🚧 Entities done, APIs pending
-  - Costing & Availability - 📋 Pending
+  - Bill of Materials (BOM) - ✅ Complete (CRUD, versioning, validation)
+  - Costing & Availability - ✅ Complete (calculation, history, updates)
+- 📋 **EPIC-09: Operations UI & Frontend** (planned)
+  - Material Management Dashboard
+  - Warehouse & Location Management UI
+  - Stock Ledger & Movement Tracking
+  - BOM Management & Visualization
+  - Costing Analysis & History Viewer
+  - Inventory Reports & Analytics
 
 ---
 

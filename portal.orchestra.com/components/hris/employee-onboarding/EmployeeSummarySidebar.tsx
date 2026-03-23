@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { EmployeeOnboardingState } from "./EmployeeOnboardingWizard";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { EmployeeOnboardingState } from './EmployeeOnboardingWizard';
 
 interface EmployeeSummarySidebarProps {
   data: EmployeeOnboardingState;
@@ -23,7 +23,7 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const hasDeductions = Object.values(deductions).some(value => value && value > 0);
+  const hasDeductions = Object.values(deductions).some((value) => value && value > 0);
 
   return (
     <div className="space-y-6">
@@ -37,7 +37,8 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
             <h4 className="font-medium text-sm text-muted-foreground mb-2">PERSONAL INFO</h4>
             <div className="space-y-1">
               <p className="text-sm">
-                <span className="font-medium">Name:</span> {personalInfo.firstName} {personalInfo.lastName}
+                <span className="font-medium">Name:</span> {personalInfo.firstName}{' '}
+                {personalInfo.lastName}
               </p>
               <p className="text-sm">
                 <span className="font-medium">Email:</span> {personalInfo.email || 'Not set'}
@@ -46,7 +47,8 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
                 <span className="font-medium">Phone:</span> {personalInfo.phone || 'Not set'}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Birthdate:</span> {personalInfo.birthdate ? formatDate(personalInfo.birthdate) : 'Not set'}
+                <span className="font-medium">Birthdate:</span>{' '}
+                {personalInfo.birthdate ? formatDate(personalInfo.birthdate) : 'Not set'}
               </p>
             </div>
           </div>
@@ -56,10 +58,12 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
             <h4 className="font-medium text-sm text-muted-foreground mb-2">JOB DETAILS</h4>
             <div className="space-y-1">
               <p className="text-sm">
-                <span className="font-medium">Employee Code:</span> {jobDetails.employeeCode || 'Not set'}
+                <span className="font-medium">Employee Code:</span>{' '}
+                {jobDetails.employeeCode || 'Not set'}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Hire Date:</span> {jobDetails.hireDate ? formatDate(jobDetails.hireDate) : 'Not set'}
+                <span className="font-medium">Hire Date:</span>{' '}
+                {jobDetails.hireDate ? formatDate(jobDetails.hireDate) : 'Not set'}
               </p>
               <p className="text-sm">
                 <span className="font-medium">Status:</span>{' '}
@@ -68,7 +72,8 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
                 </Badge>
               </p>
               <p className="text-sm">
-                <span className="font-medium">Employment Type:</span> {jobDetails.employmentType || 'Not set'}
+                <span className="font-medium">Employment Type:</span>{' '}
+                {jobDetails.employmentType || 'Not set'}
               </p>
             </div>
           </div>
@@ -78,16 +83,20 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
             <h4 className="font-medium text-sm text-muted-foreground mb-2">COMPENSATION</h4>
             <div className="space-y-1">
               <p className="text-sm">
-                <span className="font-medium">Basic Salary:</span> {compensation.basicSalary ? formatCurrency(compensation.basicSalary) : 'Not set'}
+                <span className="font-medium">Basic Salary:</span>{' '}
+                {compensation.basicSalary ? formatCurrency(compensation.basicSalary) : 'Not set'}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Allowances:</span> {compensation.allowances ? formatCurrency(compensation.allowances) : 'Not set'}
+                <span className="font-medium">Allowances:</span>{' '}
+                {compensation.allowances ? formatCurrency(compensation.allowances) : 'Not set'}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Pay Frequency:</span> {compensation.payFrequency || 'Not set'}
+                <span className="font-medium">Pay Frequency:</span>{' '}
+                {compensation.payFrequency || 'Not set'}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Effective Date:</span> {compensation.effectiveDate ? formatDate(compensation.effectiveDate) : 'Not set'}
+                <span className="font-medium">Effective Date:</span>{' '}
+                {compensation.effectiveDate ? formatDate(compensation.effectiveDate) : 'Not set'}
               </p>
             </div>
           </div>
@@ -104,12 +113,14 @@ export function EmployeeSummarySidebar({ data }: EmployeeSummarySidebarProps) {
                 )}
                 {deductions.philHealth && deductions.philHealth > 0 && (
                   <p className="text-sm">
-                    <span className="font-medium">PhilHealth:</span> {formatCurrency(deductions.philHealth)}
+                    <span className="font-medium">PhilHealth:</span>{' '}
+                    {formatCurrency(deductions.philHealth)}
                   </p>
                 )}
                 {deductions.pagIbig && deductions.pagIbig > 0 && (
                   <p className="text-sm">
-                    <span className="font-medium">Pag-IBIG:</span> {formatCurrency(deductions.pagIbig)}
+                    <span className="font-medium">Pag-IBIG:</span>{' '}
+                    {formatCurrency(deductions.pagIbig)}
                   </p>
                 )}
                 {deductions.tax && deductions.tax > 0 && (

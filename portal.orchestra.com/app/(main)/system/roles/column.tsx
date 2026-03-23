@@ -1,12 +1,12 @@
-import { Column } from "@/components/ui/data-table";
-import { Badge } from "@/components/ui/badge";
-import { Shield } from "lucide-react";
-import { Role } from "@/types";
+import { Column } from '@/components/ui/data-table';
+import { Badge } from '@/components/ui/badge';
+import { Shield } from 'lucide-react';
+import { Role } from '@/types';
 
 export const columns: Column<Role>[] = [
   {
-    header: "Role Name",
-    accessorKey: "name",
+    header: 'Role Name',
+    accessorKey: 'name',
     cell: (item) => (
       <div className="flex items-center gap-3">
         <div className="h-8 w-8 rounded-lg bg-purple-100 flex items-center justify-center">
@@ -24,16 +24,16 @@ export const columns: Column<Role>[] = [
     ),
   },
   {
-    header: "Code",
-    accessorKey: "code",
+    header: 'Code',
+    accessorKey: 'code',
     cell: (item) => <span className="text-sm font-mono text-gray-600">{item.code}</span>,
   },
   {
-    header: "Description",
-    accessorKey: "description",
+    header: 'Description',
+    accessorKey: 'description',
     cell: (item) => (
-      <div 
-        className="max-w-[300px] truncate text-sm text-gray-600" 
+      <div
+        className="max-w-[300px] truncate text-sm text-gray-600"
         title={item.description || 'No description'}
       >
         {item.description || 'No description'}
@@ -41,7 +41,7 @@ export const columns: Column<Role>[] = [
     ),
   },
   {
-    header: "Permissions",
+    header: 'Permissions',
     cell: (item) => (
       <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
         {item.rolePermissions?.length || 0} permissions

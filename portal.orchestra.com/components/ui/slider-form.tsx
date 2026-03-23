@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Sheet,
   SheetContent,
@@ -8,10 +8,10 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface SliderFormProps {
   open: boolean;
@@ -26,7 +26,7 @@ interface SliderFormProps {
   cancelLabel?: string;
   className?: string;
   footer?: React.ReactNode;
-  side?: "top" | "bottom" | "left" | "right";
+  side?: 'top' | 'bottom' | 'left' | 'right';
   width?: string;
 }
 
@@ -39,11 +39,11 @@ export function SliderForm({
   onSubmit,
   onCancel,
   isLoading = false,
-  submitLabel = "Save",
-  cancelLabel = "Cancel",
+  submitLabel = 'Save',
+  cancelLabel = 'Cancel',
   className,
   footer,
-  side = "right",
+  side = 'right',
   width,
 }: SliderFormProps) {
   const handleCancel = () => {
@@ -58,7 +58,7 @@ export function SliderForm({
       <SheetContent
         side={side}
         className={cn(
-          "w-full sm:max-w-md flex flex-col h-full", 
+          'w-full sm:max-w-md flex flex-col h-full',
           width && `sm:max-w-[${width}]`,
           className
         )}
@@ -67,10 +67,8 @@ export function SliderForm({
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
-        
-        <div className="flex-1 overflow-y-auto py-4">
-          {children}
-        </div>
+
+        <div className="flex-1 overflow-y-auto py-4">{children}</div>
 
         {(footer !== undefined || onSubmit || onCancel) && (
           <SheetFooter className="pt-4 border-t mt-auto">
@@ -78,18 +76,12 @@ export function SliderForm({
               footer
             ) : (
               <div className="flex w-full justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={handleCancel}
-                  disabled={isLoading}
-                >
+                <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
                   {cancelLabel}
                 </Button>
                 {onSubmit && (
                   <Button onClick={onSubmit} disabled={isLoading}>
-                    {isLoading && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {submitLabel}
                   </Button>
                 )}

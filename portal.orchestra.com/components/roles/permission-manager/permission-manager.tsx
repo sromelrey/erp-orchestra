@@ -1,22 +1,17 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { X, Search, Save, CheckSquare, Square, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { PermissionManagerProps } from "./types";
-import { PermissionMatrix } from "./permission-matrix";
-import { usePermissionMatrix } from "./hooks/use-permission-matrix";
-import { Role, Permission } from "@/types";
-import { useAssignPermissionsMutation } from "@/store/api/rolesApi";
+import * as React from 'react';
+import { X, Search, Save, CheckSquare, Square, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { PermissionManagerProps } from './types';
+import { PermissionMatrix } from './permission-matrix';
+import { usePermissionMatrix } from './hooks/use-permission-matrix';
+import { Role, Permission } from '@/types';
+import { useAssignPermissionsMutation } from '@/store/api/rolesApi';
 
 /**
  * PermissionManager - Modern SaaS-style permission management interface
@@ -73,7 +68,7 @@ export function PermissionManager({
     try {
       await onSave(Array.from(selectedPermissions));
     } catch (error) {
-      console.error("Failed to save permissions:", error);
+      console.error('Failed to save permissions:', error);
     }
   };
 
@@ -85,11 +80,7 @@ export function PermissionManager({
           <SheetHeader className="pb-4">
             <div className="flex items-center justify-between">
               <SheetTitle>{title}</SheetTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsSheetOpen(false)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setIsSheetOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -195,54 +186,34 @@ function PermissionMatrixContent({
       <div className="border-b p-6 space-y-4 shrink-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-xl font-bold tracking-tight">{title}</h2>
             <div className="flex items-center gap-2">
-              <span className="text-lg font-medium text-foreground">
-                {subtitle}
-              </span>
+              <span className="text-lg font-medium text-foreground">{subtitle}</span>
               <span className="text-muted-foreground">•</span>
               <p className="text-sm text-muted-foreground">
                 {permissionStats.enabled} of {permissionStats.total} enabled
               </p>
             </div>
             {description && (
-              <p className="text-sm text-muted-foreground max-w-2xl line-clamp-2">
-                {description}
-              </p>
+              <p className="text-sm text-muted-foreground max-w-2xl line-clamp-2">{description}</p>
             )}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBulkClear}
-              className="h-9"
-            >
+            <Button variant="outline" size="sm" onClick={handleBulkClear} className="h-9">
               <Square className="h-4 w-4 mr-2" />
               Clear All
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBulkSelect}
-              className="h-9"
-            >
+            <Button variant="outline" size="sm" onClick={handleBulkSelect} className="h-9">
               <CheckSquare className="h-4 w-4 mr-2" />
               Select All
             </Button>
-            <Button
-              onClick={onSave}
-              className="h-9 bg-primary"
-              disabled={isSaving}
-            >
+            <Button onClick={onSave} className="h-9 bg-primary" disabled={isSaving}>
               {isSaving ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (
                 <Save className="h-4 w-4 mr-2" />
               )}
-              {isSaving ? "Saving..." : "Save Changes"}
+              {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
             <Button variant="ghost" size="sm" onClick={onClose} className="h-9">
               <X className="h-4 w-4" />
@@ -260,9 +231,7 @@ function PermissionMatrixContent({
               className="pl-10"
             />
           </div>
-          <Badge variant="secondary">
-            {permissionStats.enabled} permissions enabled
-          </Badge>
+          <Badge variant="secondary">{permissionStats.enabled} permissions enabled</Badge>
         </div>
       </div>
 

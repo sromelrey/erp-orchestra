@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { CUSTOMER_PORTAL_MENU_ITEMS } from "./sidebar.config";
-import { useLogout } from "../../hooks/useLogout";
-import { LogOut } from "lucide-react";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { CUSTOMER_PORTAL_MENU_ITEMS } from './sidebar.config';
+import { useLogout } from '../../hooks/useLogout';
+import { LogOut } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -32,11 +32,11 @@ export function Sidebar() {
                   {item.children.map((child) => (
                     <Link
                       key={child.menu_code}
-                      href={child.href || "#"}
+                      href={child.href || '#'}
                       className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
                         pathname === child.href
-                          ? "bg-primary/10 text-primary font-medium"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          ? 'bg-primary/10 text-primary font-medium'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
                       {child.icon && <child.icon className="w-4 h-4" />}
@@ -55,8 +55,8 @@ export function Sidebar() {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   pathname === item.href
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 {item.icon && <item.icon className="w-4 h-4" />}

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { Building2 } from "lucide-react";
-import { EntityManager, StatCard } from "@/components/entity-manager";
-import { columns } from "./column";
-import { formFields } from "./form-fields";
-import { 
-  useGetDepartmentsQuery, 
-  useCreateDepartmentMutation, 
-  useUpdateDepartmentMutation, 
-  useDeleteDepartmentMutation 
-} from "@/store/api/departmentsApi";
-import { PermissionGuard } from "@/components/auth/PermissionGuard";
-import { toast } from "sonner";
-import { Department } from "@/types";
+import { Building2 } from 'lucide-react';
+import { EntityManager, StatCard } from '@/components/entity-manager';
+import { columns } from './column';
+import { formFields } from './form-fields';
+import {
+  useGetDepartmentsQuery,
+  useCreateDepartmentMutation,
+  useUpdateDepartmentMutation,
+  useDeleteDepartmentMutation,
+} from '@/store/api/departmentsApi';
+import { PermissionGuard } from '@/components/auth/PermissionGuard';
+import { toast } from 'sonner';
+import { Department } from '@/types';
 
 export default function DepartmentsPage() {
   const { data: response, isLoading } = useGetDepartmentsQuery({});
@@ -21,21 +21,21 @@ export default function DepartmentsPage() {
   const [deleteDepartment] = useDeleteDepartmentMutation();
 
   const data = response?.data || [];
-  const activeCount = data.filter(d => d.isActive).length;
+  const activeCount = data.filter((d) => d.isActive).length;
 
   const stats: StatCard[] = [
     {
-      label: "Total Departments",
+      label: 'Total Departments',
       value: data.length,
       icon: Building2,
-      color: "bg-primary/10 text-primary",
+      color: 'bg-primary/10 text-primary',
     },
     {
-      label: "Active Departments",
+      label: 'Active Departments',
       value: activeCount,
       icon: Building2,
-      color: "bg-green-100 text-green-700",
-    }
+      color: 'bg-green-100 text-green-700',
+    },
   ];
 
   const handleCreate = async (formData: Partial<Department> & { is_active?: boolean | string }) => {
@@ -43,28 +43,31 @@ export default function DepartmentsPage() {
       // is_active is dropped because the backend CreateDepartmentDto does not accept it
       delete formData.is_active;
       await createDepartment(formData).unwrap();
-      toast.success("Department created successfully");
+      toast.success('Department created successfully');
     } catch {
-      toast.error("Failed to create department");
+      toast.error('Failed to create department');
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: Partial<Department> & { is_active?: boolean | string }) => {
+  const handleUpdate = async (
+    id: string | number,
+    formData: Partial<Department> & { is_active?: boolean | string }
+  ) => {
     try {
       delete formData.is_active;
       await updateDepartment({ id, body: formData }).unwrap();
-      toast.success("Department updated successfully");
+      toast.success('Department updated successfully');
     } catch {
-      toast.error("Failed to update department");
+      toast.error('Failed to update department');
     }
   };
 
   const handleDelete = async (id: string | number) => {
     try {
       await deleteDepartment(id).unwrap();
-      toast.success("Department deleted successfully");
+      toast.success('Department deleted successfully');
     } catch {
-      toast.error("Failed to delete department");
+      toast.error('Failed to delete department');
     }
   };
 

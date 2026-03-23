@@ -3,7 +3,14 @@ import { Department, PaginatedResponse } from '@/types';
 
 export const departmentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDepartments: builder.query<PaginatedResponse<Department>, { limit?: number; cursor?: string | number; [key: string]: string | number | boolean | undefined }>({
+    getDepartments: builder.query<
+      PaginatedResponse<Department>,
+      {
+        limit?: number;
+        cursor?: string | number;
+        [key: string]: string | number | boolean | undefined;
+      }
+    >({
       query: (params) => ({
         url: '/hris/departments',
         params,
@@ -11,7 +18,10 @@ export const departmentsApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result && result.data
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Departments' as const, id })),
+              ...result.data.map(({ id }) => ({
+                type: 'Departments' as const,
+                id,
+              })),
               { type: 'Departments', id: 'LIST' },
             ]
           : [{ type: 'Departments', id: 'LIST' }],
@@ -28,7 +38,10 @@ export const departmentsApi = baseApi.injectEndpoints({
       query: (id) => `/hris/departments/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Departments', id }],
     }),
-    updateDepartment: builder.mutation<Department, { id: string | number; body: Partial<Department> }>({
+    updateDepartment: builder.mutation<
+      Department,
+      { id: string | number; body: Partial<Department> }
+    >({
       query: ({ id, body }) => ({
         url: `/hris/departments/${id}`,
         method: 'PATCH',
