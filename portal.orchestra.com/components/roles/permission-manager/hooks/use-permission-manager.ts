@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { Permission, Role } from "@/types";
-import { usePermissionFilters } from "./use-permission-filters";
-import { usePermissionSelection } from "./use-permission-selection";
+import { useMemo, useState } from 'react';
+import { Permission, Role } from '@/types';
+import { usePermissionFilters } from './use-permission-filters';
+import { usePermissionSelection } from './use-permission-selection';
 
 export function usePermissionManager(role: Role) {
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
@@ -29,18 +29,13 @@ export function usePermissionManager(role: Role) {
         acc[permission.module].permissions.push(permission);
         return acc;
       },
-      {} as Record<
-        string,
-        { permissions: Permission[]; selectedCount: number; totalCount: number }
-      >,
+      {} as Record<string, { permissions: Permission[]; selectedCount: number; totalCount: number }>
     );
 
     // Add selection counts
     Object.keys(moduleGroups).forEach((module) => {
       const moduleSelectedPermissions =
-        selectedModule === module
-          ? allPermissions.filter((p) => p.module === module)
-          : [];
+        selectedModule === module ? allPermissions.filter((p) => p.module === module) : [];
       moduleGroups[module] = {
         ...moduleGroups[module],
         selectedCount: moduleSelectedPermissions.length,
@@ -77,9 +72,7 @@ export function usePermissionManager(role: Role) {
   const actionGroups = useMemo(() => {
     if (!selectedModule) return {};
 
-    const modulePermissions = filteredPermissions.filter(
-      (p) => p.module === selectedModule,
-    );
+    const modulePermissions = filteredPermissions.filter((p) => p.module === selectedModule);
 
     return modulePermissions.reduce(
       (acc, permission) => {
@@ -90,7 +83,7 @@ export function usePermissionManager(role: Role) {
         acc[actionType].push(permission);
         return acc;
       },
-      {} as Record<string, Permission[]>,
+      {} as Record<string, Permission[]>
     );
   }, [filteredPermissions, selectedModule]);
 
@@ -104,22 +97,22 @@ export function usePermissionManager(role: Role) {
 
   const getActionBadgeClasses = (action: string) => {
     switch (action.toLowerCase()) {
-      case "view":
-      case "read":
-        return "bg-sky-100 text-sky-700 border-sky-200";
-      case "create":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200";
-      case "update":
-      case "edit":
-        return "bg-amber-100 text-amber-700 border-amber-200";
-      case "delete":
-      case "remove":
-        return "bg-rose-100 text-rose-700 border-rose-200";
-      case "manage":
-      case "admin":
-        return "bg-purple-100 text-purple-700 border-purple-200";
+      case 'view':
+      case 'read':
+        return 'bg-sky-100 text-sky-700 border-sky-200';
+      case 'create':
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'update':
+      case 'edit':
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'delete':
+      case 'remove':
+        return 'bg-rose-100 text-rose-700 border-rose-200';
+      case 'manage':
+      case 'admin':
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       default:
-        return "bg-muted text-muted-foreground border-border";
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 

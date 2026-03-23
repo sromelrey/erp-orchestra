@@ -14,13 +14,13 @@ export function useLogout() {
     try {
       // 1. Call backend to destroy session and clear connect.sid
       await logoutMutation().unwrap();
-      
+
       // 2. Clear client-side cookies
       document.cookie = 'user_role=; path=/; max-age=0; SameSite=Lax';
-      
+
       // 3. Clear Redux state
       dispatch(logoutAction());
-      
+
       // 4. Redirect to login
       router.push('/login');
     } catch (error) {

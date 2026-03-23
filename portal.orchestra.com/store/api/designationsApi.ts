@@ -3,7 +3,14 @@ import { Designation, PaginatedResponse } from '@/types';
 
 export const designationsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getDesignations: builder.query<PaginatedResponse<Designation>, { limit?: number; cursor?: string | number; [key: string]: string | number | boolean | undefined }>({
+    getDesignations: builder.query<
+      PaginatedResponse<Designation>,
+      {
+        limit?: number;
+        cursor?: string | number;
+        [key: string]: string | number | boolean | undefined;
+      }
+    >({
       query: (params) => ({
         url: '/hris/designations',
         params,
@@ -11,7 +18,10 @@ export const designationsApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result && result.data
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Designations' as const, id })),
+              ...result.data.map(({ id }) => ({
+                type: 'Designations' as const,
+                id,
+              })),
               { type: 'Designations', id: 'LIST' },
             ]
           : [{ type: 'Designations', id: 'LIST' }],
@@ -28,7 +38,10 @@ export const designationsApi = baseApi.injectEndpoints({
       query: (id) => `/hris/designations/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'Designations', id }],
     }),
-    updateDesignation: builder.mutation<Designation, { id: string | number; body: Partial<Designation> }>({
+    updateDesignation: builder.mutation<
+      Designation,
+      { id: string | number; body: Partial<Designation> }
+    >({
       query: ({ id, body }) => ({
         url: `/hris/designations/${id}`,
         method: 'PATCH',

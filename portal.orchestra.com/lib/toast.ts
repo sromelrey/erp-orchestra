@@ -1,4 +1,4 @@
-import { toast as sonnerToast } from "sonner";
+import { toast as sonnerToast } from 'sonner';
 
 export const toast = {
   success: (message: string) => {
@@ -6,9 +6,9 @@ export const toast = {
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: (message: string | any) => {
-    let errorMessage = "An unexpected error occurred.";
+    let errorMessage = 'An unexpected error occurred.';
 
-    if (typeof message === "string") {
+    if (typeof message === 'string') {
       errorMessage = message;
     } else if (message?.data?.message) {
       // API error response structure: { data: { message: "..." } }

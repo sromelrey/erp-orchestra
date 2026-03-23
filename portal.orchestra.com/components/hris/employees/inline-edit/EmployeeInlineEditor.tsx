@@ -1,22 +1,19 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Edit2, Save, X, AlertCircle } from "lucide-react";
-import { Employee } from "@/types";
-import {
-  EmployeeCompensation,
-  EmployeeDeduction,
-} from "@/store/api/compensationApi";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Edit2, Save, X, AlertCircle } from 'lucide-react';
+import { Employee } from '@/types';
+import { EmployeeCompensation, EmployeeDeduction } from '@/store/api/compensationApi';
 import {
   EmployeeInlineEditorProps,
   DraftCompensation,
   DraftDeduction,
   EmployeeInlineEdits,
-} from "./types";
-import { EmployeeCompensationInlineEditor } from "./EmployeeCompensationInlineEditor";
-import { EmployeeDeductionsInlineEditor } from "./EmployeeDeductionsInlineEditor";
+} from './types';
+import { EmployeeCompensationInlineEditor } from './EmployeeCompensationInlineEditor';
+import { EmployeeDeductionsInlineEditor } from './EmployeeDeductionsInlineEditor';
 
 interface EmployeeInlineEditorPropsExtended extends EmployeeInlineEditorProps {
   compensation?: EmployeeCompensation | DraftCompensation;
@@ -63,10 +60,7 @@ export function EmployeeInlineEditor({
     onCompensationUpdate(updates);
   };
 
-  const handleDeductionUpdate = (
-    index: number,
-    updates: Partial<DraftDeduction>,
-  ) => {
+  const handleDeductionUpdate = (index: number, updates: Partial<DraftDeduction>) => {
     onDeductionUpdate(index, updates);
   };
 
@@ -79,7 +73,7 @@ export function EmployeeInlineEditor({
   };
 
   const formatCurrency = (amount?: number) => {
-    if (!amount) return "N/A";
+    if (!amount) return 'N/A';
     return `₱${amount.toLocaleString()}`;
   };
 
@@ -118,18 +112,14 @@ export function EmployeeInlineEditor({
                   {employee.firstName} {employee.lastName}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {employee.email} •{" "}
-                  {employee.department?.name || "No Department"}
+                  {employee.email} • {employee.department?.name || 'No Department'}
                 </p>
               </div>
 
               {/* Status badges */}
               <div className="flex items-center gap-2">
                 {isDirty && (
-                  <Badge
-                    variant="outline"
-                    className="text-orange-600 border-orange-200"
-                  >
+                  <Badge variant="outline" className="text-orange-600 border-orange-200">
                     Unsaved Changes
                   </Badge>
                 )}
@@ -151,12 +141,7 @@ export function EmployeeInlineEditor({
             {/* Action buttons */}
             <div className="flex items-center gap-2">
               {!isEditing ? (
-                <Button
-                  onClick={onToggleEdit}
-                  size="sm"
-                  variant="outline"
-                  className="gap-2"
-                >
+                <Button onClick={onToggleEdit} size="sm" variant="outline" className="gap-2">
                   <Edit2 className="h-4 w-4" />
                   Edit
                 </Button>
@@ -195,17 +180,11 @@ export function EmployeeInlineEditor({
             <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center p-3 bg-gray-50 rounded-lg">
                 <div className="text-sm text-muted-foreground">Base Salary</div>
-                <div className="font-semibold">
-                  {formatCurrency(localCompensation.baseSalary)}
-                </div>
+                <div className="font-semibold">{formatCurrency(localCompensation.baseSalary)}</div>
               </div>
               <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-sm text-muted-foreground">
-                  Total Deductions
-                </div>
-                <div className="font-semibold">
-                  {formatCurrency(calculateTotalDeductions())}
-                </div>
+                <div className="text-sm text-muted-foreground">Total Deductions</div>
+                <div className="font-semibold">{formatCurrency(calculateTotalDeductions())}</div>
               </div>
               <div className="text-center p-3 bg-gray-50 rounded-lg">
                 <div className="text-sm text-muted-foreground">Net Pay</div>
@@ -214,11 +193,9 @@ export function EmployeeInlineEditor({
                 </div>
               </div>
               <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <div className="text-sm text-muted-foreground">
-                  Pay Frequency
-                </div>
+                <div className="text-sm text-muted-foreground">Pay Frequency</div>
                 <div className="font-semibold capitalize">
-                  {localCompensation.paymentFrequency || "N/A"}
+                  {localCompensation.paymentFrequency || 'N/A'}
                 </div>
               </div>
             </div>

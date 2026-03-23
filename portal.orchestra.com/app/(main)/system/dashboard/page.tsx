@@ -3,15 +3,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/store/slices/authSlice';
-import { 
-  Users, 
-  Briefcase, 
-  Clock, 
-  TrendingUp, 
-  ArrowUpRight, 
+import {
+  Users,
+  Briefcase,
+  Clock,
+  TrendingUp,
+  ArrowUpRight,
   ArrowDownRight,
   MoreHorizontal,
-  LucideIcon
+  LucideIcon,
 } from 'lucide-react';
 
 interface DashboardStat {
@@ -107,7 +107,8 @@ const activities: ActivityItem[] = [
 export default function DashboardPage() {
   const user = useSelector(selectCurrentUser);
   const currentTime = new Date().getHours();
-  const greeting = currentTime < 12 ? 'Good morning' : currentTime < 18 ? 'Good afternoon' : 'Good evening';
+  const greeting =
+    currentTime < 12 ? 'Good morning' : currentTime < 18 ? 'Good afternoon' : 'Good evening';
 
   return (
     <div className="space-y-8">
@@ -116,9 +117,7 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight text-gray-900">
           {greeting}, {user?.firstName || 'Guest'}
         </h1>
-        <p className="text-gray-500">
-          Here is what&apos;s happening in your workspace today.
-        </p>
+        <p className="text-gray-500">Here is what&apos;s happening in your workspace today.</p>
       </div>
 
       {/* Stats Grid */}
@@ -167,26 +166,24 @@ export default function DashboardPage() {
             {activities.map((activity, index) => (
               <div key={index} className="flex items-start gap-4">
                 <div className="relative flex-none">
-                   {activity.avatar ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={activity.avatar}
-                        alt={activity.user}
-                        className="h-10 w-10 rounded-full object-cover ring-2 ring-white"
-                      />
-                   ) : (
-                      <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold ring-2 ring-white">
-                        {activity.initial}
-                      </div>
-                   )}
+                  {activity.avatar ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={activity.avatar}
+                      alt={activity.user}
+                      className="h-10 w-10 rounded-full object-cover ring-2 ring-white"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold ring-2 ring-white">
+                      {activity.initial}
+                    </div>
+                  )}
                   <span className="absolute -bottom-1 -right-1 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
                 </div>
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium text-gray-900">
                     <span className="font-bold">{activity.user}</span> {activity.action}{' '}
-                    <span className="font-semibold text-indigo-600">
-                      {activity.target}
-                    </span>
+                    <span className="font-semibold text-indigo-600">{activity.target}</span>
                   </p>
                   <p className="text-xs text-gray-500">{activity.time}</p>
                 </div>
@@ -197,7 +194,6 @@ export default function DashboardPage() {
 
         {/* Quick Actions / Getting Started */}
         <div className="rounded-xl bg-indigo-600 p-6 text-white shadow-lg lg:col-span-1 relative overflow-hidden">
-             
           <div className="relative z-10">
             <h2 className="text-lg font-bold mb-2">Unlock Premium Features</h2>
             <p className="text-indigo-100 text-sm mb-6">
@@ -206,26 +202,26 @@ export default function DashboardPage() {
             <button className="w-full rounded-lg bg-white py-2.5 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 transition-colors shadow-sm">
               Upgrade Now
             </button>
-            
+
             <div className="mt-8 pt-6 border-t border-indigo-500/30">
-                 <h3 className="text-sm font-semibold mb-3">Quick Links</h3>
-                 <div className="space-y-2">
-                    <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
-                        → Create New User
-                    </button>
-                    <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
-                        → View System Logs
-                    </button>
-                    <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
-                        → Manage Roles
-                    </button>
-                 </div>
+              <h3 className="text-sm font-semibold mb-3">Quick Links</h3>
+              <div className="space-y-2">
+                <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
+                  → Create New User
+                </button>
+                <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
+                  → View System Logs
+                </button>
+                <button className="block w-full text-left text-sm text-indigo-100 hover:text-white hover:underline">
+                  → Manage Roles
+                </button>
+              </div>
             </div>
           </div>
-          
-           {/* Background Decor */}
-           <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
-           <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-64 w-64 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
+
+          {/* Background Decor */}
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-indigo-500 opacity-20 blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-64 w-64 rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
         </div>
       </div>
     </div>

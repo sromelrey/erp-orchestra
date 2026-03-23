@@ -27,9 +27,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
   // Determine which user IDs are already assigned to this role
   const alreadyAssignedUserIds = useMemo(() => {
     return users
-      .filter((user) =>
-        user.userRoles?.some((ur) => ur.role && ur.role.id === role.id)
-      )
+      .filter((user) => user.userRoles?.some((ur) => ur.role && ur.role.id === role.id))
       .map((user) => user.id);
   }, [users, role.id]);
 
@@ -53,9 +51,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
 
   const handleToggle = (userId: number) => {
     setSelectedUserIds((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
     );
   };
 
@@ -64,9 +60,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
     const allSelected = assignableIds.every((id) => selectedUserIds.includes(id));
 
     if (allSelected) {
-      setSelectedUserIds((prev) =>
-        prev.filter((id) => !assignableIds.includes(id))
-      );
+      setSelectedUserIds((prev) => prev.filter((id) => !assignableIds.includes(id)));
     } else {
       setSelectedUserIds((prev) => {
         const newIds = assignableIds.filter((id) => !prev.includes(id));
@@ -92,8 +86,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
   };
 
   const allAssignableSelected =
-    assignableUsers.length > 0 &&
-    assignableUsers.every((u) => selectedUserIds.includes(u.id));
+    assignableUsers.length > 0 && assignableUsers.every((u) => selectedUserIds.includes(u.id));
 
   if (isLoadingUsers) {
     return (
@@ -169,8 +162,8 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
                   isAlreadyAssigned
                     ? 'opacity-60 cursor-default bg-muted/30'
                     : isSelected
-                    ? 'bg-primary/5 cursor-pointer'
-                    : 'hover:bg-muted/40 cursor-pointer'
+                      ? 'bg-primary/5 cursor-pointer'
+                      : 'hover:bg-muted/40 cursor-pointer'
                 }`}
               >
                 {isAlreadyAssigned ? (
@@ -185,9 +178,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium truncate">
-                      {displayName}
-                    </span>
+                    <span className="text-sm font-medium truncate">{displayName}</span>
                     {isAlreadyAssigned && (
                       <Badge
                         variant="outline"
@@ -207,9 +198,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
                       {user.status}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user.email}
-                  </p>
+                  <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 </div>
               </Label>
             );
@@ -224,10 +213,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
             Cancel
           </Button>
         )}
-        <Button
-          onClick={handleSave}
-          disabled={selectedUserIds.length === 0 || isAssigning}
-        >
+        <Button onClick={handleSave} disabled={selectedUserIds.length === 0 || isAssigning}>
           {isAssigning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Assign {selectedUserIds.length > 0 ? `${selectedUserIds.length} User(s)` : 'Users'}
         </Button>

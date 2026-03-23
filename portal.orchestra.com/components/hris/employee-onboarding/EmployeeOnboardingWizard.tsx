@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { StepProgress } from "./StepProgress";
-import { EmployeeSummarySidebar } from "./EmployeeSummarySidebar";
-import { StepPersonalInfo } from "./steps/StepPersonalInfo";
-import { StepJobDetails } from "./steps/StepJobDetails";
-import { StepWorkSchedule } from "./steps/StepWorkSchedule";
-import { StepCompensation } from "./steps/StepCompensation";
-import { StepDeductions } from "./steps/StepDeductions";
-import { StepReview } from "./steps/StepReview";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useCreateEmployeeMutation } from "@/store/api/employeesApi";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { StepProgress } from './StepProgress';
+import { EmployeeSummarySidebar } from './EmployeeSummarySidebar';
+import { StepPersonalInfo } from './steps/StepPersonalInfo';
+import { StepJobDetails } from './steps/StepJobDetails';
+import { StepWorkSchedule } from './steps/StepWorkSchedule';
+import { StepCompensation } from './steps/StepCompensation';
+import { StepDeductions } from './steps/StepDeductions';
+import { StepReview } from './steps/StepReview';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useCreateEmployeeMutation } from '@/store/api/employeesApi';
 import {
   useCreateEmployeeCompensationMutation,
   useCreateEmployeeDeductionMutation,
   PaymentFrequency,
   DeductionType,
   DeductionFrequency,
-} from "@/store/api/compensationApi";
-import { useGetDepartmentsQuery } from "@/store/api/departmentsApi";
-import { useGetDesignationsQuery } from "@/store/api/designationsApi";
-import { useGetBranchesQuery } from "@/store/api/branchesApi";
-import { Department, Designation, Branch } from "@/types";
+} from '@/store/api/compensationApi';
+import { useGetDepartmentsQuery } from '@/store/api/departmentsApi';
+import { useGetDesignationsQuery } from '@/store/api/designationsApi';
+import { useGetBranchesQuery } from '@/store/api/branchesApi';
+import { Department, Designation, Branch } from '@/types';
 
 export interface EmployeeOnboardingState {
   personalInfo: {
@@ -43,7 +43,7 @@ export interface EmployeeOnboardingState {
     branchId?: string;
     hireDate: string;
     employmentType?: string;
-    status: "ACTIVE" | "INACTIVE";
+    status: 'ACTIVE' | 'INACTIVE';
     managerId?: string;
   };
   workSchedule: {
@@ -54,7 +54,7 @@ export interface EmployeeOnboardingState {
   compensation: {
     basicSalary: number;
     allowances?: number;
-    payFrequency: "weekly" | "bi-weekly" | "semi-monthly" | "monthly";
+    payFrequency: 'weekly' | 'bi-weekly' | 'semi-monthly' | 'monthly';
     effectiveDate: string;
   };
   deductions: {
@@ -85,17 +85,17 @@ interface Step {
 }
 
 const steps: Step[] = [
-  { id: "personal", label: "Personal Info", component: StepPersonalInfo },
-  { id: "job", label: "Job Details", component: StepJobDetails },
-  { id: "schedule", label: "Work Schedule", component: StepWorkSchedule },
-  { id: "compensation", label: "Compensation", component: StepCompensation },
+  { id: 'personal', label: 'Personal Info', component: StepPersonalInfo },
+  { id: 'job', label: 'Job Details', component: StepJobDetails },
+  { id: 'schedule', label: 'Work Schedule', component: StepWorkSchedule },
+  { id: 'compensation', label: 'Compensation', component: StepCompensation },
   {
-    id: "deductions",
-    label: "Deductions",
+    id: 'deductions',
+    label: 'Deductions',
     component: StepDeductions,
     optional: true,
   },
-  { id: "review", label: "Review", component: StepReview },
+  { id: 'review', label: 'Review', component: StepReview },
 ];
 
 export function EmployeeOnboardingWizard() {
@@ -104,47 +104,45 @@ export function EmployeeOnboardingWizard() {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [onboardingData, setOnboardingData] = useState<EmployeeOnboardingState>(
-    {
-      personalInfo: {
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        birthdate: "",
-        address: "",
-      },
-      jobDetails: {
-        employeeCode: "",
-        departmentId: "",
-        designationId: "",
-        branchId: "",
-        hireDate: "",
-        employmentType: "",
-        status: "ACTIVE",
-        managerId: "",
-      },
-      workSchedule: {
-        workDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
-        startTime: "09:00",
-        endTime: "17:00",
-      },
-      compensation: {
-        basicSalary: 0,
-        allowances: 0,
-        payFrequency: "monthly",
-        effectiveDate: "",
-      },
-      deductions: {
-        sss: 0,
-        philHealth: 0,
-        pagIbig: 0,
-        tax: 0,
-        loans: 0,
-        other: 0,
-      },
+  const [onboardingData, setOnboardingData] = useState<EmployeeOnboardingState>({
+    personalInfo: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      birthdate: '',
+      address: '',
     },
-  );
+    jobDetails: {
+      employeeCode: '',
+      departmentId: '',
+      designationId: '',
+      branchId: '',
+      hireDate: '',
+      employmentType: '',
+      status: 'ACTIVE',
+      managerId: '',
+    },
+    workSchedule: {
+      workDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+      startTime: '09:00',
+      endTime: '17:00',
+    },
+    compensation: {
+      basicSalary: 0,
+      allowances: 0,
+      payFrequency: 'monthly',
+      effectiveDate: '',
+    },
+    deductions: {
+      sss: 0,
+      philHealth: 0,
+      pagIbig: 0,
+      tax: 0,
+      loans: 0,
+      other: 0,
+    },
+  });
 
   // Fetch dropdown data
   const { data: departmentsData } = useGetDepartmentsQuery({});
@@ -164,28 +162,27 @@ export function EmployeeOnboardingWizard() {
     const currentStep = steps[currentStepIndex];
 
     switch (currentStep.id) {
-      case "personal":
+      case 'personal':
         return !!(
           onboardingData.personalInfo.firstName &&
           onboardingData.personalInfo.lastName &&
           onboardingData.personalInfo.email
         );
-      case "job":
+      case 'job':
         return !!onboardingData.jobDetails.hireDate;
-      case "schedule":
+      case 'schedule':
         return !!(
           onboardingData.workSchedule.workDays.length > 0 &&
           onboardingData.workSchedule.startTime &&
           onboardingData.workSchedule.endTime
         );
-      case "compensation":
+      case 'compensation':
         return !!(
-          onboardingData.compensation.basicSalary > 0 &&
-          onboardingData.compensation.payFrequency
+          onboardingData.compensation.basicSalary > 0 && onboardingData.compensation.payFrequency
         );
-      case "deductions":
+      case 'deductions':
         return true; // Optional step
-      case "review":
+      case 'review':
         return true; // Review step doesn't need validation
       default:
         return false;
@@ -194,7 +191,7 @@ export function EmployeeOnboardingWizard() {
 
   const handleNext = () => {
     if (!validateCurrentStep()) {
-      toast.error("Please complete all required fields before continuing.");
+      toast.error('Please complete all required fields before continuing.');
       return;
     }
 
@@ -214,7 +211,7 @@ export function EmployeeOnboardingWizard() {
 
   const handleConfirm = async () => {
     if (!validateCurrentStep()) {
-      toast.error("Please review and complete all required information.");
+      toast.error('Please review and complete all required information.');
       return;
     }
 
@@ -246,7 +243,7 @@ export function EmployeeOnboardingWizard() {
       };
 
       const employeeResult = await createEmployee(employeeData).unwrap();
-      toast.success("Employee created successfully!");
+      toast.success('Employee created successfully!');
 
       const employeeId = employeeResult.id;
 
@@ -255,37 +252,37 @@ export function EmployeeOnboardingWizard() {
         const compensationData = {
           baseSalary: onboardingData.compensation.basicSalary,
           overtimeRate: 1.5, // Default
-          currency: "PHP",
+          currency: 'PHP',
           paymentFrequency:
             PaymentFrequency[
               onboardingData.compensation.payFrequency
                 .toUpperCase()
-                .replace("-", "_") as keyof typeof PaymentFrequency
+                .replace('-', '_') as keyof typeof PaymentFrequency
             ],
           effectiveDate: onboardingData.compensation.effectiveDate,
-          changeReason: "Employee onboarding",
+          changeReason: 'Employee onboarding',
         };
 
         await createCompensation({
           employeeId,
           body: compensationData,
         }).unwrap();
-        toast.success("Compensation setup completed!");
+        toast.success('Compensation setup completed!');
       } catch (compError) {
         toast.warning(
-          "Employee created but compensation setup failed. You can configure it later.",
+          'Employee created but compensation setup failed. You can configure it later.'
         );
-        console.error("Compensation creation failed:", compError);
+        console.error('Compensation creation failed:', compError);
       }
 
       // 3. Create Deductions (only for non-zero values)
       const deductionsToCreate = [
-        { name: "SSS", amount: onboardingData.deductions.sss },
-        { name: "PhilHealth", amount: onboardingData.deductions.philHealth },
-        { name: "PagIBIG", amount: onboardingData.deductions.pagIbig },
-        { name: "Tax", amount: onboardingData.deductions.tax },
-        { name: "Loans", amount: onboardingData.deductions.loans },
-        { name: "Other", amount: onboardingData.deductions.other },
+        { name: 'SSS', amount: onboardingData.deductions.sss },
+        { name: 'PhilHealth', amount: onboardingData.deductions.philHealth },
+        { name: 'PagIBIG', amount: onboardingData.deductions.pagIbig },
+        { name: 'Tax', amount: onboardingData.deductions.tax },
+        { name: 'Loans', amount: onboardingData.deductions.loans },
+        { name: 'Other', amount: onboardingData.deductions.other },
       ].filter((deduction) => deduction.amount && deduction.amount > 0);
 
       if (deductionsToCreate.length > 0) {
@@ -302,23 +299,23 @@ export function EmployeeOnboardingWizard() {
                   effectiveDate: onboardingData.compensation.effectiveDate,
                   description: `${deduction.name} deduction`,
                 },
-              }).unwrap(),
-            ),
+              }).unwrap()
+            )
           );
-          toast.success("Deductions setup completed!");
+          toast.success('Deductions setup completed!');
         } catch (dedError) {
           toast.warning(
-            "Employee created but deductions setup failed. You can configure it later.",
+            'Employee created but deductions setup failed. You can configure it later.'
           );
-          console.error("Deductions creation failed:", dedError);
+          console.error('Deductions creation failed:', dedError);
         }
       }
 
       // Redirect to employee profile
       router.push(`/hris/employees/${employeeId}`);
     } catch (error) {
-      console.error("Employee creation failed:", error);
-      toast.error("Failed to create employee. Please try again.");
+      console.error('Employee creation failed:', error);
+      toast.error('Failed to create employee. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -349,9 +346,7 @@ export function EmployeeOnboardingWizard() {
                 <CardTitle className="flex items-center gap-2">
                   {currentStep.label}
                   {currentStep.optional && (
-                    <span className="text-sm font-normal text-muted-foreground">
-                      (Optional)
-                    </span>
+                    <span className="text-sm font-normal text-muted-foreground">(Optional)</span>
                   )}
                 </CardTitle>
               </CardHeader>
@@ -364,11 +359,7 @@ export function EmployeeOnboardingWizard() {
               </CardContent>
             </Card>
             <div className="flex justify-between mt-4">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentStepIndex === 0}
-              >
+              <Button variant="outline" onClick={handlePrevious} disabled={currentStepIndex === 0}>
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Previous
               </Button>
@@ -384,9 +375,7 @@ export function EmployeeOnboardingWizard() {
                   disabled={isSubmitting}
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  {isSubmitting && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Confirm & Create Employee
                 </Button>
               )}

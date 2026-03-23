@@ -1,36 +1,46 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { EntityManager, StatCard } from "@/components/entity-manager";
-import { columns } from "./column";
-import { formFields } from "./form-fields";
-import { useGetPayPeriodsQuery } from "@/store/api/payPeriodsApi";
-import { 
-  useGetTimesheetsQuery, 
+import { useEffect, useState } from 'react';
+import { EntityManager, StatCard } from '@/components/entity-manager';
+import { columns } from './column';
+import { formFields } from './form-fields';
+import { useGetPayPeriodsQuery } from '@/store/api/payPeriodsApi';
+import {
+  useGetTimesheetsQuery,
   useGetTimesheetSummaryQuery,
   useGenerateTimesheetsMutation,
   useUpdateTimesheetStatusMutation,
-  TimesheetStatus
-} from "@/store/api/timesheetsApi";
-import { 
-  Users, 
-  AlertCircle, 
-  CheckCircle2, 
-  Clock, 
+  TimesheetStatus,
+} from '@/store/api/timesheetsApi';
+import {
+  Users,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
   Calendar,
   RefreshCcw,
-  LucideIcon
-} from "lucide-react";
-import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+  LucideIcon,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 export default function TimesheetsPage() {
   const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
-  
+
   // Queries
   const { data: payPeriods = [], isLoading: loadingPeriods } = useGetPayPeriodsQuery();
-  const { data: timesheets = [], isLoading: loadingTimesheets, refetch: refetchTimesheets } = useGetTimesheetsQuery(
+  const {
+    data: timesheets = [],
+    isLoading: loadingTimesheets,
+    refetch: refetchTimesheets,
+  } = useGetTimesheetsQuery(
     { payPeriodId: selectedPeriodId as number },
     { skip: !selectedPeriodId }
   );
@@ -53,7 +63,7 @@ export default function TimesheetsPage() {
   const handleGenerate = async () => {
     if (!selectedPeriodId) return;
     const promise = generate({ payPeriodId: selectedPeriodId }).unwrap();
-    
+
     toast.promise(promise, {
       loading: 'Analyzing attendance logs...',
       success: (data) => `Successfully generated/refreshed ${data.generated} timesheets.`,
@@ -69,40 +79,43 @@ export default function TimesheetsPage() {
 
   const handleUpdate = async (id: string | number, formData: any) => {
     try {
-      await updateStatus({ id: id.toString(), status: formData.status }).unwrap();
-      toast.success("Timesheet status updated successfully");
+      await updateStatus({
+        id: id.toString(),
+        status: formData.status,
+      }).unwrap();
+      toast.success('Timesheet status updated successfully');
       refetchTimesheets();
       refetchSummary();
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to update timesheet");
+      toast.error(error?.data?.message || 'Failed to update timesheet');
       throw error;
     }
   };
 
   const stats: StatCard[] = [
     {
-      label: "Total Employees",
+      label: 'Total Employees',
       value: summary?.total || 0,
       icon: Users as LucideIcon,
-      color: "bg-blue-50 text-blue-700",
+      color: 'bg-blue-50 text-blue-700',
     },
     {
-      label: "Anomalies",
+      label: 'Anomalies',
       value: summary?.anomalies || 0,
       icon: AlertCircle as LucideIcon,
-      color: summary?.anomalies ? "bg-red-50 text-red-600 shadow-sm" : "bg-gray-50 text-gray-400",
+      color: summary?.anomalies ? 'bg-red-50 text-red-600 shadow-sm' : 'bg-gray-50 text-gray-400',
     },
     {
-      label: "Approved",
+      label: 'Approved',
       value: summary?.approved || 0,
       icon: CheckCircle2 as LucideIcon,
-      color: "bg-emerald-50 text-emerald-700",
+      color: 'bg-emerald-50 text-emerald-700',
     },
     {
-      label: "Pending Review",
+      label: 'Pending Review',
       value: summary?.pending || 0,
       icon: Clock as LucideIcon,
-      color: "bg-amber-50 text-amber-700",
+      color: 'bg-amber-50 text-amber-700',
     },
   ];
 
@@ -122,8 +135,8 @@ export default function TimesheetsPage() {
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="min-w-[200px]">
-            <Select 
-              value={selectedPeriodId?.toString()} 
+            <Select
+              value={selectedPeriodId?.toString()}
               onValueChange={(v) => setSelectedPeriodId(parseInt(v))}
             >
               <SelectTrigger>
@@ -132,16 +145,17 @@ export default function TimesheetsPage() {
               <SelectContent>
                 {payPeriods.map((p) => (
                   <SelectItem key={p.id} value={p.id.toString()}>
-                    {p.name} ({new Date(p.startDate).toLocaleDateString()} - {new Date(p.endDate).toLocaleDateString()})
+                    {p.name} ({new Date(p.startDate).toLocaleDateString()} -{' '}
+                    {new Date(p.endDate).toLocaleDateString()})
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          
-          <Button 
-            onClick={handleGenerate} 
-            variant="outline" 
+
+          <Button
+            onClick={handleGenerate}
+            variant="outline"
             className="gap-2"
             disabled={!selectedPeriodId || loadingTimesheets}
           >
@@ -166,8 +180,8 @@ export default function TimesheetsPage() {
         showEditButton={true}
         showDeleteButton={false}
         permissions={{
-           update: "hris.timesheet.manage",
-           view: "hris.timesheet.view"
+          update: 'hris.timesheet.manage',
+          view: 'hris.timesheet.view',
         }}
       />
     </div>

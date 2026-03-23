@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { 
-  useGetMyLeaveRequestsQuery, 
+import {
+  useGetMyLeaveRequestsQuery,
   useCreateLeaveRequestMutation,
-  useGetLeaveTypesQuery 
+  useGetLeaveTypesQuery,
 } from '@/store/api/leaveApi';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,11 +30,22 @@ export default function MyLeavesPage() {
     }
   };
 
-  const recentStats = useMemo(() => [
-    { label: 'Pending Approval', count: requests?.filter(r => r.status === 'PENDING').length || 0, color: 'text-amber-600 bg-amber-500/10' },
-    { label: 'Approved', count: requests?.filter(r => r.status === 'APPROVED').length || 0, color: 'text-primary bg-primary/10' },
-    { label: 'Taken', count: 0, color: 'text-blue-600 bg-blue-500/10' },
-  ], [requests]);
+  const recentStats = useMemo(
+    () => [
+      {
+        label: 'Pending Approval',
+        count: requests?.filter((r) => r.status === 'PENDING').length || 0,
+        color: 'text-amber-600 bg-amber-500/10',
+      },
+      {
+        label: 'Approved',
+        count: requests?.filter((r) => r.status === 'APPROVED').length || 0,
+        color: 'text-primary bg-primary/10',
+      },
+      { label: 'Taken', count: 0, color: 'text-blue-600 bg-blue-500/10' },
+    ],
+    [requests]
+  );
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -47,13 +58,21 @@ export default function MyLeavesPage() {
             </div>
             <CardHeader className="pb-4">
               <CardTitle className="text-xl">Leave Balances</CardTitle>
-              <CardDescription className="text-gray-400">Available for {new Date().getFullYear()}</CardDescription>
+              <CardDescription className="text-gray-400">
+                Available for {new Date().getFullYear()}
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {leaveTypes?.map((type) => (
-                <div key={type.id} className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                <div
+                  key={type.id}
+                  className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10 backdrop-blur-sm"
+                >
                   <span className="text-sm font-medium">{type.name}</span>
-                  <Badge variant="secondary" className="bg-primary text-primary-foreground hover:bg-primary font-bold px-2.5">
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary text-primary-foreground hover:bg-primary font-bold px-2.5"
+                  >
                     {type.defaultDaysPerYear} Days
                   </Badge>
                 </div>
@@ -65,7 +84,7 @@ export default function MyLeavesPage() {
               )}
             </CardContent>
           </Card>
-          
+
           <Card className="border-none shadow-sm shadow-gray-200/50 bg-white p-6 ring-1 ring-gray-100">
             <h4 className="font-bold flex items-center gap-2 mb-4 text-gray-900">
               <Clock className="h-4 w-4 text-primary" />
@@ -74,20 +93,25 @@ export default function MyLeavesPage() {
             <div className="space-y-4">
               {recentStats.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center group">
-                  <span className="text-sm text-gray-500 group-hover:text-gray-900 transition-colors">{item.label}</span>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${item.color}`}>{item.count}</span>
+                  <span className="text-sm text-gray-500 group-hover:text-gray-900 transition-colors">
+                    {item.label}
+                  </span>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${item.color}`}>
+                    {item.count}
+                  </span>
                 </div>
               ))}
             </div>
           </Card>
 
           <div className="bg-primary/5 rounded-2xl p-5 border border-primary/10 flex items-start gap-3">
-             <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center text-primary shrink-0 shadow-sm ring-1 ring-primary/10">
-                <Info className="h-4 w-4" />
-             </div>
-             <div className="text-[11px] text-gray-600 leading-relaxed font-medium">
-               Select a leave type and duration. Your request will be routed to your manager for approval.
-             </div>
+            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center text-primary shrink-0 shadow-sm ring-1 ring-primary/10">
+              <Info className="h-4 w-4" />
+            </div>
+            <div className="text-[11px] text-gray-600 leading-relaxed font-medium">
+              Select a leave type and duration. Your request will be routed to your manager for
+              approval.
+            </div>
           </div>
         </div>
 
@@ -105,7 +129,7 @@ export default function MyLeavesPage() {
             keyExtractor={(item) => item.id}
             searchPlaceholder="Search your requests..."
             // Disable Edit/Delete for submitted requests for now
-            showEditButton={false} 
+            showEditButton={false}
             showDeleteButton={false}
             permissions={{
               create: 'hris.leave.request',

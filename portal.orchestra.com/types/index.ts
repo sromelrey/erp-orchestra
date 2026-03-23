@@ -33,7 +33,7 @@ export interface User {
   firstName?: string;
   lastName?: string;
   avatarUrl?: string;
-  status: "ACTIVE" | "INACTIVE";
+  status: 'ACTIVE' | 'INACTIVE';
   tenantId?: number;
   userRoles?: Array<{
     role?: Role;
@@ -58,7 +58,7 @@ export interface UserPermission {
   id: number;
   userId: number;
   permissionId: number;
-  type: "GRANT" | "DENY";
+  type: 'GRANT' | 'DENY';
   expiresAt?: string;
   grantedAt: string;
   permission: Permission;
@@ -134,3 +134,16 @@ export interface LoginRequest {
   email: string;
   password?: string;
 }
+
+// Re-export Material types from API
+export type {
+  Material,
+  MaterialType,
+  CreateMaterialRequest,
+  UpdateMaterialRequest,
+  MaterialsQueryParams,
+} from '@/store/api/materialsApi';
+
+// Export error types
+export type { ApiError } from '@/types/errors';
+export { isApiError, getErrorMessage } from '@/types/errors';

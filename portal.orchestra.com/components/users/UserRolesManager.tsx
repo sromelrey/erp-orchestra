@@ -2,7 +2,11 @@
 
 import { useState } from 'react';
 import { User } from '@/types';
-import { useGetRolesQuery, useAssignUsersMutation, useRemoveUserFromRoleMutation } from '@/store/api/rolesApi';
+import {
+  useGetRolesQuery,
+  useAssignUsersMutation,
+  useRemoveUserFromRoleMutation,
+} from '@/store/api/rolesApi';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -18,28 +22,29 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   const { data: roles = [], isLoading: isLoadingRoles } = useGetRolesQuery();
   const [assignUsers] = useAssignUsersMutation();
   const [removeUserFromRole] = useRemoveUserFromRoleMutation();
-  
+
   const [selectedRoleIds, setSelectedRoleIds] = useState<number[]>(
-    () => user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || []
+    () =>
+      user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleToggle = (roleId: number) => {
     setSelectedRoleIds((prev) =>
-      prev.includes(roleId)
-        ? prev.filter((id) => id !== roleId)
-        : [...prev, roleId]
+      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId]
     );
   };
 
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      const currentRoleIds = user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || [];
-      
+      const currentRoleIds =
+        user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) ||
+        [];
+
       // Roles to add
       const rolesToAdd = selectedRoleIds.filter((id) => !currentRoleIds.includes(id));
-      
+
       // Roles to remove
       const rolesToRemove = currentRoleIds.filter((id) => !selectedRoleIds.includes(id));
 
@@ -69,7 +74,8 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
   };
 
   const hasChanges = () => {
-    const currentIds = user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || [];
+    const currentIds =
+      user.userRoles?.map((ur) => ur.role?.id).filter((id): id is number => id !== undefined) || [];
     if (currentIds.length !== selectedRoleIds.length) return true;
     return !currentIds.every((id) => selectedRoleIds.includes(id));
   };
@@ -108,9 +114,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
                 {role.name}
               </Label>
               {role.description && (
-                <p className="text-xs text-muted-foreground">
-                  {role.description}
-                </p>
+                <p className="text-xs text-muted-foreground">{role.description}</p>
               )}
             </div>
           </div>
@@ -123,10 +127,7 @@ export function UserRolesManager({ user, onClose }: UserRolesManagerProps) {
             Cancel
           </Button>
         )}
-        <Button
-          onClick={handleSave}
-          disabled={!hasChanges() || isSubmitting}
-        >
+        <Button onClick={handleSave} disabled={!hasChanges() || isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Save Roles
         </Button>

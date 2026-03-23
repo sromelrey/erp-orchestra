@@ -1,4 +1,4 @@
-import { FormField } from "@/components/entity-manager/types";
+import { FormField } from '@/components/entity-manager/types';
 
 export const formFields: FormField[] = [
   {
@@ -7,5 +7,5 @@ export const formFields: FormField[] = [
     type: 'textarea',
     placeholder: 'Add comments for the employee regarding this decision...',
     description: 'Provide a reason for approval or rejection.',
-  }
+  },
 ];

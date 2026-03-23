@@ -6,33 +6,34 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
  * (e.g. rolesApi invalidating usersApi tags).
  */
 export const baseApi = createApi({
-  reducerPath: "baseApi",
+  reducerPath: 'baseApi',
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_URL,
     prepareHeaders: (headers) => {
       // Logic for shared headers (e.g. auth tokens) can be added here
       return headers;
     },
-    credentials: "include",
+    credentials: 'include',
   }),
   tagTypes: [
-    "User",
-    "Role",
-    "Permission",
-    "UserPermission",
-    "Session",
-    "Departments",
-    "Designations",
-    "Branches",
-    "Employees",
-    "Attendance",
-    "LeaveTypes",
-    "LeaveRequests",
-    "PayPeriods",
-    "Timesheets",
-    "Compensation",
-    "CompensationHistory",
-    "Deductions",
+    'User',
+    'Role',
+    'Permission',
+    'UserPermission',
+    'Session',
+    'Departments',
+    'Designations',
+    'Branches',
+    'Employees',
+    'Attendance',
+    'LeaveTypes',
+    'LeaveRequests',
+    'PayPeriods',
+    'Timesheets',
+    'Compensation',
+    'CompensationHistory',
+    'Deductions',
+    'Materials',
   ],
   endpoints: () => ({}), // Endpoints will be injected by feature-specific files
 });

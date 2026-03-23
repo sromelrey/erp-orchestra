@@ -1,23 +1,15 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import { useGetEmployeeByIdQuery } from "@/store/api/employeesApi";
+import { useParams, useRouter } from 'next/navigation';
+import { useGetEmployeeByIdQuery } from '@/store/api/employeesApi';
 import {
   useGetEmployeeCompensationQuery,
   useGetEmployeeDeductionsQuery,
-} from "@/store/api/compensationApi";
-import { Button } from "@/components/ui/button";
-import {
-  ArrowLeft,
-  User,
-  Briefcase,
-  MapPin,
-  Building2,
-  DollarSign,
-  Target,
-} from "lucide-react";
-import { PermissionGuard } from "@/components/auth/PermissionGuard";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/store/api/compensationApi';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, User, Briefcase, MapPin, Building2, DollarSign, Target } from 'lucide-react';
+import { PermissionGuard } from '@/components/auth/PermissionGuard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function EmployeeProfilePage() {
   const params = useParams();
@@ -25,9 +17,7 @@ export default function EmployeeProfilePage() {
   const id = params.id as string;
 
   const { data: employee, isLoading, isError } = useGetEmployeeByIdQuery(id);
-  const { data: compensationData } = useGetEmployeeCompensationQuery(
-    Number(id),
-  );
+  const { data: compensationData } = useGetEmployeeCompensationQuery(Number(id));
   const { data: deductionsData } = useGetEmployeeDeductionsQuery(Number(id));
 
   if (isLoading) {
@@ -47,8 +37,11 @@ export default function EmployeeProfilePage() {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">Employee not found</h2>
-        <p className="text-muted-foreground mt-2">The employee you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission to view them.</p>
-        <Button variant="outline" className="mt-6" onClick={() => router.push("/hris/employees")}>
+        <p className="text-muted-foreground mt-2">
+          The employee you&apos;re looking for doesn&apos;t exist or you don&apos;t have permission
+          to view them.
+        </p>
+        <Button variant="outline" className="mt-6" onClick={() => router.push('/hris/employees')}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Directory
         </Button>
@@ -60,11 +53,7 @@ export default function EmployeeProfilePage() {
     <PermissionGuard permission="hris.employee.view">
       <div className="p-6 space-y-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => router.push("/hris/employees")}
-          >
+          <Button variant="outline" size="icon" onClick={() => router.push('/hris/employees')}>
             <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Back</span>
           </Button>
@@ -73,18 +62,18 @@ export default function EmployeeProfilePage() {
               {employee.firstName} {employee.lastName}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {employee.employeeCode || "No Employee Code"}
+              {employee.employeeCode || 'No Employee Code'}
             </p>
           </div>
           <div className="ml-auto">
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                employee.status === "ACTIVE"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                employee.status === 'ACTIVE'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
               }`}
             >
-              {employee.status || "ACTIVE"}
+              {employee.status || 'ACTIVE'}
             </span>
           </div>
         </div>
@@ -99,31 +88,19 @@ export default function EmployeeProfilePage() {
             <dl className="space-y-4 text-sm">
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
                 <dt className="text-muted-foreground font-medium">Email</dt>
-                <dd className="font-semibold">
-                  {employee.email || "Not Provided"}
-                </dd>
+                <dd className="font-semibold">{employee.email || 'Not Provided'}</dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
                 <dt className="text-muted-foreground font-medium">Phone</dt>
-                <dd className="font-semibold">
-                  {employee.phone || "Not Provided"}
-                </dd>
+                <dd className="font-semibold">{employee.phone || 'Not Provided'}</dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
-                <dt className="text-muted-foreground font-medium">
-                  Emergency Contact
-                </dt>
-                <dd className="font-semibold">
-                  {employee.emergencyContact || "Not Provided"}
-                </dd>
+                <dt className="text-muted-foreground font-medium">Emergency Contact</dt>
+                <dd className="font-semibold">{employee.emergencyContact || 'Not Provided'}</dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
-                <dt className="text-muted-foreground font-medium">
-                  System Account
-                </dt>
-                <dd className="font-semibold">
-                  {employee.userId ? "Provisioned" : "None"}
-                </dd>
+                <dt className="text-muted-foreground font-medium">System Account</dt>
+                <dd className="font-semibold">{employee.userId ? 'Provisioned' : 'None'}</dd>
               </div>
             </dl>
           </div>
@@ -140,9 +117,7 @@ export default function EmployeeProfilePage() {
                   <Building2 className="h-4 w-4" /> Department
                 </dt>
                 <dd className="font-semibold">
-                  {employee.department
-                    ? employee.department.name
-                    : "Unassigned"}
+                  {employee.department ? employee.department.name : 'Unassigned'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
@@ -150,9 +125,7 @@ export default function EmployeeProfilePage() {
                   <Briefcase className="h-4 w-4" /> Designation
                 </dt>
                 <dd className="font-semibold">
-                  {employee.designation
-                    ? employee.designation.name
-                    : "Unassigned"}
+                  {employee.designation ? employee.designation.name : 'Unassigned'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
@@ -160,7 +133,7 @@ export default function EmployeeProfilePage() {
                   <MapPin className="h-4 w-4" /> Branch
                 </dt>
                 <dd className="font-semibold">
-                  {employee.branch ? employee.branch.name : "Unassigned"}
+                  {employee.branch ? employee.branch.name : 'Unassigned'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
@@ -170,7 +143,7 @@ export default function EmployeeProfilePage() {
                 <dd className="font-semibold">
                   {employee.manager
                     ? `${employee.manager.firstName} ${employee.manager.lastName}`
-                    : "No Manager"}
+                    : 'No Manager'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
@@ -178,7 +151,7 @@ export default function EmployeeProfilePage() {
                 <dd className="font-semibold">
                   {employee.hireDate
                     ? new Date(employee.hireDate).toLocaleDateString()
-                    : "Not Provided"}
+                    : 'Not Provided'}
                 </dd>
               </div>
             </dl>
@@ -192,33 +165,25 @@ export default function EmployeeProfilePage() {
             </div>
             <dl className="space-y-4 text-sm">
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
-                <dt className="text-muted-foreground font-medium">
-                  Base Salary
-                </dt>
+                <dt className="text-muted-foreground font-medium">Base Salary</dt>
                 <dd className="font-semibold">
                   {compensationData && compensationData.length > 0
-                    ? `₱${compensationData[0]?.baseSalary?.toLocaleString() || "N/A"}`
-                    : "Not Set"}
+                    ? `₱${compensationData[0]?.baseSalary?.toLocaleString() || 'N/A'}`
+                    : 'Not Set'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
-                <dt className="text-muted-foreground font-medium">
-                  Hourly Rate
-                </dt>
+                <dt className="text-muted-foreground font-medium">Hourly Rate</dt>
                 <dd className="font-semibold">
                   {compensationData && compensationData.length > 0
-                    ? `₱${compensationData[0]?.hourlyRate?.toLocaleString() || "N/A"}`
-                    : "Not Set"}
+                    ? `₱${compensationData[0]?.hourlyRate?.toLocaleString() || 'N/A'}`
+                    : 'Not Set'}
                 </dd>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between py-1">
-                <dt className="text-muted-foreground font-medium">
-                  Active Deductions
-                </dt>
+                <dt className="text-muted-foreground font-medium">Active Deductions</dt>
                 <dd className="font-semibold">
-                  {deductionsData
-                    ? deductionsData.filter((d) => d.isActive).length
-                    : 0}
+                  {deductionsData ? deductionsData.filter((d) => d.isActive).length : 0}
                 </dd>
               </div>
             </dl>

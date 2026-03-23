@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React, { useEffect, useMemo, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Users } from "lucide-react";
-import { StatCard } from "@/components/entity-manager";
-import { formFields as baseFormFields } from "@/app/(main)/hris/employees/form-fields";
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { Users } from 'lucide-react';
+import { StatCard } from '@/components/entity-manager';
+import { formFields as baseFormFields } from '@/app/(main)/hris/employees/form-fields';
 import {
   useGetEmployeesQuery,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
-} from "@/store/api/employeesApi";
+} from '@/store/api/employeesApi';
 import {
   useCreateEmployeeCompensationMutation,
   useUpdateEmployeeCompensationMutation,
@@ -20,17 +20,17 @@ import {
   useLazyGetEmployeeDeductionsQuery,
   EmployeeCompensation,
   EmployeeDeduction,
-} from "@/store/api/compensationApi";
-import { useGetDepartmentsQuery } from "@/store/api/departmentsApi";
-import { useGetDesignationsQuery } from "@/store/api/designationsApi";
-import { useGetBranchesQuery } from "@/store/api/branchesApi";
-import { Employee, Department, Designation, Branch } from "@/types";
+} from '@/store/api/compensationApi';
+import { useGetDepartmentsQuery } from '@/store/api/departmentsApi';
+import { useGetDesignationsQuery } from '@/store/api/designationsApi';
+import { useGetBranchesQuery } from '@/store/api/branchesApi';
+import { Employee, Department, Designation, Branch } from '@/types';
 import {
   useInlineEdits,
   EmployeeInlineEditor,
   DraftCompensation,
   DraftDeduction,
-} from "@/components/hris/employees/inline-edit";
+} from '@/components/hris/employees/inline-edit';
 
 // Orchestrates employee listing data, inline edits, and helper handlers for the Employees page.
 export function useEmployee() {
@@ -96,24 +96,24 @@ export function useEmployee() {
   }, [response?.data, fetchCompensation, fetchDeductions]);
 
   const data = useMemo(() => response?.data || [], [response?.data]);
-  const activeCount = data.filter((emp: Employee) => emp.status === "ACTIVE").length;
+  const activeCount = data.filter((emp: Employee) => emp.status === 'ACTIVE').length;
 
   const stats: StatCard[] = useMemo(
     () => [
       {
-        label: "Total Employees",
+        label: 'Total Employees',
         value: data.length,
         icon: Users,
-        color: "bg-primary/10 text-primary",
+        color: 'bg-primary/10 text-primary',
       },
       {
-        label: "Active Employees",
+        label: 'Active Employees',
         value: activeCount,
         icon: Users,
-        color: "bg-green-100 text-green-700",
+        color: 'bg-green-100 text-green-700',
       },
     ],
-    [data.length, activeCount],
+    [data.length, activeCount]
   );
 
   // Inject dropdown options into formFields
@@ -140,13 +140,13 @@ export function useEmployee() {
 
     return baseFormFields.map((field) => {
       switch (field.name) {
-        case "departmentId":
+        case 'departmentId':
           return { ...field, options: departments };
-        case "designationId":
+        case 'designationId':
           return { ...field, options: designations };
-        case "branchId":
+        case 'branchId':
           return { ...field, options: branches };
-        case "managerId":
+        case 'managerId':
           return { ...field, options: managers };
         default:
           return field;
@@ -157,7 +157,7 @@ export function useEmployee() {
   // Normalize update payloads and persist employee profile changes
   const handleUpdate = async (
     id: string | number,
-    formData: Partial<Employee> & { createUserAccount?: string | boolean },
+    formData: Partial<Employee> & { createUserAccount?: string | boolean }
   ) => {
     try {
       delete formData.createUserAccount;
@@ -175,9 +175,9 @@ export function useEmployee() {
       else delete formData.managerId;
 
       await updateEmployee({ id, body: formData }).unwrap();
-      toast.success("Employee updated successfully");
+      toast.success('Employee updated successfully');
     } catch {
-      toast.error("Failed to update employee");
+      toast.error('Failed to update employee');
     }
   };
 
@@ -185,9 +185,9 @@ export function useEmployee() {
   const handleDelete = async (id: string | number) => {
     try {
       await deleteEmployee(id).unwrap();
-      toast.success("Employee deleted successfully");
+      toast.success('Employee deleted successfully');
     } catch {
-      toast.error("Failed to delete employee");
+      toast.error('Failed to delete employee');
     }
   };
 
@@ -210,7 +210,7 @@ export function useEmployee() {
   const handleDeductionUpdate = (
     employeeId: number,
     deductionIndex: number,
-    updates: Partial<DraftDeduction>,
+    updates: Partial<DraftDeduction>
   ) => {
     inlineEdits.updateEmployeeDeduction(employeeId, deductionIndex, updates);
   };
@@ -243,10 +243,9 @@ export function useEmployee() {
           baseSalary: edits.compensation.baseSalary,
           hourlyRate: edits.compensation.hourlyRate,
           overtimeRate: edits.compensation.overtimeRate,
-          currency: edits.compensation.currency || "PHP",
+          currency: edits.compensation.currency || 'PHP',
           paymentFrequency: edits.compensation.paymentFrequency,
-          effectiveDate:
-            edits.compensation.effectiveDate || new Date().toISOString().split("T")[0],
+          effectiveDate: edits.compensation.effectiveDate || new Date().toISOString().split('T')[0],
           endDate: edits.compensation.endDate,
           changeReason: edits.compensation.changeReason,
         };
@@ -258,7 +257,10 @@ export function useEmployee() {
             body: compensationData,
           }).unwrap();
         } else {
-          await createCompensation({ employeeId, body: compensationData }).unwrap();
+          await createCompensation({
+            employeeId,
+            body: compensationData,
+          }).unwrap();
         }
       }
 
@@ -270,13 +272,17 @@ export function useEmployee() {
             amount: deduction.amount,
             percentage: deduction.percentage,
             frequency: deduction.frequency,
-            effectiveDate: deduction.effectiveDate || new Date().toISOString().split("T")[0],
+            effectiveDate: deduction.effectiveDate || new Date().toISOString().split('T')[0],
             endDate: deduction.endDate,
             description: deduction.description,
           };
 
           if (deduction.id) {
-            await updateDeduction({ employeeId, id: deduction.id, body: deductionData }).unwrap();
+            await updateDeduction({
+              employeeId,
+              id: deduction.id,
+              body: deductionData,
+            }).unwrap();
           } else if (deduction.name) {
             await createDeduction({ employeeId, body: deductionData }).unwrap();
           }
@@ -292,8 +298,8 @@ export function useEmployee() {
 
       toast.success(`Employee ${employeeId} compensation and deductions saved successfully`);
     } catch (error: unknown) {
-      console.error("Save error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to save changes";
+      console.error('Save error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save changes';
       inlineEdits.setEmployeeError(employeeId, errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -343,7 +349,7 @@ export function useEmployee() {
         return newSet;
       });
     });
-    toast.success("All unsaved changes discarded");
+    toast.success('All unsaved changes discarded');
   };
 
   // Build the expanded row UI for an employee
@@ -353,7 +359,8 @@ export function useEmployee() {
     const deductions = empData?.deductions || [];
     const isEditing = editingEmployeeIds.has(employee.id);
     const isDirty = inlineEdits.isEmployeeDirty(employee.id);
-    const hasErrors = Object.keys(inlineEdits.state.errorsByEmployeeId[employee.id] || {}).length > 0;
+    const hasErrors =
+      Object.keys(inlineEdits.state.errorsByEmployeeId[employee.id] || {}).length > 0;
     const isSaving = inlineEdits.state.savingByEmployeeId[employee.id] || false;
     const errors = inlineEdits.state.errorsByEmployeeId[employee.id];
 
@@ -386,7 +393,7 @@ export function useEmployee() {
   const dirtyEmployeeIds = inlineEdits.getDirtyEmployeeIds();
 
   // Redirect to onboarding flow
-  const handleAddEmployee = () => router.push("/hris/employees/onboarding");
+  const handleAddEmployee = () => router.push('/hris/employees/onboarding');
 
   return {
     data,

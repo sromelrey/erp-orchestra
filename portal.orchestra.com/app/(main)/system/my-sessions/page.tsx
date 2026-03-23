@@ -1,19 +1,8 @@
 'use client';
 
 import React from 'react';
-import {
-  useGetMySessionsQuery,
-  useRevokeMySessionMutation,
-} from '@/store/api/sessionsApi';
-import {
-  Monitor,
-  Smartphone,
-  Globe,
-  Trash2,
-  ShieldCheck,
-  Loader2,
-  Clock,
-} from 'lucide-react';
+import { useGetMySessionsQuery, useRevokeMySessionMutation } from '@/store/api/sessionsApi';
+import { Monitor, Smartphone, Globe, Trash2, ShieldCheck, Loader2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -61,12 +50,8 @@ export default function MySessionsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-          My Sessions
-        </h1>
-        <p className="text-gray-500">
-          View and manage your active sessions across devices.
-        </p>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">My Sessions</h1>
+        <p className="text-gray-500">View and manage your active sessions across devices.</p>
       </div>
 
       {/* Sessions List */}
@@ -97,18 +82,14 @@ export default function MySessionsPage() {
             <div
               key={session.id}
               className={`group relative overflow-hidden rounded-xl bg-white p-6 shadow-sm transition-all hover:shadow-md border ${
-                session.current
-                  ? 'border-emerald-200 ring-1 ring-emerald-100'
-                  : 'border-gray-100'
+                session.current ? 'border-emerald-200 ring-1 ring-emerald-100' : 'border-gray-100'
               }`}
             >
               <div className="flex items-center justify-between gap-4">
                 {/* Left: Device info */}
                 <div className="flex items-center gap-4">
                   <div
-                    className={`rounded-lg p-3 ${
-                      session.current ? 'bg-emerald-50' : 'bg-gray-50'
-                    }`}
+                    className={`rounded-lg p-3 ${session.current ? 'bg-emerald-50' : 'bg-gray-50'}`}
                   >
                     <DeviceIcon
                       className={`h-6 w-6 ${
@@ -118,9 +99,7 @@ export default function MySessionsPage() {
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">
-                        {device.label}
-                      </span>
+                      <span className="font-semibold text-gray-900">{device.label}</span>
                       {session.current && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
                           <ShieldCheck className="h-3 w-3" />

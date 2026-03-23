@@ -1,13 +1,13 @@
 // Main permission management components
-export { PermissionManager } from "./permission-manager";
-export { PermissionSidebar } from "./permission-sidebar";
-export { PermissionContent } from "./permission-content";
+export { PermissionManager } from './permission-manager';
+export { PermissionSidebar } from './permission-sidebar';
+export { PermissionContent } from './permission-content';
 
 // New matrix components
-export { PermissionMatrix } from "./permission-matrix";
-export { PermissionModule } from "./permission-module";
-export { PermissionRow } from "./permission-row";
-export { PermissionToggle } from "./permission-toggle";
+export { PermissionMatrix } from './permission-matrix';
+export { PermissionModule } from './permission-module';
+export { PermissionRow } from './permission-row';
+export { PermissionToggle } from './permission-toggle';
 
 // Types
 export type {
@@ -20,10 +20,10 @@ export type {
   PermissionModuleProps,
   PermissionRowProps,
   PermissionToggleProps,
-} from "./types";
+} from './types';
 
 // Hooks
-export { usePermissionManager } from "./hooks/use-permission-manager";
-export { usePermissionFilters } from "./hooks/use-permission-filters";
-export { usePermissionSelection } from "./hooks/use-permission-selection";
-export { usePermissionMatrix } from "./hooks/use-permission-matrix";
+export { usePermissionManager } from './hooks/use-permission-manager';
+export { usePermissionFilters } from './hooks/use-permission-filters';
+export { usePermissionSelection } from './hooks/use-permission-selection';
+export { usePermissionMatrix } from './hooks/use-permission-matrix';

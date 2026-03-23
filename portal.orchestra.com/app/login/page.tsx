@@ -2,18 +2,19 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Mail, Lock, CheckCircle2, ShieldCheck, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import {
+  Mail,
+  Lock,
+  CheckCircle2,
+  ShieldCheck,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import { useSignInForm } from '@/hooks/useSignInForm';
 
 export default function LoginPage() {
-  const { 
-    formData, 
-    errors, 
-    isLoading, 
-    authError, 
-    handleChange, 
-    handleSubmit 
-  } = useSignInForm();
+  const { formData, errors, isLoading, authError, handleChange, handleSubmit } = useSignInForm();
 
   return (
     <div className="flex min-h-screen font-sans">
@@ -49,7 +50,9 @@ export default function LoginPage() {
                 Email Address
               </label>
               <div className="relative group">
-                <div className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 transition-colors ${errors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-indigo-500'}`}>
+                <div
+                  className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 transition-colors ${errors.email ? 'text-red-400' : 'text-gray-400 group-focus-within:text-indigo-500'}`}
+                >
                   <Mail size={18} />
                 </div>
                 <input
@@ -73,12 +76,17 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <a href="#" className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 hover:underline">
+                <a
+                  href="#"
+                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 hover:underline"
+                >
                   Forgot password?
                 </a>
               </div>
               <div className="relative group">
-                <div className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 transition-colors ${errors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-indigo-500'}`}>
+                <div
+                  className={`pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 transition-colors ${errors.password ? 'text-red-400' : 'text-gray-400 group-focus-within:text-indigo-500'}`}
+                >
                   <Lock size={18} />
                 </div>
                 <input
@@ -114,7 +122,10 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Need help? <a href="#" className="font-semibold text-indigo-600 hover:underline">Contact Customer Support</a>
+            Need help?{' '}
+            <a href="#" className="font-semibold text-indigo-600 hover:underline">
+              Contact Customer Support
+            </a>
           </p>
 
           <div className="mt-auto pt-10 text-center text-xs text-gray-400">
@@ -132,10 +143,10 @@ export default function LoginPage() {
           className="object-cover opacity-60 mix-blend-overlay"
           priority
         />
-        
+
         {/* Abstract Gradient Overlay */}
         <div className="absolute inset-0 bg-linear-to-tr from-indigo-950 via-indigo-900/40 to-transparent" />
-        
+
         <div className="absolute inset-0 flex flex-col justify-end p-20 text-white">
           <div className="max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-1000">
             <div className="space-y-4">
@@ -143,7 +154,8 @@ export default function LoginPage() {
                 Streamline your business interactions with ease.
               </h3>
               <p className="text-xl text-indigo-100/90 leading-relaxed font-light">
-                The Orchestrator Portal provides a unified interface for all your customer and vendor needs, ensuring transparency and efficiency in every transaction.
+                The Orchestrator Portal provides a unified interface for all your customer and
+                vendor needs, ensuring transparency and efficiency in every transaction.
               </p>
             </div>
 
@@ -156,7 +168,7 @@ export default function LoginPage() {
                 <div className="text-2xl font-bold">99.9% Uptime</div>
                 <div className="text-sm text-indigo-200/70">Enterprise-grade reliability</div>
               </div>
-              
+
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-indigo-300">
                   <ShieldCheck size={20} />

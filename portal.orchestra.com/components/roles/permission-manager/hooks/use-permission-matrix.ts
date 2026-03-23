@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { Permission, Role } from "@/types";
+import * as React from 'react';
+import { Permission, Role } from '@/types';
 
 /**
  * Hook for managing permission matrix state and operations
@@ -30,13 +30,11 @@ export interface PermissionStats {
 
 export function usePermissionMatrix(
   initialSelectedSlugs: string[] = [],
-  allPermissions: Permission[] = [],
+  allPermissions: Permission[] = []
 ) {
   // State for selected permissions
-  const [selectedPermissions, setSelectedPermissions] = React.useState<
-    Set<string>
-  >(new Set());
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [selectedPermissions, setSelectedPermissions] = React.useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   // Group permissions by module and resource
   const groupedPermissions = React.useMemo((): GroupedPermissions => {
@@ -51,9 +49,7 @@ export function usePermissionMatrix(
         groups[module] = [];
       }
 
-      const existingResource = groups[module].find(
-        (r) => r.resource === resource,
-      );
+      const existingResource = groups[module].find((r) => r.resource === resource);
       if (existingResource) {
         existingResource.permissions.push(permission);
       } else {
@@ -69,9 +65,7 @@ export function usePermissionMatrix(
     Object.keys(groups)
       .sort()
       .forEach((module) => {
-        sortedGroups[module] = groups[module].sort((a, b) =>
-          a.resource.localeCompare(b.resource),
-        );
+        sortedGroups[module] = groups[module].sort((a, b) => a.resource.localeCompare(b.resource));
       });
 
     return sortedGroups;
@@ -93,11 +87,7 @@ export function usePermissionMatrix(
     Object.entries(groupedPermissions).forEach(([module, resources]) => {
       byModule[module] = resources.reduce((count, resource) => {
         const modulePermissions = resource.permissions.map((p) => p.slug);
-        return (
-          count +
-          modulePermissions.filter((slug) => selectedPermissions.has(slug))
-            .length
-        );
+        return count + modulePermissions.filter((slug) => selectedPermissions.has(slug)).length;
       }, 0);
     });
 
@@ -133,7 +123,7 @@ export function usePermissionMatrix(
     (module: string) => {
       const modulePermissions =
         groupedPermissions[module]?.flatMap((resource) =>
-          resource.permissions.map((permission) => permission.slug),
+          resource.permissions.map((permission) => permission.slug)
         ) || [];
 
       setSelectedPermissions((prev) => {
@@ -142,7 +132,7 @@ export function usePermissionMatrix(
         return newSet;
       });
     },
-    [groupedPermissions],
+    [groupedPermissions]
   );
 
   // Bulk clear permissions for a specific module
@@ -150,7 +140,7 @@ export function usePermissionMatrix(
     (module: string) => {
       const modulePermissions =
         groupedPermissions[module]?.flatMap((resource) =>
-          resource.permissions.map((permission) => permission.slug),
+          resource.permissions.map((permission) => permission.slug)
         ) || [];
 
       setSelectedPermissions((prev) => {
@@ -159,7 +149,7 @@ export function usePermissionMatrix(
         return newSet;
       });
     },
-    [groupedPermissions],
+    [groupedPermissions]
   );
 
   return {

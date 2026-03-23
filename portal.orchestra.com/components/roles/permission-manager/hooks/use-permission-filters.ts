@@ -1,15 +1,12 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { Permission } from "@/types";
-import { PermissionFilters } from "../types";
+import { useMemo, useState } from 'react';
+import { Permission } from '@/types';
+import { PermissionFilters } from '../types';
 
-export function usePermissionFilters(
-  allPermissions: Permission[],
-  selectedModule: string | null
-) {
+export function usePermissionFilters(allPermissions: Permission[], selectedModule: string | null) {
   const [filters, setFilters] = useState<PermissionFilters>({
-    searchQuery: "",
+    searchQuery: '',
     actionTypes: [],
     resources: [],
   });
@@ -21,33 +18,21 @@ export function usePermissionFilters(
     if (filters.searchQuery) {
       filtered = filtered.filter(
         (permission) =>
-          permission.slug
-            ?.toLowerCase()
-            .includes(filters.searchQuery.toLowerCase()) ||
-          permission.description
-            ?.toLowerCase()
-            .includes(filters.searchQuery.toLowerCase()) ||
-          permission.resource
-            ?.toLowerCase()
-            .includes(filters.searchQuery.toLowerCase()) ||
-          permission.action
-            ?.toLowerCase()
-            .includes(filters.searchQuery.toLowerCase()),
+          permission.slug?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          permission.description?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          permission.resource?.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+          permission.action?.toLowerCase().includes(filters.searchQuery.toLowerCase())
       );
     }
 
     // Apply action type filter
     if (filters.actionTypes.length > 0) {
-      filtered = filtered.filter((permission) =>
-        filters.actionTypes.includes(permission.action)
-      );
+      filtered = filtered.filter((permission) => filters.actionTypes.includes(permission.action));
     }
 
     // Apply resource filter
     if (filters.resources.length > 0) {
-      filtered = filtered.filter((permission) =>
-        filters.resources.includes(permission.resource)
-      );
+      filtered = filtered.filter((permission) => filters.resources.includes(permission.resource));
     }
 
     // Apply module filter
@@ -64,7 +49,7 @@ export function usePermissionFilters(
 
   const clearFilters = () => {
     setFilters({
-      searchQuery: "",
+      searchQuery: '',
       actionTypes: [],
       resources: [],
     });

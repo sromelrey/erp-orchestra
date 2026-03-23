@@ -3,7 +3,14 @@ import { Branch, PaginatedResponse } from '@/types';
 
 export const branchesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getBranches: builder.query<PaginatedResponse<Branch>, { limit?: number; cursor?: string | number; [key: string]: string | number | boolean | undefined }>({
+    getBranches: builder.query<
+      PaginatedResponse<Branch>,
+      {
+        limit?: number;
+        cursor?: string | number;
+        [key: string]: string | number | boolean | undefined;
+      }
+    >({
       query: (params) => ({
         url: '/hris/branches',
         params,
@@ -11,7 +18,10 @@ export const branchesApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result && result.data
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Branches' as const, id })),
+              ...result.data.map(({ id }) => ({
+                type: 'Branches' as const,
+                id,
+              })),
               { type: 'Branches', id: 'LIST' },
             ]
           : [{ type: 'Branches', id: 'LIST' }],

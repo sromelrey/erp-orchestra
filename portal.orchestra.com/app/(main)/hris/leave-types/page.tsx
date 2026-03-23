@@ -2,11 +2,11 @@
 
 import React from 'react';
 import EntityManager from '@/components/entity-manager/EntityManager';
-import { 
-  useGetLeaveTypesQuery, 
-  useCreateLeaveTypeMutation, 
-  useUpdateLeaveTypeMutation, 
-  useDeleteLeaveTypeMutation 
+import {
+  useGetLeaveTypesQuery,
+  useCreateLeaveTypeMutation,
+  useUpdateLeaveTypeMutation,
+  useDeleteLeaveTypeMutation,
 } from '@/store/api/leaveApi';
 import { toast } from 'sonner';
 import { columns } from './column';
@@ -72,5 +72,3 @@ export default function LeaveTypesPage() {
     </div>
   );
 }
-
-

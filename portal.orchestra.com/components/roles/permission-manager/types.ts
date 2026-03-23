@@ -1,4 +1,4 @@
-import { Permission, Role } from "@/types";
+import { Permission, Role } from '@/types';
 
 export interface PermissionManagerProps {
   title: string;
@@ -77,8 +77,8 @@ export interface PermissionRowProps {
 export interface PermissionToggleProps {
   enabled: boolean;
   onChange: () => void;
-  action: "view" | "create" | "update" | "delete" | "manage";
+  action: 'view' | 'create' | 'update' | 'delete' | 'manage';
 }
 
 // Re-export Role type for convenience
-export type { Role } from "@/types";
+export type { Role } from '@/types';

@@ -1,49 +1,44 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo } from "react";
-import { User, Permission } from "@/types";
-import { useGetPermissionsQuery } from "@/store/api/rolesApi";
+import { useState, useEffect, useMemo } from 'react';
+import { User, Permission } from '@/types';
+import { useGetPermissionsQuery } from '@/store/api/rolesApi';
 import {
   useGetUserPermissionsQuery,
   useAssignUserPermissionsMutation,
   useRemoveUserPermissionsMutation,
-} from "@/store/api/usersApi";
-import { PermissionManager } from "@/components/roles/permission-manager";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import {
-  Loader2,
-  Shield,
-  ShieldX,
-} from "lucide-react";
+} from '@/store/api/usersApi';
+import { PermissionManager } from '@/components/roles/permission-manager';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import { Loader2, Shield, ShieldX } from 'lucide-react';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface UserPermissionManagerProps {
   user: User;
   onClose?: () => void;
 }
 
-type PermissionType = "GRANT" | "DENY";
+type PermissionType = 'GRANT' | 'DENY';
 type PermissionGroup = Record<string, Permission[]>;
 
-export function UserPermissionManager({
-  user,
-  onClose,
-}: UserPermissionManagerProps) {
-  const { data: allPermissions = [], isLoading: isLoadingAllPermissions } = useGetPermissionsQuery();
-  const { data: userPermissions = [], isLoading: isLoadingUserPermissions } = useGetUserPermissionsQuery(user.id);
+export function UserPermissionManager({ user, onClose }: UserPermissionManagerProps) {
+  const { data: allPermissions = [], isLoading: isLoadingAllPermissions } =
+    useGetPermissionsQuery();
+  const { data: userPermissions = [], isLoading: isLoadingUserPermissions } =
+    useGetUserPermissionsQuery(user.id);
   const [assignPermissions, { isLoading: isAssigning }] = useAssignUserPermissionsMutation();
   const [removePermissions, { isLoading: isRemoving }] = useRemoveUserPermissionsMutation();
 
-  const [permissionType, setPermissionType] = useState<PermissionType>("GRANT");
+  const [permissionType, setPermissionType] = useState<PermissionType>('GRANT');
   const [expirationDate, setExpirationDate] = useState<Date | null>(null);
 
   // Derive initial selected slugs based on the current permission type (GRANT/DENY)
@@ -88,12 +83,10 @@ export function UserPermissionManager({
         }).unwrap();
       }
 
-      toast.success(
-        `User ${permissionType.toLowerCase()} permissions updated successfully`
-      );
+      toast.success(`User ${permissionType.toLowerCase()} permissions updated successfully`);
       onClose?.();
     } catch (error) {
-      toast.error("Failed to update user permissions");
+      toast.error('Failed to update user permissions');
       console.error(error);
       throw error;
     }
@@ -112,56 +105,52 @@ export function UserPermissionManager({
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-4 items-center">
         <div className="flex gap-2 items-center">
-            <Label>Permission Type:</Label>
-            <Select
+          <Label>Permission Type:</Label>
+          <Select
             value={permissionType}
             onValueChange={(value: PermissionType) => setPermissionType(value)}
-            >
+          >
             <SelectTrigger className="w-32">
-                <SelectValue />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="GRANT">
+              <SelectItem value="GRANT">
                 <div className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-green-600" />
-                    Grant
+                  <Shield className="w-4 h-4 text-green-600" />
+                  Grant
                 </div>
-                </SelectItem>
-                <SelectItem value="DENY">
+              </SelectItem>
+              <SelectItem value="DENY">
                 <div className="flex items-center gap-2">
-                    <ShieldX className="w-4 h-4 text-red-600" />
-                    Deny
+                  <ShieldX className="w-4 h-4 text-red-600" />
+                  Deny
                 </div>
-                </SelectItem>
+              </SelectItem>
             </SelectContent>
-            </Select>
+          </Select>
         </div>
 
         <div className="flex gap-2 items-center flex-1">
-            <Label>Expiration (optional):</Label>
-            <Input
+          <Label>Expiration (optional):</Label>
+          <Input
             type="date"
-            value={
-                expirationDate ? expirationDate.toISOString().split("T")[0] : ""
-            }
-            onChange={(e) =>
-                setExpirationDate(e.target.value ? new Date(e.target.value) : null)
-            }
+            value={expirationDate ? expirationDate.toISOString().split('T')[0] : ''}
+            onChange={(e) => setExpirationDate(e.target.value ? new Date(e.target.value) : null)}
             className="w-48"
-            />
+          />
         </div>
       </div>
 
       <div className="border rounded-lg h-[600px] overflow-hidden">
         <PermissionManager
-            title="User Specific Permissions"
-            subtitle={`${user.firstName} ${user.lastName}`}
-            description={user.email}
-            allPermissions={allPermissions}
-            initialSelectedPermissions={initialSelectedSlugs}
-            onSave={handleSave}
-            isSaving={isAssigning || isRemoving}
-            onClose={onClose}
+          title="User Specific Permissions"
+          subtitle={`${user.firstName} ${user.lastName}`}
+          description={user.email}
+          allPermissions={allPermissions}
+          initialSelectedPermissions={initialSelectedSlugs}
+          onSave={handleSave}
+          isSaving={isAssigning || isRemoving}
+          onClose={onClose}
         />
       </div>
     </div>
