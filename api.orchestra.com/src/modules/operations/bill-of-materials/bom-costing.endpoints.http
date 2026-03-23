@@ -1,0 +1,158 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+### 1. Calculate and Save BOM Cost
+POST {{API_BASE_URL}}/v1/ops/bom/10/cost/calculate
+Content-Type: application/json
+
+{
+  "bomId": 10,
+  "costingMethod": "STANDARD",
+  "outputQuantity": 1,
+  "costUom": "EA",
+  "includeScrap": true,
+  "includeLabor": true,
+  "includeOverhead": true,
+  "notes": "Initial cost calculation"
+}
+
+### 2. Get BOM Costing History
+GET {{API_BASE_URL}}/v1/ops/bom/10/costing?limit=10&offset=0
+
+### 3. Get Latest BOM Cost
+GET {{API_BASE_URL}}/v1/ops/bom/10/cost/latest
+
+### 4. Get BOM Cost (Legacy Endpoint)
+GET {{API_BASE_URL}}/v1/ops/bom/10/cost
+ 
+### 5. Get BOM Cost Breakdown (Legacy Endpoint)
+GET {{API_BASE_URL}}/v1/ops/bom/10/cost/breakdown
+ 
+### 6. Update BOM Costing
+PATCH {{API_BASE_URL}}/v1/ops/bom/costing/6
+ Content-Type: application/json
+
+{
+  "totalMaterialCost": 150.50,
+  "totalLaborCost": 25.00,
+  "totalOverheadCost": 15.00,
+  "outputQuantity": 1,
+  "notes": "Updated material costs",
+  "changeReason": "Material price increase"
+}
+
+### 7. Calculate BOM Cost with Different Method
+POST {{API_BASE_URL}}/v1/ops/bom/1/cost/calculate
+ Content-Type: application/json
+
+{
+  "bomId": 1,
+  "costingMethod": "AVERAGE",
+  "outputQuantity": 100,
+  "costUom": "EA",
+  "costDate": "2024-01-15",
+  "includeScrap": false,
+  "notes": "Average cost calculation for 100 units"
+}
+
+### 8. Get BOM Costing History with Date Range
+GET {{API_BASE_URL}}/v1/ops/bom/1/costing?costingDateFrom=2024-01-01&costingDateTo=2024-12-31
+
+###Authorization: Bearer {{token}}
+
+### 9. Test Cost Rollup via Stored Procedure (Direct SQL)
+-- This would be run directly against the database
+SELECT * FROM operations.calculate_bom_cost_rollup(
+    p_tenant_id := 1,
+    p_bom_id := 1,
+    p_costing_date := CURRENT_DATE,
+    p_costing_method := 'STANDARD',
+    p_user_id := 1,
+    p_include_scrap := TRUE,
+    p_update_existing := TRUE
+);
+
+### 10. Get Material Cost via Helper Function
+-- This would be run directly against the database
+SELECT operations.get_material_cost(
+    p_material_id := 1,
+    p_costing_method := 'STANDARD',
+    p_cost_date := CURRENT_DATE
+) as material_cost;
+
+### Expected Response Structure for Cost Calculation:
+{
+  "costing": {
+    "id": 1,
+    "tenantId": 1,
+    "bomId": 1,
+    "costingMethod": "STANDARD",
+    "totalMaterialCost": 100.00,
+    "totalLaborCost": 20.00,
+    "totalOverheadCost": 10.00,
+    "totalScrapCost": 5.00,
+    "totalCost": 135.00,
+    "unitCost": 135.00,
+    "outputQuantity": 1.0000,
+    "costUom": "EA",
+    "costingDate": "2024-01-15T10:30:00.000Z",
+    "notes": "Initial cost calculation",
+    "isActive": true,
+    "effectiveFrom": "2024-01-15T10:30:00.000Z",
+    "createdAt": "2024-01-15T10:30:00.000Z",
+    "updatedAt": "2024-01-15T10:30:00.000Z"
+  },
+  "breakdown": {
+    "bomId": 1,
+    "bomCode": "BOM001",
+    "bomName": "Finished Product A",
+    "costingMethod": "STANDARD",
+    "totalMaterialCost": 100.00,
+    "totalLaborCost": 20.00,
+    "totalOverheadCost": 10.00,
+    "totalScrapCost": 5.00,
+    "totalCost": 135.00,
+    "unitCost": 135.00,
+    "outputQuantity": 1,
+    "costUom": "EA",
+    "costingDate": "2024-01-15T10:30:00.000Z",
+    "components": [
+      {
+        "componentMaterialId": 10,
+        "componentMaterialCode": "RAW001",
+        "componentMaterialName": "Raw Material A",
+        "costComponentType": "MATERIAL",
+        "requiredQuantity": 2.0000,
+        "quantityUom": "KG",
+        "scrapPercentage": 5.0000,
+        "effectiveQuantity": 2.1000,
+        "unitCost": 25.00,
+        "totalCost": 52.50,
+        "costSource": "Standard Cost",
+        "costDate": "2024-01-15T00:00:00.000Z"
+      },
+      {
+        "componentMaterialId": 11,
+        "componentMaterialCode": "RAW002",
+        "componentMaterialName": "Raw Material B",
+        "costComponentType": "MATERIAL",
+        "requiredQuantity": 1.0000,
+        "quantityUom": "L",
+        "scrapPercentage": 2.0000,
+        "effectiveQuantity": 1.0200,
+        "unitCost": 47.55,
+        "totalCost": 48.50,
+        "costSource": "Standard Cost",
+        "costDate": "2024-01-15T00:00:00.000Z"
+      }
+    ],
+    "notes": "Initial cost calculation"
+  }
+}

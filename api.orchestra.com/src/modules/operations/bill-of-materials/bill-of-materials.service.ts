@@ -8,12 +8,15 @@ import { Bom } from '../../../entities/operations/bom.entity';
 import { BomItem } from '../../../entities/operations/bom-item.entity';
 import { BomRepository } from './repositories/bom.repository';
 import { BomValidationService } from './bom-validation.service';
+import { BomCostingService } from './services/bom-costing.service';
 import { CreateBomDto } from './dto/create-bom.dto';
 import { UpdateBomDto } from './dto/update-bom.dto';
 import { UpdateBomStatusDto } from './dto/update-bom-status.dto';
+import { CalculateBomCostDto } from './dto/calculate-bom-cost.dto';
 import { DataSource, QueryFailedError, Repository } from 'typeorm';
 import { PaginatedResult } from '@/types';
 import { ListBomDto } from './dto/list-bom.dto';
+import { CostingMethod } from '@/types/enums';
 
 interface ActorContext {
   tenantId: number;
@@ -27,6 +30,7 @@ export class BillOfMaterialsService {
     private bomItemRepo: Repository<BomItem>,
     private bomRepository: BomRepository,
     private bomValidationService: BomValidationService,
+    private bomCostingService: BomCostingService,
     private dataSource: DataSource,
   ) {}
 
@@ -401,6 +405,7 @@ export class BillOfMaterialsService {
   async calculateCost(
     bomId: number,
     tenantId: number,
+    options?: Partial<CalculateBomCostDto>,
   ): Promise<{
     bomId: number;
     totalCost: number;
@@ -411,19 +416,36 @@ export class BillOfMaterialsService {
       totalCost: number;
     }[];
   }> {
-    const bom = await this.findOne(bomId, tenantId);
-    const items = (bom.items ?? []) as BomItem[];
+    const calculateOptions: CalculateBomCostDto = {
+      bomId,
+      costingMethod: options?.costingMethod || CostingMethod.STANDARD,
+      outputQuantity: options?.outputQuantity || 1,
+      costUom: options?.costUom || 'EA',
+      costDate: options?.costDate
+        ? new Date(options.costDate).toISOString()
+        : new Date().toISOString(),
+      includeScrap: options?.includeScrap ?? true,
+      includeLabor: options?.includeLabor ?? true,
+      includeOverhead: options?.includeOverhead ?? true,
+      notes: options?.notes,
+    };
 
-    // This would integrate with costing module
-    // For now, return a placeholder
+    const costingResult = await this.bomCostingService.calculateBomCost(
+      bomId,
+      tenantId,
+      calculateOptions,
+      0, // userId - not used for calculation
+    );
+
+    // Transform to legacy format
     return {
       bomId,
-      totalCost: 0,
-      componentCosts: items.map((item) => ({
-        componentMaterialId: item.componentMaterialId,
-        quantity: item.quantity,
-        unitCost: 0,
-        totalCost: 0,
+      totalCost: costingResult.totalCost,
+      componentCosts: costingResult.components.map((comp) => ({
+        componentMaterialId: comp.componentMaterialId,
+        quantity: comp.requiredQuantity,
+        unitCost: comp.unitCost,
+        totalCost: comp.totalCost,
       })),
     };
   }
