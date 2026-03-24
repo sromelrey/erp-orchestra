@@ -9,6 +9,7 @@ import {
   Item,
   StockBalance,
   StockLedger,
+  Tenant,
   UnitOfMeasure,
   Warehouse,
   WarehouseLocation,
@@ -19,6 +20,29 @@ import { CreateWarehouseLocationDto } from './dto/create-location.dto';
 import { UpdateWarehouseLocationDto } from './dto/update-location.dto';
 import { CreateStockMovementDto } from './dto/create-stock-movement.dto';
 import { StockMovementType } from '@/types/enums';
+
+// Define tree node interface for location hierarchy
+export interface LocationTreeNode {
+  id: number;
+  tenantId: number;
+  tenant?: Tenant;
+  warehouseId: number;
+  warehouse?: Warehouse;
+  parentId?: number | null;
+  parent?: WarehouseLocation | null;
+  code: string;
+  name: string;
+  path: string;
+  depth: number;
+  isActive: boolean;
+  createdBy?: number;
+  updatedBy?: number;
+  deletedBy?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+  children: LocationTreeNode[];
+}
 
 interface ActorContext {
   tenantId: number;
@@ -69,6 +93,24 @@ export class WarehousesService {
       where: { tenantId },
       order: { name: 'ASC' },
     });
+  }
+
+  async findOneWarehouse(id: number, tenantId: number) {
+    return this.getWarehouseOrThrow(id, tenantId);
+  }
+
+  async getWarehouseCapacity(id: number, tenantId: number) {
+    await this.getWarehouseOrThrow(id, tenantId);
+
+    // For now, return a placeholder capacity structure
+    // In a real implementation, you would calculate this from stock balances
+    return {
+      totalCapacity: 10000,
+      usedCapacity: 7500,
+      availableCapacity: 2500,
+      utilizationPercentage: 75,
+      locationBreakdown: [],
+    };
   }
 
   async updateWarehouse(
@@ -144,6 +186,40 @@ export class WarehousesService {
       where: { warehouseId: warehouse.id, tenantId },
       order: { path: 'ASC' },
     });
+  }
+
+  async getLocationTree(
+    warehouseId: number,
+    tenantId: number,
+  ): Promise<LocationTreeNode[]> {
+    const locations = await this.listLocations(warehouseId, tenantId);
+
+    // Build tree structure from flat list
+    const locationMap = new Map<number, LocationTreeNode>();
+    const rootLocations: LocationTreeNode[] = [];
+
+    // Create map of all locations
+    locations.forEach((location) => {
+      locationMap.set(location.id, {
+        ...location,
+        children: [],
+      });
+    });
+
+    // Build tree
+    locations.forEach((location) => {
+      const node = locationMap.get(location.id);
+      if (location.parentId) {
+        const parent = locationMap.get(location.parentId);
+        if (parent && node) {
+          parent.children.push(node);
+        }
+      } else if (node) {
+        rootLocations.push(node);
+      }
+    });
+
+    return rootLocations;
   }
 
   async updateLocation(

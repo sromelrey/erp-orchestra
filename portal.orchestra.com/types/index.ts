@@ -144,6 +144,22 @@ export type {
   MaterialsQueryParams,
 } from '@/store/api/materialsApi';
 
+// Re-export Operations types
+export type {
+  Warehouse,
+  CreateWarehouseRequest,
+  UpdateWarehouseRequest,
+  WarehousesQueryParams,
+  Location,
+  LocationTreeNode,
+  CreateLocationRequest,
+  UpdateLocationRequest,
+  LocationsQueryParams,
+  CapacityInfo,
+} from '@/types/operations';
+
+export { LocationType } from '@/types/operations';
+
 // Export error types
 export type { ApiError } from '@/types/errors';
 export { isApiError, getErrorMessage } from '@/types/errors';

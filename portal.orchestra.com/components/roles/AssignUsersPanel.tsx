@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useGetUsersQuery } from '@/store/api/usersApi';
+import { useGetUsersQuery } from '@/store/api';
 import { useAssignUsersMutation } from '@/store/api/rolesApi';
-import { Role } from '@/types';
+import { Role, User } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -27,8 +27,8 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
   // Determine which user IDs are already assigned to this role
   const alreadyAssignedUserIds = useMemo(() => {
     return users
-      .filter((user) => user.userRoles?.some((ur) => ur.role && ur.role.id === role.id))
-      .map((user) => user.id);
+      .filter((user: User) => user.userRoles?.some((ur: { role?: Role }) => ur.role && ur.role.id === role.id))
+      .map((user: User) => user.id);
   }, [users, role.id]);
 
   // Filter users by search query
@@ -36,7 +36,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
     if (!searchQuery.trim()) return users;
     const query = searchQuery.toLowerCase();
     return users.filter(
-      (user) =>
+      (user: User) =>
         user.email.toLowerCase().includes(query) ||
         (user.firstName && user.firstName.toLowerCase().includes(query)) ||
         (user.lastName && user.lastName.toLowerCase().includes(query))
@@ -45,25 +45,25 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
 
   // Users that can be assigned (not already assigned)
   const assignableUsers = useMemo(
-    () => filteredUsers.filter((u) => !alreadyAssignedUserIds.includes(u.id)),
+    () => filteredUsers.filter((u: User) => !alreadyAssignedUserIds.includes(u.id)),
     [filteredUsers, alreadyAssignedUserIds]
   );
 
   const handleToggle = (userId: number) => {
     setSelectedUserIds((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+      prev.includes(userId) ? prev.filter((id: number) => id !== userId) : [...prev, userId]
     );
   };
 
   const handleSelectAll = () => {
-    const assignableIds = assignableUsers.map((u) => u.id);
-    const allSelected = assignableIds.every((id) => selectedUserIds.includes(id));
+    const assignableIds = assignableUsers.map((u: User) => u.id);
+    const allSelected = assignableIds.every((id: number) => selectedUserIds.includes(id));
 
     if (allSelected) {
-      setSelectedUserIds((prev) => prev.filter((id) => !assignableIds.includes(id)));
+      setSelectedUserIds((prev) => prev.filter((id: number) => !assignableIds.includes(id)));
     } else {
       setSelectedUserIds((prev) => {
-        const newIds = assignableIds.filter((id) => !prev.includes(id));
+        const newIds = assignableIds.filter((id: number) => !prev.includes(id));
         return [...prev, ...newIds];
       });
     }
@@ -86,7 +86,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
   };
 
   const allAssignableSelected =
-    assignableUsers.length > 0 && assignableUsers.every((u) => selectedUserIds.includes(u.id));
+    assignableUsers.length > 0 && assignableUsers.every((u: User) => selectedUserIds.includes(u.id));
 
   if (isLoadingUsers) {
     return (
@@ -146,7 +146,7 @@ export function AssignUsersPanel({ role, onClose }: AssignUsersPanelProps) {
             <p className="text-sm">No users found</p>
           </div>
         ) : (
-          filteredUsers.map((user) => {
+          filteredUsers.map((user: User) => {
             const isAlreadyAssigned = alreadyAssignedUserIds.includes(user.id);
             const isSelected = selectedUserIds.includes(user.id);
             const displayName =

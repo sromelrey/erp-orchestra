@@ -8,7 +8,8 @@ export type FormFieldType =
   | 'select'
   | 'textarea'
   | 'date'
-  | 'password';
+  | 'password'
+  | 'checkbox';
 
 export interface FormFieldOption {
   label: string;

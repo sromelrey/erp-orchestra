@@ -1,4 +1,5 @@
-import { baseApi } from './baseApi';
+import { EndpointBuilder, BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import { FetchBaseQueryError, FetchArgs, FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
 import {
   User,
   PaginatedResponse,
@@ -7,8 +8,7 @@ import {
   UserPermission,
 } from '@/types';
 
-export const usersApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
+export const usersEndpoints = (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, 'User' | 'Role' | 'Permission' | 'UserPermission' | 'Session' | 'Departments' | 'Designations' | 'Branches' | 'Employees' | 'Attendance' | 'LeaveTypes' | 'LeaveRequests' | 'PayPeriods' | 'Timesheets' | 'Compensation' | 'CompensationHistory' | 'Deductions' | 'Materials' | 'Warehouse' | 'WarehouseCapacity' | 'Location' | 'StockLedger', 'baseApi'>) => ({ // eslint-disable-line @typescript-eslint/no-empty-object-type
     getUsers: builder.query<User[], void>({
       query: () => '/users',
       transformResponse: (response: PaginatedResponse<User>) => response.data,
@@ -19,10 +19,12 @@ export const usersApi = baseApi.injectEndpoints({
               { type: 'User', id: 'LIST' },
             ]
           : [{ type: 'User', id: 'LIST' }],
+      extraOptions: {},
     }),
     getUser: builder.query<User, string>({
       query: (id) => `/users/${id}`,
       providesTags: (_result, _error, id) => [{ type: 'User', id }],
+      extraOptions: {},
     }),
     createUser: builder.mutation<User, CreateUserRequest>({
       query: (data) => ({
@@ -31,6 +33,7 @@ export const usersApi = baseApi.injectEndpoints({
         body: data,
       }),
       invalidatesTags: [{ type: 'User', id: 'LIST' }],
+      extraOptions: {},
     }),
     updateUser: builder.mutation<User, UpdateUserRequest>({
       query: ({ id, ...patch }) => ({
@@ -39,6 +42,7 @@ export const usersApi = baseApi.injectEndpoints({
         body: patch,
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: 'User', id }],
+      extraOptions: {},
     }),
     deleteUser: builder.mutation<void, number>({
       query: (id) => ({
@@ -46,16 +50,19 @@ export const usersApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: [{ type: 'User', id: 'LIST' }],
+      extraOptions: {},
     }),
     getUserPermissions: builder.query<UserPermission[], number>({
       query: (userId) => `/users/${userId}/permissions`,
       providesTags: (_result, _error, userId) => [{ type: 'UserPermission', id: `USER_${userId}` }],
+      extraOptions: {},
     }),
     getEffectivePermissions: builder.query<string[], number>({
       query: (userId) => `/users/${userId}/permissions/effective`,
       providesTags: (_result, _error, userId) => [
         { type: 'UserPermission', id: `EFFECTIVE_${userId}` },
       ],
+      extraOptions: {},
     }),
     assignUserPermissions: builder.mutation<
       User,
@@ -76,6 +83,7 @@ export const usersApi = baseApi.injectEndpoints({
         { type: 'UserPermission', id: `USER_${userId}` },
         { type: 'UserPermission', id: `EFFECTIVE_${userId}` },
       ],
+      extraOptions: {},
     }),
     removeUserPermissions: builder.mutation<
       User,
@@ -94,18 +102,8 @@ export const usersApi = baseApi.injectEndpoints({
         { type: 'UserPermission', id: `USER_${userId}` },
         { type: 'UserPermission', id: `EFFECTIVE_${userId}` },
       ],
+      extraOptions: {},
     }),
-  }),
 });
 
-export const {
-  useGetUsersQuery,
-  useGetUserQuery,
-  useCreateUserMutation,
-  useUpdateUserMutation,
-  useDeleteUserMutation,
-  useGetUserPermissionsQuery,
-  useGetEffectivePermissionsQuery,
-  useAssignUserPermissionsMutation,
-  useRemoveUserPermissionsMutation,
-} = usersApi;
+// Hooks will be exported from the main API index file
