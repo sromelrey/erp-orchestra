@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   Settings,
   Package,
-  Warehouse,
   Truck,
 } from 'lucide-react';
 
@@ -215,17 +214,17 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
       {
         label: 'Warehouses',
         href: '/operations/warehouses',
-        icon: Warehouse,
-        description: 'Manage storage locations',
+        icon: Building2,
+        description: 'Manage warehouse locations and capacity',
         menu_code: 'CP-06-02',
-        permission: 'operations.warehouse.view',
+        permission: 'operations.warehouse.manage',
       },
       {
         label: 'Stock Ledger',
         href: '/operations/stock-ledger',
         icon: Truck,
         description: 'Track stock movements',
-        menu_code: 'CP-06-03',
+        menu_code: 'CP-06-04',
         permission: 'operations.stock.view',
       },
     ],

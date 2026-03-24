@@ -22,6 +22,18 @@ Content-Type: application/json
 ### List Warehouses
 GET {{API_BASE_URL}}/v1/ops/warehouses
 
+### Get Single Warehouse
+GET {{API_BASE_URL}}/v1/ops/warehouses/1
+
+### Get Warehouse Capacity
+GET {{API_BASE_URL}}/v1/ops/warehouses/1/capacity
+
+### Get Warehouse Locations
+GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations
+
+### Get Warehouse Location Tree
+GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations/tree
+
 
 ### Update Warehouse
 PATCH {{API_BASE_URL}}/v1/ops/warehouses/1

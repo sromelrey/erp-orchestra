@@ -18,7 +18,7 @@ import {
 import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequireAccess } from '@/decorators/require-access.decorator';
 import { AuthenticatedRequest } from '@/types/authenticated-request';
-import { WarehousesService } from './warehouses.service';
+import { WarehousesService, LocationTreeNode } from './warehouses.service';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { CreateWarehouseLocationDto } from './dto/create-location.dto';
@@ -65,6 +65,34 @@ export class WarehousesController {
     return this.service.findWarehouses(actor.tenantId);
   }
 
+  @Get('warehouses/:id')
+  @RequireAccess({
+    feature: 'OPERATIONS',
+    permission: 'operations.warehouse.manage',
+  })
+  @ApiParam({ name: 'id', type: Number })
+  getWarehouse(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const actor = this.getActor(req);
+    return this.service.findOneWarehouse(id, actor.tenantId);
+  }
+
+  @Get('warehouses/:id/capacity')
+  @RequireAccess({
+    feature: 'OPERATIONS',
+    permission: 'operations.warehouse.manage',
+  })
+  @ApiParam({ name: 'id', type: Number })
+  getWarehouseCapacity(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const actor = this.getActor(req);
+    return this.service.getWarehouseCapacity(id, actor.tenantId);
+  }
+
   @Patch('warehouses/:id')
   @RequireAccess({
     feature: 'OPERATIONS',
@@ -108,6 +136,20 @@ export class WarehousesController {
   ) {
     const actor = this.getActor(req);
     return this.service.listLocations(warehouseId, actor.tenantId);
+  }
+
+  @Get('warehouses/:warehouseId/locations/tree')
+  @RequireAccess({
+    feature: 'OPERATIONS',
+    permission: 'operations.warehouse.manage',
+  })
+  @ApiParam({ name: 'warehouseId', type: Number })
+  getLocationTree(
+    @Param('warehouseId', ParseIntPipe) warehouseId: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<LocationTreeNode[]> {
+    const actor = this.getActor(req);
+    return this.service.getLocationTree(warehouseId, actor.tenantId);
   }
 
   @Patch('warehouses/:warehouseId/locations/:locationId')

@@ -34,6 +34,10 @@ export const baseApi = createApi({
     'CompensationHistory',
     'Deductions',
     'Materials',
+    'Warehouse',
+    'WarehouseCapacity',
+    'Location',
+    'StockLedger',
   ],
   endpoints: () => ({}), // Endpoints will be injected by feature-specific files
 });

@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { User, Permission } from '@/types';
+import { useState, useMemo } from 'react';
+import { User, UserPermission } from '@/types';
 import { useGetPermissionsQuery } from '@/store/api/rolesApi';
 import {
   useGetUserPermissionsQuery,
   useAssignUserPermissionsMutation,
   useRemoveUserPermissionsMutation,
-} from '@/store/api/usersApi';
+} from '@/store/api';
 import { PermissionManager } from '@/components/roles/permission-manager';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Loader2, Shield, ShieldX } from 'lucide-react';
@@ -28,7 +27,6 @@ interface UserPermissionManagerProps {
 }
 
 type PermissionType = 'GRANT' | 'DENY';
-type PermissionGroup = Record<string, Permission[]>;
 
 export function UserPermissionManager({ user, onClose }: UserPermissionManagerProps) {
   const { data: allPermissions = [], isLoading: isLoadingAllPermissions } =
@@ -44,22 +42,22 @@ export function UserPermissionManager({ user, onClose }: UserPermissionManagerPr
   // Derive initial selected slugs based on the current permission type (GRANT/DENY)
   const initialSelectedSlugs = useMemo(() => {
     return userPermissions
-      .filter((up) => up.type === permissionType)
-      .map((up) => up.permission.slug);
+      .filter((up: UserPermission) => up.type === permissionType)
+      .map((up: UserPermission) => up.permission.slug);
   }, [userPermissions, permissionType]);
 
   const handleSave = async (selectedSlugs: string[]) => {
     try {
       const currentSlugs = userPermissions
-        .filter((up) => up.type === permissionType)
-        .map((up) => up.permission.slug);
+        .filter((up: UserPermission) => up.type === permissionType)
+        .map((up: UserPermission) => up.permission.slug);
 
-      const slugsToAdd = selectedSlugs.filter((slug) => !currentSlugs.includes(slug));
-      const slugsToRemove = currentSlugs.filter((slug) => !selectedSlugs.includes(slug));
+      const toAdd = selectedSlugs.filter((slug: string) => !currentSlugs.includes(slug));
+      const toRemove = currentSlugs.filter((slug: string) => !selectedSlugs.includes(slug));
 
       // Add new permissions
-      if (slugsToAdd.length > 0) {
-        const permissionIds = slugsToAdd
+      if (toAdd.length > 0) {
+        const permissionIds = toAdd
           .map((slug) => allPermissions.find((p) => p.slug === slug)?.id)
           .filter((id): id is number => id !== undefined);
 
@@ -72,15 +70,8 @@ export function UserPermissionManager({ user, onClose }: UserPermissionManagerPr
       }
 
       // Remove permissions
-      if (slugsToRemove.length > 0) {
-        const permissionIds = slugsToRemove
-          .map((slug) => allPermissions.find((p) => p.slug === slug)?.id)
-          .filter((id): id is number => id !== undefined);
-
-        await removePermissions({
-          userId: user.id,
-          permissionIds,
-        }).unwrap();
+      if (toRemove.length > 0) {
+        await removePermissions({ userId: user.id, permissions: toRemove.map((slug: string) => ({ slug })) }).unwrap();
       }
 
       toast.success(`User ${permissionType.toLowerCase()} permissions updated successfully`);

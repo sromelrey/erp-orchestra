@@ -10,7 +10,7 @@ import {
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
-} from '@/store/api/usersApi';
+} from '@/store/api';
 import { toast } from 'sonner';
 import { UserRolesManager } from '@/components/users/UserRolesManager';
 import { UserPermissionManager } from '@/components/users/UserPermissionManager';
@@ -20,7 +20,6 @@ import { Column } from '@/components/ui/data-table';
 import { PermissionGuard } from '@/components/auth/PermissionGuard';
 import { HasPermission } from '@/components/auth/HasPermission';
 import { User, CreateUserRequest, UpdateUserRequest } from '@/types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
@@ -34,7 +33,7 @@ export default function UsersPage() {
 
   // Derive the selected user from the live RTK Query cache.
   const selectedUser = useMemo(
-    () => users.find((u) => u.id === selectedUserId) ?? null,
+    () => users.find((u: User) => u.id === selectedUserId) ?? null,
     [users, selectedUserId]
   );
 
