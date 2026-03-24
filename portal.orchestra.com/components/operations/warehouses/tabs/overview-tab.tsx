@@ -21,7 +21,7 @@ export function OverviewTab({ warehouse }: OverviewTabProps) {
   return (
     <div className="space-y-6">
       {/* Warehouse Info Card */}
-      <Card>
+      <Card className="border-gray-200">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export function OverviewTab({ warehouse }: OverviewTabProps) {
 
       {/* Capacity Information */}
       {capacityLoading ? (
-        <Card>
+        <Card className="border-gray-200">
           <CardHeader>
             <Skeleton className="h-6 w-48" />
           </CardHeader>
@@ -107,7 +107,7 @@ export function OverviewTab({ warehouse }: OverviewTabProps) {
       ) : null}
 
       {/* Quick Actions */}
-      <Card>
+      <Card className="border-gray-200">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
         </CardHeader>

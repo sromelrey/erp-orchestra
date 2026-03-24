@@ -55,7 +55,7 @@ export function WarehouseStatsCards({ warehouseId }: WarehouseStatsCardsProps) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i}>
+          <Card key={i} className="border-gray-200">
             <CardHeader className="pb-2">
               <div className="h-4 w-24 bg-muted rounded animate-pulse" />
             </CardHeader>
@@ -72,7 +72,7 @@ export function WarehouseStatsCards({ warehouseId }: WarehouseStatsCardsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
-        <Card key={index}>
+        <Card key={index} className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {stat.title}

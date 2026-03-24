@@ -9,7 +9,7 @@ interface InventoryTabProps {
 
 export function InventoryTab({ }: InventoryTabProps) {
   return (
-    <Card>
+    <Card className="border-gray-200">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Package className="h-5 w-5" />

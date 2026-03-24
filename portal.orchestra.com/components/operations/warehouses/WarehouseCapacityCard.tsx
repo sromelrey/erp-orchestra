@@ -19,7 +19,7 @@ export function WarehouseCapacityCard({
   const isHighUtilization = capacity.utilizationPercentage >= 75;
 
   return (
-    <Card className={className}>
+    <Card className={`border-gray-200 ${className}`}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">Capacity Overview</CardTitle>
         <Building2 className="h-4 w-4 text-muted-foreground" />

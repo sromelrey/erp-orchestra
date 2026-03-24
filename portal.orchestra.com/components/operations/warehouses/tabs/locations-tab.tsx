@@ -63,13 +63,6 @@ const columns: Column<LocationData>[] = [
 // Define form fields for location creation/editing
 const formFields = [
   {
-    name: "warehouseId",
-    label: "Warehouse",
-    type: "text" as const,
-    defaultValue: "", // Will be set dynamically
-    disabled: true,
-  },
-  {
     name: "code",
     label: "Code",
     type: "text" as const,
@@ -100,6 +93,7 @@ const formFields = [
     label: "Status",
     type: "checkbox" as const,
     defaultValue: true,
+    valueType: "boolean" as const,
     description: "Inactive locations cannot be used for inventory transactions",
   },
 ];
@@ -136,7 +130,7 @@ export function LocationsTab({ warehouseId }: LocationsTabProps) {
       }));
   };
 
-  // Update form fields with dynamic parent options and warehouse ID
+  // Update form fields with dynamic parent options
   const updatedFormFields = formFields.map(field => {
     if (field.name === "parentId") {
       return {
@@ -144,54 +138,32 @@ export function LocationsTab({ warehouseId }: LocationsTabProps) {
         options: getParentLocationOptions(),
       };
     }
-    if (field.name === "warehouseId") {
-      return {
-        ...field,
-        defaultValue: warehouseId,
-      };
-    }
     return field;
   });
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Warehouse Locations
-          </CardTitle>
-        </CardHeader>
+      {/* Header and Location Statistics */}
+      <Card className="border-gray-200">
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Manage locations within this warehouse. Locations are organized hierarchically.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Location Statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Location Statistics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{locations.length}</p>
-              <p className="text-sm text-muted-foreground">Total Locations</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">
-                {locations.filter(l => l.isActive).length}
-              </p>
-              <p className="text-sm text-muted-foreground">Active</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-orange-600">
-                {locations.filter(l => !l.isActive).length}
-              </p>
-              <p className="text-sm text-muted-foreground">Inactive</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="text-center">
+                <p className="text-2xl font-bold">{locations.length}</p>
+                <p className="text-sm text-muted-foreground">Total Locations</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600">
+                  {locations.filter(l => l.isActive).length}
+                </p>
+                <p className="text-sm text-muted-foreground">Active</p>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-bold text-orange-600">
+                  {locations.filter(l => !l.isActive).length}
+                </p>
+                <p className="text-sm text-muted-foreground">Inactive</p>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -199,8 +171,8 @@ export function LocationsTab({ warehouseId }: LocationsTabProps) {
 
       {/* Locations Table */}
       <EntityManager
-        entityName="Location"
-        entityNamePlural="Locations"
+        entityName="Warehouse Location"
+        entityNamePlural="Warehouse Locations"
         data={locations}
         columns={columns}
         formFields={updatedFormFields}

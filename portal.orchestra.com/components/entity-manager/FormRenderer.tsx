@@ -1,12 +1,6 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { SearchableSelect } from '@/components/ui/SearchableSelect';
 import { FormField, FormMode } from './types';
 import { cn } from '@/lib/utils';
@@ -20,14 +14,14 @@ interface FormRendererProps {
 
 export function FormRenderer({ fields, formData, formMode, onFieldChange }: FormRendererProps) {
   const renderField = (field: FormField) => {
-    const value = formData[field.name] ?? '';
+    const value = formData[field.name] ?? (field.type === 'checkbox' ? field.defaultValue : '');
     const isDisabled = formMode === 'view' || field.disabled;
 
     switch (field.type) {
       case 'select':
         return (
           <SearchableSelect
-            options={(field.options as any) || []}
+            options={field.options || []}
             value={String(value || field.defaultValue || '')}
             onValueChange={(val) => onFieldChange(field.name, val)}
             disabled={isDisabled}
@@ -47,6 +41,23 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
               isDisabled && 'bg-gray-50 text-gray-500'
             )}
           />
+        );
+      case 'checkbox':
+        return (
+          <div className="flex items-center space-x-2 py-2">
+            <Checkbox
+              id={field.name}
+              checked={Boolean(value)}
+              onCheckedChange={(checked) => onFieldChange(field.name, checked)}
+              disabled={isDisabled}
+            />
+            <label 
+              htmlFor={field.name} 
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {field.placeholder || 'Enable'}
+            </label>
+          </div>
         );
       default:
         if (field.suffix) {

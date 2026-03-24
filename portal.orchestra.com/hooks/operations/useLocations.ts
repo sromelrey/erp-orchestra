@@ -47,8 +47,8 @@ export function useLocations(warehouseId?: string) {
         throw new Error('Warehouse ID is required for creating location');
       }
       await createLocation({
-        ...formData,
         warehouseId: selectedWarehouseId,
+        ...formData,
         isActive: formData.isActive !== undefined ? formData.isActive : true,
       }).unwrap();
       toast.success("Location created successfully");

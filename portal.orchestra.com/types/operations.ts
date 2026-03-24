@@ -54,7 +54,6 @@ export interface LocationTreeNode extends Location {
 export interface CreateLocationRequest {
   code: string;
   name: string;
-  warehouseId: string;
   parentId?: number;
   type?: LocationType;
   capacity?: number;

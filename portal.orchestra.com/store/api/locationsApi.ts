@@ -4,7 +4,6 @@ import {
   Location, 
   LocationTreeNode,
   CreateLocationRequest, 
-  UpdateLocationRequest, 
   LocationsQueryParams 
 } from '@/types/operations';
 
@@ -71,13 +70,13 @@ export const locationsEndpoints = (builder: EndpointBuilder<BaseQueryFn<string |
         },
       },
     }),
-    createLocation: builder.mutation<Location, CreateLocationRequest>({
-      query: (body) => {
-        if (!body.warehouseId) {
+    createLocation: builder.mutation<Location, { warehouseId: string } & CreateLocationRequest>({
+      query: ({ warehouseId, ...body }) => {
+        if (!warehouseId) {
           throw new Error('warehouseId is required for creating location');
         }
         return {
-          url: `/ops/warehouses/${body.warehouseId}/locations`,
+          url: `/ops/warehouses/${warehouseId}/locations`,
           method: 'POST',
           body,
         };
@@ -85,8 +84,8 @@ export const locationsEndpoints = (builder: EndpointBuilder<BaseQueryFn<string |
       invalidatesTags: ['Location'],
       extraOptions: {},
     }),
-    updateLocation: builder.mutation<Location, UpdateLocationRequest>({
-      query: ({ id, warehouseId, ...body }) => {
+    updateLocation: builder.mutation<Location, { id: string; warehouseId: string } & { body: Partial<CreateLocationRequest> }>({
+      query: ({ id, warehouseId, body }) => {
         if (!warehouseId) {
           throw new Error('warehouseId is required for updating location');
         }
