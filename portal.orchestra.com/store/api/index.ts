@@ -3,13 +3,15 @@ import { warehousesEndpoints } from './warehousesApi';
 import { locationsEndpoints } from './locationsApi';
 import { usersEndpoints } from './usersApi';
 import { stockLedgerEndpoints } from './stockLedgerApi';
+import { itemsEndpoints } from './itemsApi';
 
 // Inject the feature-specific endpoints
 export const api = baseApi
   .injectEndpoints({ endpoints: warehousesEndpoints })
   .injectEndpoints({ endpoints: locationsEndpoints })
   .injectEndpoints({ endpoints: usersEndpoints })
-  .injectEndpoints({ endpoints: stockLedgerEndpoints });
+  .injectEndpoints({ endpoints: stockLedgerEndpoints })
+  .injectEndpoints({ endpoints: itemsEndpoints });
 
 // Export hooks for each API
 export const warehousesHooks = api.endpoints;
@@ -42,6 +44,15 @@ export const useRemoveUserPermissionsMutation = api.useRemoveUserPermissionsMuta
 // Stock Ledger hooks
 export const useGetStockLedgerQuery = api.useGetStockLedgerQuery;
 export const useRecordStockMovementMutation = api.useRecordStockMovementMutation;
+
+// Items hooks
+export const useGetItemsQuery = api.useGetItemsQuery;
+export const useCreateItemMutation = api.useCreateItemMutation;
+export const useUpdateItemMutation = api.useUpdateItemMutation;
+export const useGetItemCategoriesQuery = api.useGetItemCategoriesQuery;
+export const useCreateItemCategoryMutation = api.useCreateItemCategoryMutation;
+export const useGetItemUomsQuery = api.useGetItemUomsQuery;
+export const useCreateItemUomMutation = api.useCreateItemUomMutation;
 
 // Re-export other APIs as needed
 export { materialsApi } from './materialsApi';

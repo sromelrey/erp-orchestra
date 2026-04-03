@@ -9,7 +9,8 @@ export type FormFieldType =
   | 'textarea'
   | 'date'
   | 'password'
-  | 'checkbox';
+  | 'checkbox'
+  | 'custom';
 
 export interface FormFieldOption {
   label: string;
@@ -29,6 +30,16 @@ export interface FormField {
   description?: string; // Helper text below the field
   width?: 'full' | 'half';
   valueType?: 'string' | 'number' | 'boolean';
+  render?: (props: {
+    value: string | number | boolean;
+    onChange: (value: string | number | boolean) => void;
+    formData: Record<string, string | number | boolean | undefined>;
+    field: FormField;
+    isDisabled: boolean;
+  }) => ReactNode;
+  // For dependent fields
+  dependsOn?: string; // Field name this field depends on
+  getOptions?: (dependencyValue: string | number | boolean) => Promise<FormFieldOption[]> | FormFieldOption[];
 }
 
 export interface StatCard {

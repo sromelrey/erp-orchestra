@@ -21,17 +21,20 @@ export function useLocations(warehouseId?: string) {
     data: locations = [],
     isLoading: isLoadingLocations,
     error: locationsError,
-  } = useGetLocationsQuery({
-    warehouseId: selectedWarehouseId || '',
-    search,
-    isActive,
-  } as LocationsQueryParams);
+  } = useGetLocationsQuery(
+    {
+      warehouseId: selectedWarehouseId || '',
+      search,
+      isActive,
+    } as LocationsQueryParams,
+    { skip: !selectedWarehouseId }
+  );
 
   const {
     data: locationTree = [],
     isLoading: isLoadingTree,
     error: treeError,
-  } = useGetLocationTreeQuery(selectedWarehouseId);
+  } = useGetLocationTreeQuery(selectedWarehouseId, { skip: !selectedWarehouseId });
 
   // Get warehouses for selection
   const { data: warehouses = [] } = useGetWarehousesQuery({ limit: 1000 });

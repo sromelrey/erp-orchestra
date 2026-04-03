@@ -146,19 +146,34 @@ export type {
 
 // Re-export Operations types
 export type {
+  // Warehouse
   Warehouse,
   CreateWarehouseRequest,
   UpdateWarehouseRequest,
   WarehousesQueryParams,
+  // Location
   Location,
   LocationTreeNode,
   CreateLocationRequest,
   UpdateLocationRequest,
   LocationsQueryParams,
+  LocationType,
+  // Capacity
   CapacityInfo,
+  // Stock Ledger
+  StockLedgerEntry,
+  CreateStockMovementRequest,
+  StockLedgerQueryParams,
+  // Items
+  Item,
+  ItemCategory,
+  ItemUom,
+  CreateItemRequest,
+  ItemsQueryParams,
 } from '@/types/operations';
 
-export { LocationType } from '@/types/operations';
+// Export enum as value
+export { StockMovementType } from '@/types/operations';
 
 // Export error types
 export type { ApiError } from '@/types/errors';
