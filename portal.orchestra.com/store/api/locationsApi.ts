@@ -11,64 +11,21 @@ export const locationsEndpoints = (builder: EndpointBuilder<BaseQueryFn<string |
     getLocations: builder.query<Location[], LocationsQueryParams>({
       query: (params) => {
         const { warehouseId, ...rest } = params;
-        if (!warehouseId) {
-          // Return a dummy request that will return empty data
-          return {
-            url: '/ops/locations/empty',
-            params: rest,
-          };
-        }
         return {
           url: `/ops/warehouses/${warehouseId}/locations`,
           params: rest,
         };
       },
-      transformResponse: (response: Location[] | unknown, meta: unknown, arg: LocationsQueryParams | undefined) => {
-        // Return empty array if no warehouseId
-        if (!arg?.warehouseId) return [];
-        return (response as Location[]) || [];
-      },
       providesTags: ['Location'],
-      extraOptions: {
-        // Handle 404 errors gracefully when warehouseId is not provided
-        validateStatus: (response: { status: number; ok: boolean }) => {
-          if (response.status === 404) {
-            // Return empty data for missing warehouse
-            return true;
-          }
-          return response.ok;
-        },
-      },
+      extraOptions: {},
     }),
-    getLocationTree: builder.query<LocationTreeNode[], string | undefined>({
-      query: (warehouseId) => {
-        if (!warehouseId) {
-          // Return a dummy request that will return empty data
-          return {
-            url: '/ops/locations/tree/empty',
-          };
-        }
-        return {
-          url: `/ops/warehouses/${warehouseId}/locations/tree`,
-          params: { warehouseId },
-        };
-      },
-      transformResponse: (response: LocationTreeNode[] | unknown, meta: unknown, arg: string | undefined) => {
-        // Return empty array if no warehouseId
-        if (!arg) return [];
-        return (response as LocationTreeNode[]) || [];
-      },
+    getLocationTree: builder.query<LocationTreeNode[], string>({
+      query: (warehouseId) => ({
+        url: `/ops/warehouses/${warehouseId}/locations/tree`,
+        params: { warehouseId },
+      }),
       providesTags: ['Location'],
-      extraOptions: {
-        // Handle 404 errors gracefully when warehouseId is not provided
-        validateStatus: (response: { status: number; ok: boolean }) => {
-          if (response.status === 404) {
-            // Return empty data for missing warehouse
-            return true;
-          }
-          return response.ok;
-        },
-      },
+      extraOptions: {},
     }),
     createLocation: builder.mutation<Location, { warehouseId: string } & CreateLocationRequest>({
       query: ({ warehouseId, ...body }) => {

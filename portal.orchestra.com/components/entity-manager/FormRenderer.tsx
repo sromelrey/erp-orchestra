@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SearchableSelect } from '@/components/ui/SearchableSelect';
@@ -13,19 +15,54 @@ interface FormRendererProps {
 }
 
 export function FormRenderer({ fields, formData, formMode, onFieldChange }: FormRendererProps) {
+  const [dependentOptions, setDependentOptions] = useState<Record<string, FormFieldOption[]>>({});
+  const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({});
+
+  // Handle dependent fields
+  useEffect(() => {
+    fields.forEach(field => {
+      if (field.dependsOn && field.getOptions) {
+        const dependencyValue = formData[field.dependsOn];
+        if (dependencyValue !== undefined && dependencyValue !== '') {
+          setLoadingFields(prev => ({ ...prev, [field.name]: true }));
+          
+          const optionsPromise = field.getOptions(dependencyValue);
+          if (optionsPromise instanceof Promise) {
+            optionsPromise.then(options => {
+              setDependentOptions(prev => ({ ...prev, [field.name]: options }));
+              setLoadingFields(prev => ({ ...prev, [field.name]: false }));
+            }).catch(error => {
+              console.error(`Error fetching options for ${field.name}:`, error);
+              setDependentOptions(prev => ({ ...prev, [field.name]: [] }));
+              setLoadingFields(prev => ({ ...prev, [field.name]: false }));
+            });
+          } else {
+            setDependentOptions(prev => ({ ...prev, [field.name]: optionsPromise }));
+          }
+        } else {
+          setDependentOptions(prev => ({ ...prev, [field.name]: [] }));
+        }
+      }
+    });
+  }, [fields, formData]);
   const renderField = (field: FormField) => {
     const value = formData[field.name] ?? (field.type === 'checkbox' ? field.defaultValue : '');
     const isDisabled = formMode === 'view' || field.disabled;
 
     switch (field.type) {
+      case 'custom':
+        // @ts-expect-error - Custom render function
+        return field.render ? field.render({ value, onChange: (val: string | number | boolean) => onFieldChange(field.name, val), formData, field, isDisabled }) : null;
       case 'select':
+        const options = field.dependsOn ? (dependentOptions[field.name] || []) : (field.options || []);
+        const isLoading = loadingFields[field.name] || false;
         return (
           <SearchableSelect
-            options={field.options || []}
+            options={options}
             value={String(value || field.defaultValue || '')}
             onValueChange={(val) => onFieldChange(field.name, val)}
-            disabled={isDisabled}
-            placeholder={field.placeholder || 'Select an option...'}
+            disabled={isDisabled || isLoading}
+            placeholder={isLoading ? "Loading..." : (field.placeholder || 'Select an option...')}
           />
         );
       case 'textarea':
@@ -60,16 +97,28 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
           </div>
         );
       default:
+        // For non-checkbox fields, ensure value is string or number
+        // Exclude boolean values as they should only be handled by checkbox fields
+        if (typeof value === 'boolean') {
+          return null;
+        }
+        const inputValue = field.type === 'number' ? (value || '') : String(value || '');
         if (field.suffix) {
           return (
             <div className="flex shadow-sm rounded-xl">
               <Input
                 id={field.name}
                 type={field.type}
-                value={String(value)}
-                onChange={(e) => onFieldChange(field.name, e.target.value)}
+                value={inputValue}
+                onChange={(e) => {
+                  const newValue = field.type === 'number' 
+                    ? (e.target.value === '' ? '' : Number(e.target.value))
+                    : e.target.value;
+                  onFieldChange(field.name, newValue);
+                }}
                 placeholder={field.placeholder}
                 disabled={isDisabled}
+                step={field.type === 'number' ? 'any' : undefined}
                 className={cn(
                   'rounded-r-none h-11 bg-white/50 border-input transition-all duration-200 hover:bg-white hover:border-gray-300 focus-visible:bg-white',
                   isDisabled && 'bg-gray-50 text-gray-500'
@@ -85,10 +134,16 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
           <Input
             id={field.name}
             type={field.type}
-            value={String(value)}
-            onChange={(e) => onFieldChange(field.name, e.target.value)}
+            value={inputValue}
+            onChange={(e) => {
+              const newValue = field.type === 'number' 
+                ? (e.target.value === '' ? '' : Number(e.target.value))
+                : e.target.value;
+              onFieldChange(field.name, newValue);
+            }}
             placeholder={field.placeholder}
             disabled={isDisabled}
+            step={field.type === 'number' ? 'any' : undefined}
             className={cn(
               'h-11 rounded-xl bg-white/50 border-input shadow-sm transition-all duration-200 hover:bg-white hover:border-gray-300 focus-visible:bg-white',
               isDisabled && 'bg-gray-50 text-gray-500'

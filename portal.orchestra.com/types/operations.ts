@@ -113,6 +113,10 @@ export interface StockLedgerEntry {
   documentDate?: string;
   createdAt: string;
   updatedAt: string;
+  item?: Item;
+  warehouse?: Warehouse;
+  location?: Location;
+  uom?: ItemUom;
 }
 
 export interface CreateStockMovementRequest {
@@ -151,4 +155,56 @@ export enum StockMovementType {
   RETURN = 'RETURN',
   DAMAGE = 'DAMAGE',
   EXPIRE = 'EXPIRE',
+}
+
+// Item Types
+export interface ItemCategory {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ItemUom {
+  id: number;
+  code: string;
+  name: string;
+  precision: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Item {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  categoryId: number;
+  baseUomId: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category?: ItemCategory;
+  baseUom?: ItemUom;
+}
+
+export interface CreateItemRequest {
+  code: string;
+  name: string;
+  description?: string;
+  categoryId: number;
+  baseUomId: number;
+  isActive?: boolean;
+}
+
+export interface ItemsQueryParams {
+  search?: string;
+  categoryId?: number;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
 }
