@@ -1,0 +1,200 @@
+### Goods Receipt API Testing
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Goods Receipts
+GET {{API_BASE_URL}}/v1/ops/goods-receipt
+Content-Type: application/json
+
+###
+
+### Create Goods Receipt (Purchase Order)
+POST {{API_BASE_URL}}/v1/ops/goods-receipt
+Content-Type: application/json
+
+{
+  "receiptType": "PURCHASE_ORDER",
+  "referenceType": "PURCHASE_ORDER",
+  "referenceCode": "PO-2024-001",
+  "warehouseId": 1,
+  "locationId": 1,
+  "receiptDate": "2024-01-15",
+  "expectedDate": "2024-01-15",
+  "notes": "Urgent delivery - expedite processing",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityOrdered": 100.00,
+      "quantityReceived": 100.00,
+      "unitPrice": 10.50,
+      "totalPrice": 1050.00,
+      "batchNumber": "BATCH-2024-001",
+      "expiryDate": "2024-12-31",
+      "notes": "Received in good condition"
+    },
+    {
+      "itemId": 2,
+      "uomId": 1,
+      "quantityOrdered": 50.00,
+      "quantityReceived": 50.00,
+      "unitPrice": 25.00,
+      "totalPrice": 1250.00,
+      "notes": "Premium quality"
+    }
+  ]
+}
+
+###
+
+### Create Goods Receipt (Production)
+POST {{API_BASE_URL}}/v1/ops/goods-receipt
+Content-Type: application/json
+
+{
+  "receiptType": "PRODUCTION",
+  "referenceType": "WORK_ORDER",
+  "referenceCode": "WO-2024-001",
+  "warehouseId": 1,
+  "receiptDate": "2024-01-15",
+  "notes": "Production batch #1234",
+  "items": [
+    {
+      "itemId": 3,
+      "uomId": 2,
+      "quantityOrdered": 200.00,
+      "quantityReceived": 200.00,
+      "unitPrice": 15.75,
+      "totalPrice": 3150.00,
+      "batchNumber": "PROD-2024-001"
+    }
+  ]
+}
+
+###
+
+### Create Goods Receipt (Manual)
+POST {{API_BASE_URL}}/v1/ops/goods-receipt
+Content-Type: application/json
+
+{
+  "receiptType": "MANUAL",
+  "warehouseId": 1,
+  "locationId": 2,
+  "receiptDate": "2024-01-15",
+  "notes": "Manual adjustment - physical count found",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityOrdered": 10.00,
+      "quantityReceived": 10.00,
+      "notes": "Found during inventory count"
+    }
+  ]
+}
+
+###
+
+### Get Goods Receipt by ID
+GET {{API_BASE_URL}}/v1/ops/goods-receipt/3
+Content-Type: application/json
+
+###
+
+### Get Goods Receipt by Number
+GET {{API_BASE_URL}}/v1/ops/goods-receipt/number/GR26040001
+Content-Type: application/json
+
+###
+
+### Update Goods Receipt (Draft Only)
+PATCH {{API_BASE_URL}}/v1/ops/goods-receipt/3
+Content-Type: application/json
+
+{
+  "notes": "Updated notes - additional inspection required",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityOrdered": 100.00,
+      "quantityReceived": 95.00,
+      "unitPrice": 10.50,
+      "totalPrice": 997.50,
+      "batchNumber": "BATCH-2024-001",
+      "expiryDate": "2024-12-31",
+      "notes": "5 units damaged during transit"
+    }
+  ]
+}
+
+###
+
+### Confirm Goods Receipt
+POST {{API_BASE_URL}}/v1/ops/goods-receipt/3/confirm
+Content-Type: application/json
+
+{
+  "notes": "All items verified and counted. Quality check passed."
+}
+
+###
+
+### Cancel Goods Receipt
+POST {{API_BASE_URL}}/v1/ops/goods-receipt/3/cancel
+Content-Type: application/json
+
+###
+
+### List Goods Receipts with Filters
+GET {{API_BASE_URL}}/v1/ops/goods-receipt?status=DRAFT&receiptType=PURCHASE_ORDER&page=1&limit=10
+Content-Type: application/json
+
+###
+
+### Error Scenarios
+
+### Create without required fields
+POST {{API_BASE_URL}}/v1/ops/goods-receipt
+Content-Type: application/json
+
+{
+  "receiptType": "PURCHASE_ORDER",
+  "notes": "Missing warehouse and items"
+}
+
+###
+
+### Confirm non-existent receipt
+POST {{API_BASE_URL}}/v1/ops/goods-receipt/999/confirm
+Content-Type: application/json
+
+{
+  "notes": "This should fail"
+}
+
+###
+
+### Update confirmed receipt (should fail)
+PATCH {{API_BASE_URL}}/v1/ops/goods-receipt/3
+Content-Type: application/json
+
+{
+  "notes": "This should fail if receipt is confirmed"
+}
+
+###
+
+### Cancel confirmed receipt (should fail)
+POST {{API_BASE_URL}}/v1/ops/goods-receipt/3/cancel
+Content-Type: application/json
