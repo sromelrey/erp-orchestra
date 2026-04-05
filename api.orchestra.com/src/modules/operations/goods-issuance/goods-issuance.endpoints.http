@@ -1,0 +1,220 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List Goods Issuances
+GET {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+###
+
+### List Goods Issuances with Filters
+GET {{API_BASE_URL}}/v1/ops/goods-issuance?page=1&limit=10&status=DRAFT&issuanceType=PRODUCTION&warehouseId=1
+Content-Type: application/json
+
+###
+
+### Get Goods Issuance by ID
+GET {{API_BASE_URL}}/v1/ops/goods-issuance/1
+Content-Type: application/json
+
+###
+
+### Get Goods Issuance by Number
+GET {{API_BASE_URL}}/v1/ops/goods-issuance/number/GI2024040001
+Content-Type: application/json
+
+###
+
+### Create Goods Issuance (Production)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+{
+  "issuanceType": "PRODUCTION",
+  "referenceType": "PRODUCTION_ORDER",
+  "referenceCode": "PO-2024-001",
+  "issuedToDepartmentId": 1,
+  "warehouseId": 1,
+  "locationId": 2,
+  "issuanceDate": "2024-01-15",
+  "expectedDate": "2024-01-15",
+  "notes": "Issued for production order #123",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityIssued": 10.00,
+      "unitPrice": 10.50,
+      "totalPrice": 105.00,
+      "batchNumber": "BATCH-2024-001",
+      "expiryDate": "2024-12-31",
+      "notes": "For production line A"
+    }
+  ]
+}
+
+###
+
+### Create Goods Issuance (Sales)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+{
+  "issuanceType": "SALES",
+  "referenceType": "SALES_ORDER",
+  "referenceCode": "SO-2024-001",
+  "warehouseId": 1,
+  "issuanceDate": "2024-01-15",
+  "notes": "Issued for sales order #456",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityIssued": 5.00,
+      "unitPrice": 15.00,
+      "totalPrice": 75.00,
+      "notes": "Customer order #789"
+    }
+  ]
+}
+
+###
+
+### Create Goods Issuance (Transfer)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+{
+  "issuanceType": "TRANSFER",
+  "referenceType": "TRANSFER_ORDER",
+  "referenceCode": "TO-2024-001",
+  "warehouseId": 1,
+  "issuanceDate": "2024-01-15",
+  "notes": "Transfer to warehouse 2",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityIssued": 20.00,
+      "notes": "Stock transfer"
+    }
+  ]
+}
+
+###
+
+### Create Goods Issuance (Adjustment)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+{
+  "issuanceType": "ADJUSTMENT",
+  "referenceType": "ADJUSTMENT_REASON",
+  "referenceCode": "DAMAGED",
+  "warehouseId": 1,
+  "issuanceDate": "2024-01-15",
+  "notes": "Damaged items write-off",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityIssued": 2.00,
+      "notes": "Damaged in transit"
+    }
+  ]
+}
+
+###
+
+### Update Goods Issuance (Draft Only)
+PATCH {{API_BASE_URL}}/v1/ops/goods-issuance/1
+Content-Type: application/json
+
+{
+  "notes": "Updated notes - additional quality check required",
+  "items": [
+    {
+      "itemId": 1,
+      "uomId": 1,
+      "quantityIssued": 8.00,
+      "unitPrice": 10.50,
+      "totalPrice": 84.00,
+      "batchNumber": "BATCH-2024-001",
+      "expiryDate": "2024-12-31",
+      "notes": "Reduced quantity due to availability"
+    }
+  ]
+}
+
+###
+
+### Approve Goods Issuance
+POST {{API_BASE_URL}}/v1/ops/goods-issuance/1/approve
+Content-Type: application/json
+
+{
+  "notes": "Approved for production"
+}
+
+###
+
+### Cancel Goods Issuance
+POST {{API_BASE_URL}}/v1/ops/goods-issuance/2/cancel
+Content-Type: application/json
+
+###
+
+### Delete Goods Issuance (Draft Only)
+DELETE {{API_BASE_URL}}/v1/ops/goods-issuance/3
+Content-Type: application/json
+
+###
+
+### Create without required fields
+POST {{API_BASE_URL}}/v1/ops/goods-issuance
+Content-Type: application/json
+
+{
+  "issuanceType": "PRODUCTION",
+  "notes": "Missing warehouse and items"
+}
+
+###
+
+### Update approved issuance (should fail)
+PATCH {{API_BASE_URL}}/v1/ops/goods-issuance/1
+Content-Type: application/json
+
+{
+  "notes": "Trying to update approved issuance"
+}
+
+###
+
+### Cancel issued issuance (should fail)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance/1/cancel
+Content-Type: application/json
+
+###
+
+### Delete issued issuance (should fail)
+DELETE {{API_BASE_URL}}/v1/ops/goods-issuance/1
+Content-Type: application/json
+
+###
+
+### Approve with insufficient stock (should fail)
+POST {{API_BASE_URL}}/v1/ops/goods-issuance/4/approve
+Content-Type: application/json
+
+{
+  "notes": "Should fail due to insufficient stock"
+}

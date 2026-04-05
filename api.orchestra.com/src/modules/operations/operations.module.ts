@@ -7,6 +7,7 @@ import { SalesOrderModule } from './sales-order/sales-order.module';
 import { GoodsIssueModule } from './goods-issue/goods-issue.module';
 import { WarehousesModule } from './warehouses/warehouses.module';
 import { ItemsModule } from './items/items.module';
+import { GoodsIssuanceModule } from './goods-issuance/goods-issuance.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ItemsModule } from './items/items.module';
     GoodsReceiptModule,
     SalesOrderModule,
     GoodsIssueModule,
+    GoodsIssuanceModule,
   ],
   controllers: [],
 })
