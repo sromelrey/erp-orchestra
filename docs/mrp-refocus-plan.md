@@ -1,117 +1,140 @@
 # 🧩 MRP Refocus Plan
 
-## Core Modules
+### Core Modules
 
-### 1. Item Master
-- **Raw Materials** - Components purchased from suppliers
-- **Finished Goods** - Products manufactured and sold
-- **Item Categories** - Classify items as RM or FG
-- **UOM Management** - Units of measure per item
+### 1. Item Master ✅ **COMPLETED** (100%)
+- [x] **Raw Materials** - Components purchased from suppliers
+- [x] **Finished Goods** - Products manufactured and sold
+- [x] **Item Categories** - Classify items as RM or FG
+- [x] **UOM Management** - Units of measure per item
 
-### 2. Inventory Management
-- **Stock per Warehouse** - Current inventory levels
-- **Stock Movement Tracking** - All in/out transactions
-- **Stock Valuation** - Value of inventory
+### 2. Inventory Management ✅ **COMPLETED** (100%)
+- [x] **Stock per Warehouse** - Current inventory levels
+- [x] **Stock Movement Tracking** - All in/out transactions
+- [x] **Stock Valuation** - Value of inventory
+- [x] **Stock Adjustments** - Manual adjustments and write-offs
+- [x] **Stock Transfers** - Between warehouses (create, update, approve, ship, receive)
 
-### 3. Goods Receipt (Stock In)
-- **Purchase Order Receipt** - Receive raw materials
-- **Production Receipt** - Receive finished goods from production
-- **Return Processing** - Handle returned items
+### 3. Goods Receipt (Stock In) 📋 **PLANNED** (0%)
+- [ ] **Purchase Order Receipt** - Receive raw materials
+- [ ] **Production Receipt** - Receive finished goods from production
+- [ ] **Return Processing** - Handle returned items
+- [ ] **Quality Control** - Inspection and quarantine
 
-### 4. Sales Orders (Stock Out)
-- **Order Creation** - Customer orders
-- **Stock Allocation** - Reserve inventory
-- **Order Fulfillment** - Pick, pack, ship
+### 4. Goods Issuance (Stock Out) ✅ **COMPLETED** (100%)
+- [x] **Issuance Types** - Production, Sales, Transfer, Adjustment
+- [x] **Warehouse Selection** - Source warehouse and location
+- [x] **Item Allocation** - Track issued items and quantities
+- [x] **Approval Workflow** - Multi-level approval process
+- [x] **Batch/Expiry Tracking** - For traceability
+- [x] **Transaction History** - Complete audit trail
 
-### 5. Bill of Materials (BOM)
-- **BOM Definition** - Raw materials needed per finished good
-- **BOM Versions** - Track changes over time
-- **Cost Rollup** - Calculate production cost
+### 5. Sales Orders 📋 **PLANNED** (0%)
+- [ ] **Order Creation** - Customer orders
+- [ ] **Stock Allocation** - Reserve inventory
+- [ ] **Order Fulfillment** - Pick, pack, ship
 
-### 6. Production / Batch Processing
-- **Production Orders** - Create manufacturing batches
-- **Material Consumption** - Deduct raw materials
-- **Production Completion** - Add finished goods
+### 6. Bill of Materials (BOM) ✅ **COMPLETED** (100%)
+- [x] **BOM Definition** - Raw materials needed per finished good
+- [x] **BOM Versions** - Track changes over time
+- [x] **Cost Rollup** - Calculate production cost
+- [x] **BOM Status Management** - Draft, Active, Inactive statuses
+- [x] **Cost Calculation** - Automatic costing with breakdown
+- [x] **Where-Used Analysis** - Find where components are used
+- [x] **Cost History** - Track cost changes over time
 
-### 7. Sales Invoice
-- **Invoice Generation** - From sales orders
-- **Payment Tracking** - Cash flow management
-- **Customer Accounts** - Accounts receivable
+### 7. Production / Batch Processing 📋 **PLANNED** (0%)
+- [ ] **Production Orders** - Create manufacturing batches
+- [ ] **Work Order Management** - Track production progress
+- [ ] **Material Consumption** - Auto-deduct from inventory
 
-### 8. Basic Reports
-- **Stock Reports** - Current levels, movements
-- **Sales Reports** - Revenue, top items
-- **Production Reports** - Batch efficiency, waste
+## Additional Modules Implemented
 
-## Existing vs Missing
+### 8. User Management & Permissions ✅ **COMPLETED** (100%)
+- [x] **Role-Based Access Control (RBAC)** - Complete permission system
+- [x] **User Roles** - Admin, Manager, Operator roles
+- [x] **Module Permissions** - Granular access control
+- [x] **Tenant Support** - Multi-tenant architecture
 
-| Module | Existing | Missing | Status |
-|--------|----------|---------|---------|
-| Item Master | ✅ Materials Management | Item type separation (RM/FG) | 🚧 Partial |
-| Inventory | ✅ Warehouse & Stock Movement | Stock valuation | 🚧 Partial |
-| Goods Receipt | ✅ Backend controller | UI implementation | 🚧 Partial |
-| Sales Orders | ✅ Backend controller | UI, stock allocation | 🚧 Partial |
-| Bill of Materials | ✅ Backend controller | UI, cost rollup | 🚧 Partial |
-| Production | ❌ | Entire module | ❌ Missing |
-| Sales Invoice | ✅ Finance module | Integration with sales | 🚧 Partial |
-| Reports | ✅ Finance reporting | Stock & production reports | 🚧 Partial |
+### 9. Core Infrastructure ✅ **COMPLETED** (100%)
+- [x] **Database Schema** - PostgreSQL with TypeORM
+- [x] **API Framework** - NestJS with REST endpoints
+- [x] **Authentication** - Session-based auth
+- [x] **Validation** - DTO-based request validation
+- [x] **Error Handling** - Centralized error management
 
-## Backend Structure (NestJS)
+## Implementation Status Summary
 
-```
-src/modules/
-├── inventory/
-│   ├── items/
-│   │   ├── items.controller.ts
-│   │   ├── items.service.ts
-│   │   └── dto/
-│   ├── stock/
-│   │   ├── stock.controller.ts
-│   │   ├── stock.service.ts
-│   │   └── dto/
-│   └── movements/
-│       ├── movements.controller.ts
-│       ├── movements.service.ts
-│       └── dto/
-├── transactions/
-│   ├── goods-receipt/
-│   │   ├── goods-receipt.controller.ts
-│   │   ├── goods-receipt.service.ts
-│   │   └── dto/
-│   └── sales/
-│       ├── sales-orders.controller.ts
-│       ├── sales-orders.service.ts
-│       ├── sales-invoices.controller.ts
-│       └── dto/
-├── production/
-│   ├── bom/
-│   │   ├── bom.controller.ts
-│   │   ├── bom.service.ts
-│   │   └── dto/
-│   └── batches/
-│       ├── production-batches.controller.ts
-│       ├── production-batches.service.ts
-│       └── dto/
-└── reports/
-    ├── inventory-reports.service.ts
-    ├── sales-reports.service.ts
-    └── production-reports.service.ts
-```
+| Module | Backend API | Frontend UI | Overall | Status | Priority |
+|--------|-------------|-------------|---------|---------|----------|
+| Item Master | ✅ 100% | 🚧 40% | 70% | In Progress | Medium |
+| Inventory Management | ✅ 100% | 📋 0% | 50% | Backend Ready | High |
+| Goods Issuance | ✅ 100% | 📋 0% | 50% | Backend Ready | High |
+| Goods Receipt | 📋 0% | 📋 0% | 0% | Not Started | High |
+| Sales Orders | 📋 0% | 📋 0% | 0% | Not Started | Medium |
+| BOM | ✅ 100% | 📋 0% | 50% | Backend Ready | Medium |
+| Production | 📋 0% | 📋 0% | 0% | Not Started | Low |
+| User Management | ✅ 100% | ✅ 90% | 95% | Almost Complete | Critical |
+| Infrastructure | ✅ 100% | 🚧 30% | 65% | In Progress | Critical |
 
-## Frontend Structure (Next.js)
+### Legend
+- ✅ Completed/High Progress (80-100%)
+- 🚧 In Progress/Medium Progress (30-79%)
+- 📋 Not Started/Low Progress (0-29%)
 
-```
-app/(main)/
-├── inventory/
-│   ├── items/
-│   │   ├── page.tsx          # Item list
-│   │   ├── [id]/page.tsx     # Item details
-│   │   └── create/page.tsx   # Create item
-│   ├── stock/
-│   │   ├── page.tsx          # Stock status
-│   │   └── movements/page.tsx # Movement history
-│   └── goods-receipt/
-│       ├── page.tsx          # GR list
+### Summary by Status
+- **Almost Complete**: User Management (95%)
+- **Backend Ready, UI Pending**: Goods Issuance (50%), BOM (50%), Inventory Management (50%)
+- **In Progress**: Item Master (70%), Infrastructure (65%)
+- **Not Started**: Goods Receipt (0%), Sales Orders (0%), Production (0%)
+
+## Completion Summary
+
+### Backend API (67% Complete)
+- **Fully Completed**: 6 out of 9 modules (Item Master, Inventory Management, Goods Issuance, BOM, User Management, Infrastructure)
+- **In Progress**: 0 modules
+- **Not Started**: 3 modules (Goods Receipt, Sales Orders, Production)
+
+### Frontend UI (15% Complete)
+- **Fully Completed**: 0 modules
+- **In Progress**: 3 modules (Item Master, User Management, Common Components)
+- **Not Started**: 6 modules
+
+### Overall Project (40% Complete)
+- **Backend Heavy**: Most API endpoints are ready
+- **UI Lagging**: Frontend development needs focus
+- **Next Priority**: Build UI for completed backend modules
+
+### Modules by Combined Status:
+- 🟢 **Ready for Production**: User Management (95%)
+- 🟡 **Backend Ready, UI Pending**: Goods Issuance (50%), BOM (50%), Inventory Management (50%)
+- 🟠 **Partially Complete**: Item Master (70%), Infrastructure (65%)
+- 🔴 **Not Started**: Goods Receipt (0%), Sales Orders (0%), Production (0%)
+
+## Next Steps
+
+1. **Priority 1**: Implement Goods Receipt module
+2. **Priority 2**: Develop Sales Order management
+3. **Priority 3**: Build Production module (BOM is already complete!)
+4. **Priority 4**: Build UI for completed backend modules
+
+## Technical Debt & Improvements
+
+- [ ] Add automated tests for all modules
+- [ ] Implement API rate limiting
+- [ ] Add caching for frequently accessed data
+- [ ] Improve error messages for better UX
+- [ ] Add API documentation (Swagger)
+
+### Known Issues & TODOs
+
+- [ ] **Stock Ledger balance_after column**: Create migration to add `balance_after` column to `stock_ledger` table for running balance tracking. After migration, uncomment TODO sections in:
+  - `src/entities/operations/stock-ledger.entity.ts` (lines 60-68)
+  - `src/modules/inventory/stock-movement.service.ts` (lines 33-46, 55)
+- [ ] **Stock Transfer findAll relations**: Currently all relations are removed from `findAll` method to avoid TypeORM metadata errors. Need to add them back one by one to identify which entity (Material, Warehouse, or WarehouseLocation) has the metadata issue.
+  - File: `src/modules/inventory/inventory-transfer/inventory-transfer.service.ts` (line 129-131)
+- [ ] **ESLint type checking**: Temporary ESLint disable comments in `inventory-adjustment.service.ts` due to strict type checking rules. Consider refactoring to satisfy linter without disable comments.
+  - File: `src/modules/inventory/inventory-adjustment/inventory-adjustment.service.ts` (line 326-328)
 │       └── create/page.tsx   # Create GR
 ├── sales/
 │   ├── orders/

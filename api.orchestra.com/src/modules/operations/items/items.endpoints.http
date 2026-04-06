@@ -20,6 +20,15 @@ Content-Type: application/json
   "description": "Greige and dyed fabrics"
 }
 
+
+POST {{API_BASE_URL}}/v1/ops/item-categories
+Content-Type: application/json
+
+{
+  "code": "CLOTHING",
+  "name": "Clothing Items",
+  "description": "Apparel and accessories"
+}
 ### List Item Categories
 ### Use to confirm categories exist before linking them to items
 GET {{API_BASE_URL}}/v1/ops/item-categories
@@ -46,6 +55,15 @@ Content-Type: application/json
   "precision": 2
 }
 
+
+POST {{API_BASE_URL}}/v1/ops/item-uoms
+Content-Type: application/json
+
+{
+  "code": "PCS",
+  "name": "Pieces",
+  "precision": 0
+}
 ### List Units of Measure
 ### Use to retrieve available UoMs before assigning to items
 ### Retrieves a list of all existing units of measure
@@ -74,6 +92,30 @@ Content-Type: application/json
   "description": "Crew neck, 180gsm cotton",
   "categoryId": 1,
   "baseUomId": 1,
+  "isActive": true
+}
+
+POST {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+ 
+{
+  "code": "ITEM001",
+  "name": "Test Item 1",
+  "description": "First test item",
+  "baseUomId": 1,
+  "categoryId": 1,
+  "isActive": true
+}
+ 
+POST {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+ 
+{
+  "code": "ITEM002",
+  "name": "Test Item 2",
+  "description": "Second test item",
+  "baseUomId": 1,
+  "categoryId": 1,
   "isActive": true
 }
 

@@ -1,0 +1,116 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+### 1. Create Stock Transfer
+POST {{API_BASE_URL}}/v1/inv/stock-transfers
+Content-Type: application/json
+
+{
+  "sourceWarehouseId": 1,
+  "sourceLocationId": 1,
+  "destinationWarehouseId": 2,
+  "destinationLocationId": 1,
+  "transferDate": "2026-04-05",
+  "expectedDate": "2026-04-07",
+  "notes": "Transfer excess stock to main warehouse",
+  "items": [
+    {
+      "itemId": 1,
+      "quantityTransferred": 50,
+      "unitCost": 10.50,
+      "totalCost": 525.00,
+      "batchNumber": "BATCH001",
+      "expiryDate": "2026-12-31",
+      "notes": "Good quality stock"
+    },
+    {
+      "itemId": 2,
+      "quantityTransferred": 25,
+      "unitCost": 25.00,
+      "totalCost": 625.00,
+      "batchNumber": "BATCH003"
+    }
+  ]
+}
+
+### 2. List Stock Transfers
+GET {{API_BASE_URL}}/v1/inv/stock-transfers?page=1&limit=10
+Content-Type: application/json
+
+### 3. List Stock Transfers with Filters
+GET {{API_BASE_URL}}/v1/inv/stock-transfers?page=1&limit=10&sourceWarehouseId=1&destinationWarehouseId=2&status=PENDING
+Content-Type: application/json
+
+### 4. Get Stock Transfer by ID
+GET {{API_BASE_URL}}/v1/inv/stock-transfers/1
+Content-Type: application/json
+
+### 5. Update Stock Transfer (Pending only)
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1
+Content-Type: application/json
+
+{
+  "expectedDate": "2026-04-08",
+  "notes": "Updated transfer schedule",
+  "items": [
+    {
+      "itemId": 1,
+      "quantityTransferred": 45,
+      "unitCost": 10.50,
+      "totalCost": 472.50,
+      "batchNumber": "BATCH001",
+      "expiryDate": "2026-12-31"
+    }
+  ]
+}
+
+### 6. Approve Stock Transfer
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1/approve
+Content-Type: application/json
+
+### 7. Ship Stock Transfer
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1/ship
+Content-Type: application/json
+
+### 8. Receive Stock Transfer (Partial)
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1/receive
+Content-Type: application/json
+
+{
+  "notes": "Received with some shortages",
+  "items": [
+    {
+      "stockTransferItemId": 4,
+      "quantityReceived": 43,
+      "notes": "2 units damaged in transit"
+    }
+  ]
+}
+
+### 9. Receive Stock Transfer (Full)
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1/receive
+Content-Type: application/json
+
+{
+  "notes": "All items received successfully",
+  "items": [
+    {
+      "stockTransferItemId": 4,
+      "quantityReceived": 45
+    }
+  ]
+}
+
+### 10. Cancel Stock Transfer
+PATCH {{API_BASE_URL}}/v1/inv/stock-transfers/1/cancel
+Content-Type: application/json
+
+### 11. Delete Stock Transfer (Pending only)
+DELETE {{API_BASE_URL}}/v1/inv/stock-transfers/1
+Content-Type: application/json

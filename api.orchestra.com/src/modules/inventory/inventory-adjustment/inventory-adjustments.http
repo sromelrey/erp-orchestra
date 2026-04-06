@@ -1,0 +1,102 @@
+### Login (Establish Session) to get credentials if needed,
+### or rely on browser cookies if using an extension
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+### 1. Create Stock Adjustment (DAMAGE)
+POST {{API_BASE_URL}}/v1/inv/stock-adjustments
+Content-Type: application/json
+
+{
+  "adjustmentType": "DAMAGE",
+  "warehouseId": 1,
+  "locationId": 1,
+  "adjustmentDate": "2026-04-05",
+  "notes": "Damaged items found during inventory count",
+  "items": [
+    {
+      "itemId": 1,
+      "quantityAdjusted": -5,
+      "unitCost": 10.50,
+      "batchNumber": "BATCH001",
+      "expiryDate": "2026-12-31",
+      "notes": "Water damage"
+    },
+    {
+      "itemId": 2,
+      "quantityAdjusted": -2,
+      "unitCost": 25.00,
+      "notes": "Broken packaging"
+    }
+  ]
+}
+
+### 2. Create Stock Adjustment (FOUND)
+POST {{API_BASE_URL}}/v1/inv/stock-adjustments
+Content-Type: application/json
+
+{
+  "adjustmentType": "FOUND",
+  "warehouseId": 1,
+  "adjustmentDate": "2026-04-05",
+  "notes": "Extra items found during physical count",
+  "items": [
+    {
+      "itemId": 3,
+      "quantityAdjusted": 10,
+      "unitCost": 15.00,
+      "totalCost": 150.00,
+      "batchNumber": "BATCH002"
+    }
+  ]
+}
+
+### 3. List Stock Adjustments
+GET {{API_BASE_URL}}/v1/inv/stock-adjustments?page=1&limit=10
+Content-Type: application/json
+
+### 4. List Stock Adjustments with Filters
+GET {{API_BASE_URL}}/v1/inv/stock-adjustments?page=1&limit=10&adjustmentType=DAMAGE&status=DRAFT&warehouseId=1
+Content-Type: application/json
+
+### 5. Get Stock Adjustment by ID
+GET {{API_BASE_URL}}/v1/inv/stock-adjustments/3
+Content-Type: application/json
+
+### 6. Update Stock Adjustment (Draft only)
+PATCH {{API_BASE_URL}}/v1/inv/stock-adjustments/3
+Content-Type: application/json
+
+{
+  "notes": "Updated notes after review",
+  "items": [
+    {
+      "itemId": 1,
+      "quantityAdjusted": -3,
+      "unitCost": 10.50,
+      "totalCost": 31.50,
+      "batchNumber": "BATCH001",
+      "expiryDate": "2026-12-31"
+    }
+  ]
+}
+
+### 7. Approve Stock Adjustment
+PATCH {{API_BASE_URL}}/v1/inv/stock-adjustments/3/approve
+Content-Type: application/json
+
+{
+  "notes": "Approved after verification"
+}
+
+### 8. Cancel Stock Adjustment
+PATCH {{API_BASE_URL}}/v1/inv/stock-adjustments/3/cancel
+Content-Type: application/json
+
+### 9. Delete Stock Adjustment (Draft only)
+DELETE {{API_BASE_URL}}/v1/inv/stock-adjustments/3
+Content-Type: application/json

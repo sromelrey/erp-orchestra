@@ -50,8 +50,22 @@ export class StockLedger extends CommonEntity {
   @JoinColumn({ name: 'uom_id' })
   uom?: UnitOfMeasure;
 
-  @Column({ type: 'numeric', precision: 18, scale: 6 })
+  @Column({
+    type: 'numeric',
+    precision: 18,
+    scale: 6,
+  })
   quantity: string;
+
+  // TODO: Add migration for balance_after column
+  // @Column({
+  //   name: 'balance_after',
+  //   type: 'numeric',
+  //   precision: 18,
+  //   scale: 6,
+  //   nullable: true,
+  // })
+  // balanceAfter?: string;
 
   @Column({
     name: 'movement_type',

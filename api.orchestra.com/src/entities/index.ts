@@ -41,6 +41,10 @@ export * from './operations/goods-receipt.entity';
 export * from './operations/goods-receipt-item.entity';
 export * from './operations/goods-issuance.entity';
 export * from './operations/goods-issuance-item.entity';
+export * from './operations/stock-adjustment.entity';
+export * from './operations/stock-adjustment-item.entity';
+export * from './operations/stock-transfer.entity';
+export * from './operations/stock-transfer-item.entity';
 
 // * HRIS
 export * from './hris/branch.entity';
