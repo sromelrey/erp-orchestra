@@ -391,6 +391,106 @@ export const PermissionsSeeder: Seeder = {
           slug: 'goods-issuance.delete',
           name: 'Delete Goods Issuance',
         },
+        // Inventory - Stock Adjustments
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'CREATE',
+          slug: 'inventory.adjustment.create',
+          name: 'Create Stock Adjustments',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'READ',
+          slug: 'inventory.adjustment.read',
+          name: 'Read Stock Adjustments',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'EDIT',
+          slug: 'inventory.adjustment.edit',
+          name: 'Edit Stock Adjustments',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'APPROVE',
+          slug: 'inventory.adjustment.approve',
+          name: 'Approve Stock Adjustments',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'CANCEL',
+          slug: 'inventory.adjustment.cancel',
+          name: 'Cancel Stock Adjustments',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'ADJUSTMENT',
+          action: 'DELETE',
+          slug: 'inventory.adjustment.delete',
+          name: 'Delete Stock Adjustments',
+        },
+        // Inventory - Stock Transfers
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'CREATE',
+          slug: 'inventory.transfer.create',
+          name: 'Create Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'READ',
+          slug: 'inventory.transfer.read',
+          name: 'Read Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'EDIT',
+          slug: 'inventory.transfer.edit',
+          name: 'Edit Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'APPROVE',
+          slug: 'inventory.transfer.approve',
+          name: 'Approve Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'SHIP',
+          slug: 'inventory.transfer.ship',
+          name: 'Ship Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'RECEIVE',
+          slug: 'inventory.transfer.receive',
+          name: 'Receive Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'CANCEL',
+          slug: 'inventory.transfer.cancel',
+          name: 'Cancel Stock Transfers',
+        },
+        {
+          module: 'INVENTORY',
+          resource: 'TRANSFER',
+          action: 'DELETE',
+          slug: 'inventory.transfer.delete',
+          name: 'Delete Stock Transfers',
+        },
         // System - Role
         {
           module: 'system',
@@ -453,20 +553,32 @@ export const PermissionsSeeder: Seeder = {
         );
 
         if (existing.length === 0) {
-          await queryRunner.query(
-            `INSERT INTO "system"."permissions" (
-              "module",
-              "resource",
-              "action",
-              "slug",
-              "name",
-              "is_active",
-              "created_at",
-              "updated_at"
-            ) VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())`,
-            [perm.module, perm.resource, perm.action, perm.slug, perm.name],
+          // Check if permission exists with same module, action, resource but different slug
+          const existingByModule = await queryRunner.query(
+            `SELECT id FROM "system"."permissions" WHERE module = $1 AND resource = $2 AND action = $3`,
+            [perm.module, perm.resource, perm.action],
           );
-          console.log(`  ✅ Created permission: ${perm.slug}`);
+
+          if (existingByModule.length === 0) {
+            await queryRunner.query(
+              `INSERT INTO "system"."permissions" (
+                "module",
+                "resource",
+                "action",
+                "slug",
+                "name",
+                "is_active",
+                "created_at",
+                "updated_at"
+              ) VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())`,
+              [perm.module, perm.resource, perm.action, perm.slug, perm.name],
+            );
+            console.log(`  ✅ Created permission: ${perm.slug}`);
+          } else {
+            console.log(
+              `  ⏭️  Permission with module="${perm.module}", resource="${perm.resource}", action="${perm.action}" already exists, skipping...`,
+            );
+          }
         } else {
           console.log(
             `  ⏭️  Permission "${perm.slug}" already exists, skipping...`,

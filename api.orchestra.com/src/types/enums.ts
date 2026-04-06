@@ -47,6 +47,13 @@ export enum StockMovementType {
   ADJUSTMENT = 'ADJUSTMENT',
 }
 
+export enum StockAdjustmentType {
+  DAMAGE = 'DAMAGE',
+  LOSS = 'LOSS',
+  FOUND = 'FOUND',
+  COUNT = 'COUNT',
+}
+
 export enum CostingMethod {
   STANDARD = 'STANDARD',
   AVERAGE = 'AVERAGE',

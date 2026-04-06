@@ -7,6 +7,7 @@ import { SystemModule } from './modules/system/system.module';
 import { HrisModule } from './modules/hris/hris.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ManagementModule } from './modules/management/management.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ManagementModule } from './modules/management/management.module';
     FinanceModule,
     HrisModule,
     ManagementModule,
+    InventoryModule,
   ],
 })
 export class AppModule {}
