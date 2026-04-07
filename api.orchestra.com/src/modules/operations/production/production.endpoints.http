@@ -1,0 +1,190 @@
+### Production API Testing
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Production Batches
+GET {{API_BASE_URL}}/v1/prod/production-batches
+Content-Type: application/json
+
+###
+
+### List Production Batches with Filters
+GET {{API_BASE_URL}}/v1/prod/production-batches?page=1&limit=10&status=PLANNED
+Content-Type: application/json
+
+###
+
+### Get Production Batch by ID
+GET {{API_BASE_URL}}/v1/prod/production-batches/1
+Content-Type: application/json
+
+###
+
+### Create Production Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches
+Content-Type: application/json
+
+{
+  "bomId": 10,
+  "plannedQuantity": 100,
+  "startDate": "2024-01-15T09:00:00Z",
+  "endDate": "2024-01-20T17:00:00Z",
+  "notes": "Urgent production run for customer order",
+  "workOrders": [
+    {
+      "stepName": "Cutting",
+      "notes": "Cut fabric pieces"
+    },
+    {
+      "stepName": "Sewing",
+      "notes": "Sew pieces together"
+    },
+    {
+      "stepName": "Quality Check",
+      "notes": "Final quality inspection"
+    }
+  ]
+}
+
+###
+
+### Update Production Batch (PLANNED only)
+PATCH {{API_BASE_URL}}/v1/prod/production-batches/2
+Content-Type: application/json
+
+{
+  "plannedQuantity": 150,
+  "notes": "Updated quantity based on customer request"
+}
+
+###
+
+### Start Production Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/start
+Content-Type: application/json
+
+###
+
+### Complete Production Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/complete
+Content-Type: application/json
+
+{
+  "actualQuantity": 98
+}
+
+###
+
+### Cancel Production Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/cancel
+Content-Type: application/json
+
+{
+  "reason": "Material shortage - unable to complete production"
+}
+
+###
+
+### Delete Production Batch (PLANNED only)
+DELETE {{API_BASE_URL}}/v1/prod/production-batches/2
+Content-Type: application/json
+
+###
+
+### Search Production Batches by Batch Number
+GET {{API_BASE_URL}}/v1/prod/production-batches?batchNo=PB-2026-0001
+Content-Type: application/json
+
+###
+
+### Filter Production Batches by Date Range
+GET {{API_BASE_URL}}/v1/prod/production-batches?startDateFrom=2026-01-01&startDateTo=2026-01-31
+Content-Type: application/json
+
+###
+
+### Sort Production Batches
+GET {{API_BASE_URL}}/v1/prod/production-batches?sortBy=startDate&sortOrder=ASC
+Content-Type: application/json
+
+###
+
+### Get IN_PROGRESS Batches
+GET {{API_BASE_URL}}/v1/prod/production-batches?status=IN_PROGRESS
+Content-Type: application/json
+
+###
+
+### Get COMPLETED Batches
+GET {{API_BASE_URL}}/v1/prod/production-batches?status=COMPLETED
+Content-Type: application/json
+
+###
+
+### Get CANCELLED Batches
+GET {{API_BASE_URL}}/v1/prod/production-batches?status=CANCELLED
+Content-Type: application/json
+
+###
+
+### Test Error - Create Batch with Invalid BOM
+POST {{API_BASE_URL}}/v1/prod/production-batches
+Content-Type: application/json
+
+{
+  "bomId": 99999,
+  "plannedQuantity": 100
+}
+
+###
+
+### Test Error - Start Non-PLANNED Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/start
+Content-Type: application/json
+
+###
+
+### Test Error - Complete Non-IN_PROGRESS Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/complete
+Content-Type: application/json
+
+{
+  "actualQuantity": 100
+}
+
+###
+
+### Test Error - Cancel COMPLETED Batch
+POST {{API_BASE_URL}}/v1/prod/production-batches/2/cancel
+Content-Type: application/json
+
+{
+  "reason": "Trying to cancel completed batch"
+}
+
+###
+
+### Test Error - Delete Non-PLANNED Batch
+DELETE {{API_BASE_URL}}/v1/prod/production-batches/2
+Content-Type: application/json
+
+###
+
+### Test Pagination - Page 2
+GET {{API_BASE_URL}}/v1/prod/production-batches?page=2&limit=5
+Content-Type: application/json
+
+###
+
+### Test Complex Filters
+GET {{API_BASE_URL}}/v1/prod/production-batches?status=PLANNED&batchNo=PB&startDateFrom=2024-01-01&sortBy=createdAt&sortOrder=DESC
+Content-Type: application/json
