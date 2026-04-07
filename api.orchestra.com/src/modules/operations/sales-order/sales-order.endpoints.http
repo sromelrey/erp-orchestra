@@ -1,0 +1,322 @@
+### Sales Order API Testing
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### List All Sales Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+###
+
+### List Sales Orders with Filters
+GET {{API_BASE_URL}}/v1/ops/sales-orders?page=1&limit=10&status=DRAFT&customerName=John
+Content-Type: application/json
+
+###
+
+### Get Sales Order by ID
+GET {{API_BASE_URL}}/v1/ops/sales-orders/2
+Content-Type: application/json
+
+###
+
+### Create Sales Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "John Doe",
+  "orderDate": "2024-01-15",
+  "deliveryDate": "2024-01-20",
+  "notes": "Urgent delivery requested",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 10,
+      "unitOfMeasureId": 1,
+      "unitPrice": 100.00,
+      "discountPercent": 5,
+      "taxPercent": 10,
+      "warehouseId": 1,
+      "locationId": 1,
+      "notes": "Premium quality item"
+    },
+    {
+      "itemId": 2,
+      "quantity": 5,
+      "unitOfMeasureId": 1,
+      "unitPrice": 50.00,
+      "discountPercent": 0,
+      "taxPercent": 10,
+      "warehouseId": 1,
+      "locationId": 1
+    }
+  ]
+}
+
+###
+
+### Update Sales Order (DRAFT only)
+PATCH {{API_BASE_URL}}/v1/ops/sales-orders/2
+Content-Type: application/json
+
+{
+  "customerName": "John Doe Updated",
+  "deliveryDate": "2024-01-21",
+  "notes": "Updated notes",
+  "discountAmount": 50.00,
+  "taxAmount": 25.00
+}
+
+###
+
+### Confirm Sales Order (Allocate Stock)
+POST {{API_BASE_URL}}/v1/ops/sales-orders/2/confirm
+Content-Type: application/json
+
+{
+  "notes": "Order confirmed for immediate processing",
+  "approvedBy": 1
+}
+
+###
+
+### Ship Sales Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/2/ship
+Content-Type: application/json
+
+{
+  "notes": "Shipped via express delivery",
+  "shippedBy": 1
+}
+
+###
+
+### Deliver Items for Sales Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/2/deliver
+Content-Type: application/json
+
+{
+  "deliveredItems": [
+    {
+      "orderItemId": 1,
+      "deliveredQuantity": 10
+    },
+    {
+      "orderItemId": 2,
+      "deliveredQuantity": 3
+    }
+  ],
+  "notes": "Items delivered successfully",
+  "deliveredBy": 1
+}
+
+###
+
+### Cancel Sales Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/2/cancel
+Content-Type: application/json
+
+{
+  "reason": "Customer requested cancellation",
+  "notes": "Will refund payment within 5 business days"
+}
+
+###
+
+### Delete Sales Order (DRAFT only)
+DELETE {{API_BASE_URL}}/v1/ops/sales-orders/2
+Content-Type: application/json
+
+###
+
+### Search Sales Orders by Order Number
+GET {{API_BASE_URL}}/v1/ops/sales-orders?orderNo=SO-2026-0001
+Content-Type: application/json
+
+###
+
+### Filter Sales Orders by Date Range
+GET {{API_BASE_URL}}/v1/ops/sales-orders?orderDateFrom=2026-01-01&orderDateTo=2026-01-31
+Content-Type: application/json
+
+###
+
+### Sort Sales Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders?sortBy=orderDate&sortOrder=ASC
+Content-Type: application/json
+
+###
+
+### Get CONFIRMED Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders?status=CONFIRMED
+Content-Type: application/json
+
+###
+
+### Get SHIPPED Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders?status=SHIPPED
+Content-Type: application/json
+
+###
+
+### Get DELIVERED Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders?status=DELIVERED
+Content-Type: application/json
+
+###
+
+### Get CANCELLED Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders?status=CANCELLED
+Content-Type: application/json
+
+###
+
+### Create Sales Order with Single Item
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Jane Smith",
+  "orderDate": "2024-01-16",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 1,
+      "unitOfMeasureId": 1,
+      "unitPrice": 500.00,
+      "warehouseId": 1,
+      "locationId": 1
+    }
+  ]
+}
+
+###
+
+### Confirm Order without Notes
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/confirm
+Content-Type: application/json
+
+{}
+
+###
+
+### Ship Order without Notes
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/ship
+Content-Type: application/json
+
+{}
+
+###
+
+### Partial Delivery
+POST {{API_BASE_URL}}/v1/ops/sales-orders/2/deliver
+Content-Type: application/json
+
+{
+  "deliveredItems": [
+    {
+      "orderItemId": 3,
+      "deliveredQuantity": 0.5
+    }
+  ],
+  "notes": "Partial delivery, remaining to follow"
+}
+
+###
+
+### Test Error - Create Order with Invalid Item
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Test Customer",
+  "orderDate": "2024-01-16",
+  "items": [
+    {
+      "itemId": 99999,
+      "quantity": 10,
+      "unitOfMeasureId": 1,
+      "unitPrice": 100.00,
+      "warehouseId": 1,
+      "locationId": 1
+    }
+  ]
+}
+
+###
+
+### Test Error - Confirm Non-Draft Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/confirm
+Content-Type: application/json
+
+{
+  "notes": "This should fail if order is not DRAFT"
+}
+
+###
+
+### Test Error - Deliver Non-Shipped Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/deliver
+Content-Type: application/json
+
+{
+  "deliveredItems": [
+    {
+      "orderItemId": 1,
+      "deliveredQuantity": 5
+    }
+  ]
+}
+
+###
+
+### Test Error - Deliver More Than Ordered
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/deliver
+Content-Type: application/json
+
+{
+  "deliveredItems": [
+    {
+      "orderItemId": 1,
+      "deliveredQuantity": 100
+    }
+  ]
+}
+
+###
+
+### Test Error - Cancel Delivered Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/4/cancel
+Content-Type: application/json
+
+{
+  "reason": "Trying to cancel delivered order"
+}
+
+###
+
+### Test Error - Delete Non-Draft Order
+DELETE {{API_BASE_URL}}/v1/ops/sales-orders/4
+Content-Type: application/json
+
+###
+
+### Test Pagination - Page 2
+GET {{API_BASE_URL}}/v1/ops/sales-orders?page=2&limit=5
+Content-Type: application/json
+
+###
+
+### Test Complex Filters
+GET {{API_BASE_URL}}/v1/ops/sales-orders?status=CONFIRMED&customerName=John&orderDateFrom=2024-01-01&sortBy=createdAt&sortOrder=DESC
+Content-Type: application/json

@@ -4,7 +4,7 @@ import { Tenant } from '../system/tenant.entity';
 import { ItemCategory } from './item-category.entity';
 import { UnitOfMeasure } from './unit-of-measure.entity';
 
-@Entity({ name: 'items', schema: 'operations' })
+@Entity({ name: 'items', schema: 'inventory' })
 @Index(['tenantId', 'code'], { unique: true, where: 'deleted_at IS NULL' })
 @Index(['tenantId'], { where: 'deleted_at IS NULL' })
 export class Item extends CommonEntity {

@@ -544,6 +544,63 @@ export const PermissionsSeeder: Seeder = {
           slug: 'system.session.manage',
           name: 'Manage Sessions',
         },
+        // Operations - Sales Orders
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'create',
+          slug: 'operations.sales-order.create',
+          name: 'Create Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'view',
+          slug: 'operations.sales-order.view',
+          name: 'View Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'update',
+          slug: 'operations.sales-order.update',
+          name: 'Update Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'delete',
+          slug: 'operations.sales-order.delete',
+          name: 'Delete Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'confirm',
+          slug: 'operations.sales-order.confirm',
+          name: 'Confirm Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'ship',
+          slug: 'operations.sales-order.ship',
+          name: 'Ship Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'deliver',
+          slug: 'operations.sales-order.deliver',
+          name: 'Deliver Sales Orders',
+        },
+        {
+          module: 'operations',
+          resource: 'sales-order',
+          action: 'cancel',
+          slug: 'operations.sales-order.cancel',
+          name: 'Cancel Sales Orders',
+        },
       ];
 
       for (const perm of permissions) {

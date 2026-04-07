@@ -4,10 +4,10 @@ import { GoodsIssuanceService } from './goods-issuance.service';
 import { GoodsIssuanceController } from './goods-issuance.controller';
 import { GoodsIssuance } from '@/entities/operations/goods-issuance.entity';
 import { GoodsIssuanceItem } from '@/entities/operations/goods-issuance-item.entity';
-import { Item } from '@/entities/operations/item.entity';
-import { UnitOfMeasure } from '@/entities/operations/unit-of-measure.entity';
-import { Warehouse } from '@/entities/operations/warehouse.entity';
-import { WarehouseLocation } from '@/entities/operations/warehouse-location.entity';
+import { Item } from '@/entities/inventory/item.entity';
+import { UnitOfMeasure } from '@/entities/inventory/unit-of-measure.entity';
+import { Warehouse } from '@/entities/inventory/warehouse.entity';
+import { WarehouseLocation } from '@/entities/inventory/warehouse-location.entity';
 import { StockBalance } from '@/entities/operations/stock-balance.entity';
 import { PermissionModule } from '@/modules/system/permissions/permission.module';
 

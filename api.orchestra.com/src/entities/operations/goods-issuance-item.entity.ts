@@ -1,8 +1,8 @@
 import { Entity, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '@/entities/common.entity';
 import { GoodsIssuance } from './goods-issuance.entity';
-import { Item } from './item.entity';
-import { UnitOfMeasure } from './unit-of-measure.entity';
+import { Item } from '../inventory/item.entity';
+import { UnitOfMeasure } from '../inventory/unit-of-measure.entity';
 
 @Entity('operations.goods_issuance_items')
 @Index(['goodsIssuanceId'])

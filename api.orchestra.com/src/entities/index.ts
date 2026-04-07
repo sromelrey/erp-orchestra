@@ -22,19 +22,21 @@ export * from './system/tenant.entity';
 export * from './system/plan.entity';
 export * from './system/system-module.entity';
 
-// * Operations
+// * Inventory
 export * from './inventory/material.entity';
+export * from './inventory/item.entity';
+export * from './inventory/item-category.entity';
+export * from './inventory/unit-of-measure.entity';
+export * from './inventory/warehouse.entity';
+export * from './inventory/warehouse-location.entity';
+
+// * Operations
 export * from './operations/bom.entity';
 export * from './operations/bom-item.entity';
 export * from './operations/bom-costing.entity';
 export * from './operations/bom-costing-component.entity';
 export * from './operations/bom-costing-history.entity';
-export * from './operations/item-category.entity';
-export * from './operations/unit-of-measure.entity';
-export * from './operations/item.entity';
 export * from './operations/item-unit.entity';
-export * from './operations/warehouse.entity';
-export * from './operations/warehouse-location.entity';
 export * from './operations/stock-ledger.entity';
 export * from './operations/stock-balance.entity';
 export * from './operations/goods-receipt.entity';
@@ -45,6 +47,8 @@ export * from './operations/stock-adjustment.entity';
 export * from './operations/stock-adjustment-item.entity';
 export * from './operations/stock-transfer.entity';
 export * from './operations/stock-transfer-item.entity';
+export * from './operations/sales-order.entity';
+export * from './operations/sales-order-item.entity';
 
 // * HRIS
 export * from './hris/branch.entity';
