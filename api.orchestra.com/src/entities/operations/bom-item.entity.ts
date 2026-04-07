@@ -1,5 +1,6 @@
 import { Column, Entity, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../common.entity';
+import { Material } from '../inventory/material.entity';
 
 @Entity({ name: 'bom_items', schema: 'operations' })
 @Index(['bomId'], { where: 'deleted_at IS NULL' })
@@ -22,9 +23,9 @@ export class BomItem extends CommonEntity {
   @Index()
   componentMaterialId: number;
 
-  @ManyToOne('Material', 'bomItems', { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Material, 'bomItems', { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'component_material_id' })
-  componentMaterial: any;
+  componentMaterial: Material;
 
   @Column({
     type: 'numeric',

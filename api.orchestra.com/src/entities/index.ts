@@ -49,6 +49,9 @@ export * from './operations/stock-transfer.entity';
 export * from './operations/stock-transfer-item.entity';
 export * from './operations/sales-order.entity';
 export * from './operations/sales-order-item.entity';
+export * from './operations/production-batch.entity';
+export * from './operations/production-work-order.entity';
+export * from './operations/production-consumption.entity';
 
 // * HRIS
 export * from './hris/branch.entity';
