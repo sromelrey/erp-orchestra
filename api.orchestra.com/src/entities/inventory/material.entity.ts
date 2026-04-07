@@ -11,7 +11,7 @@ import { MaterialType } from '@/types/enums';
 
 import { Tenant } from '../system/tenant.entity';
 
-@Entity({ name: 'materials', schema: 'operations' })
+@Entity({ name: 'materials', schema: 'inventory' })
 @Index(['sku'], { unique: true, where: 'deleted_at IS NULL' })
 @Index(['tenantId'], { where: 'deleted_at IS NULL' })
 @Index(['tenantId', 'materialType'], { where: 'deleted_at IS NULL' })

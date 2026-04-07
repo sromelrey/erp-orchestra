@@ -10,8 +10,8 @@ import { CommonEntity } from '../common.entity';
 import { StockAdjustmentType } from '@/types/enums';
 import { StockAdjustmentItem } from './stock-adjustment-item.entity';
 import { Tenant } from '../system/tenant.entity';
-import { Warehouse } from './warehouse.entity';
-import { WarehouseLocation } from './warehouse-location.entity';
+import { Warehouse } from '../inventory/warehouse.entity';
+import { WarehouseLocation } from '../inventory/warehouse-location.entity';
 import { User } from '../system/user.entity';
 
 @Entity({ name: 'stock_adjustments', schema: 'operations' })
@@ -113,9 +113,6 @@ export class StockAdjustment extends CommonEntity {
   @JoinColumn({ name: 'approved_by' })
   approvedByUser?: User;
 
-  @OneToMany(
-    () => StockAdjustmentItem,
-    (item: StockAdjustmentItem) => item.stockAdjustment,
-  )
+  @OneToMany(() => StockAdjustmentItem, 'stockAdjustment')
   items: StockAdjustmentItem[];
 }

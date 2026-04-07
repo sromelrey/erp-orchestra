@@ -15,11 +15,11 @@
 - [x] **Stock Adjustments** - Manual adjustments and write-offs
 - [x] **Stock Transfers** - Between warehouses (create, update, approve, ship, receive)
 
-### 3. Goods Receipt (Stock In) 📋 **PLANNED** (0%)
-- [ ] **Purchase Order Receipt** - Receive raw materials
-- [ ] **Production Receipt** - Receive finished goods from production
-- [ ] **Return Processing** - Handle returned items
-- [ ] **Quality Control** - Inspection and quarantine
+### 3. Goods Receipt (Stock In) ✅ **COMPLETED** (100%)
+- [x] **Purchase Order Receipt** - Receive raw materials
+- [x] **Production Receipt** - Receive finished goods from production
+- [x] **Return Processing** - Handle returned items
+- [x] **Quality Control** - Inspection and quarantine
 
 ### 4. Goods Issuance (Stock Out) ✅ **COMPLETED** (100%)
 - [x] **Issuance Types** - Production, Sales, Transfer, Adjustment
@@ -29,10 +29,16 @@
 - [x] **Batch/Expiry Tracking** - For traceability
 - [x] **Transaction History** - Complete audit trail
 
-### 5. Sales Orders 📋 **PLANNED** (0%)
-- [ ] **Order Creation** - Customer orders
-- [ ] **Stock Allocation** - Reserve inventory
-- [ ] **Order Fulfillment** - Pick, pack, ship
+### 5. Sales Orders ✅ **COMPLETED** (100% Backend, 0% Frontend)
+- [x] **Order Creation** - Customer orders (with customer_name field for flexibility)
+- [x] **Stock Allocation** - Reserve inventory on confirmation
+- [x] **Order Fulfillment** - Confirm, Ship, Deliver workflow
+- [x] **Partial Delivery Support** - Track delivered vs ordered quantities
+- [x] **Order Status Workflow** - DRAFT → CONFIRMED → SHIPPED → DELIVERED (or CANCELLED)
+- [x] **Stock Ledger Integration** - Automatic stock movements on confirm/deliver/cancel
+- [x] **Warehouse & Location Selection** - Per-item warehouse and location specification
+- [x] **Discount & Tax Support** - Line-level and order-level discounts and taxes
+- [x] **Audit Trail** - Approval, shipping, and delivery tracking with user/timestamp
 
 ### 6. Bill of Materials (BOM) ✅ **COMPLETED** (100%)
 - [x] **BOM Definition** - Raw materials needed per finished good
@@ -70,8 +76,8 @@
 | Item Master | ✅ 100% | 🚧 40% | 70% | In Progress | Medium |
 | Inventory Management | ✅ 100% | 📋 0% | 50% | Backend Ready | High |
 | Goods Issuance | ✅ 100% | 📋 0% | 50% | Backend Ready | High |
-| Goods Receipt | 📋 0% | 📋 0% | 0% | Not Started | High |
-| Sales Orders | 📋 0% | 📋 0% | 0% | Not Started | Medium |
+| Goods Receipt | ✅ 100% | 📋 0% | 50% | Backend Ready | High |
+| Sales Orders | ✅ 100% | 📋 0% | 50% | Backend Ready | Medium |
 | BOM | ✅ 100% | 📋 0% | 50% | Backend Ready | Medium |
 | Production | 📋 0% | 📋 0% | 0% | Not Started | Low |
 | User Management | ✅ 100% | ✅ 90% | 95% | Almost Complete | Critical |
@@ -84,39 +90,39 @@
 
 ### Summary by Status
 - **Almost Complete**: User Management (95%)
-- **Backend Ready, UI Pending**: Goods Issuance (50%), BOM (50%), Inventory Management (50%)
+- **Backend Ready, UI Pending**: Goods Receipt (50%), Goods Issuance (50%), BOM (50%), Inventory Management (50%), Sales Orders (50%)
 - **In Progress**: Item Master (70%), Infrastructure (65%)
-- **Not Started**: Goods Receipt (0%), Sales Orders (0%), Production (0%)
+- **Not Started**: Production (0%)
 
 ## Completion Summary
 
-### Backend API (67% Complete)
-- **Fully Completed**: 6 out of 9 modules (Item Master, Inventory Management, Goods Issuance, BOM, User Management, Infrastructure)
+### Backend API (89% Complete)
+- **Fully Completed**: 8 out of 9 modules (Item Master, Inventory Management, Goods Issuance, Goods Receipt, Sales Orders, BOM, User Management, Infrastructure)
 - **In Progress**: 0 modules
-- **Not Started**: 3 modules (Goods Receipt, Sales Orders, Production)
+- **Not Started**: 1 module (Production)
 
 ### Frontend UI (15% Complete)
 - **Fully Completed**: 0 modules
 - **In Progress**: 3 modules (Item Master, User Management, Common Components)
 - **Not Started**: 6 modules
 
-### Overall Project (40% Complete)
+### Overall Project (45% Complete)
 - **Backend Heavy**: Most API endpoints are ready
 - **UI Lagging**: Frontend development needs focus
 - **Next Priority**: Build UI for completed backend modules
 
 ### Modules by Combined Status:
 - 🟢 **Ready for Production**: User Management (95%)
-- 🟡 **Backend Ready, UI Pending**: Goods Issuance (50%), BOM (50%), Inventory Management (50%)
+- 🟡 **Backend Ready, UI Pending**: Goods Receipt (50%), Goods Issuance (50%), BOM (50%), Inventory Management (50%), Sales Orders (50%)
 - 🟠 **Partially Complete**: Item Master (70%), Infrastructure (65%)
-- 🔴 **Not Started**: Goods Receipt (0%), Sales Orders (0%), Production (0%)
+- 🔴 **Not Started**: Production (0%)
 
 ## Next Steps
 
-1. **Priority 1**: Implement Goods Receipt module
-2. **Priority 2**: Develop Sales Order management
-3. **Priority 3**: Build Production module (BOM is already complete!)
-4. **Priority 4**: Build UI for completed backend modules
+1. **Priority 1**: Build Production module (BOM is already complete!)
+2. **Priority 2**: Build UI for completed backend modules (Sales Orders, Goods Receipt, Goods Issuance, BOM, Inventory Management)
+3. **Priority 3**: Address Stock Ledger balance_after column TODO
+4. **Priority 4**: Add automated tests for all modules
 
 ## Technical Debt & Improvements
 
@@ -211,26 +217,60 @@ CREATE TABLE stock_movements (
 CREATE TABLE sales_orders (
     id SERIAL PRIMARY KEY,
     order_no VARCHAR(50) UNIQUE NOT NULL,
-    customer_id INTEGER NOT NULL,
+    customer_id INTEGER,
+    customer_name VARCHAR(255) NOT NULL,
     order_date DATE NOT NULL,
     delivery_date DATE,
-    status VARCHAR(20) DEFAULT 'DRAFT', -- 'DRAFT' | 'CONFIRMED' | 'SHIPPED' | 'CANCELLED'
-    total_amount DECIMAL(12,2),
+    status VARCHAR(20) DEFAULT 'DRAFT', -- 'DRAFT' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
+    total_amount DECIMAL(12,2) DEFAULT 0,
+    discount_amount DECIMAL(12,2) DEFAULT 0,
+    tax_amount DECIMAL(12,2) DEFAULT 0,
+    final_amount DECIMAL(12,2) DEFAULT 0,
     notes TEXT,
+    approved_by INTEGER,
+    approved_at TIMESTAMP,
+    shipped_at TIMESTAMP,
+    shipped_by INTEGER,
+    delivered_at TIMESTAMP,
+    delivered_by INTEGER,
+    created_by INTEGER,
+    updated_by INTEGER,
+    deleted_by INTEGER,
     tenant_id INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE sales_order_items (
     id SERIAL PRIMARY KEY,
     sales_order_id INTEGER NOT NULL,
     item_id INTEGER NOT NULL,
+    item_code VARCHAR(50) NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
     quantity DECIMAL(15,6) NOT NULL,
+    unit_of_measure_id INTEGER NOT NULL,
+    unit_of_measure_code VARCHAR(20) NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
     discount_percent DECIMAL(5,2) DEFAULT 0,
-    line_total DECIMAL(12,2),
+    discount_amount DECIMAL(12,2) DEFAULT 0,
+    tax_percent DECIMAL(5,2) DEFAULT 0,
+    tax_amount DECIMAL(12,2) DEFAULT 0,
+    line_total DECIMAL(12,2) NOT NULL,
     delivered_quantity DECIMAL(15,6) DEFAULT 0,
-    tenant_id INTEGER NOT NULL
+    allocated_quantity DECIMAL(15,6) DEFAULT 0,
+    warehouse_id INTEGER NOT NULL,
+    warehouse_name VARCHAR(255) NOT NULL,
+    location_id INTEGER NOT NULL,
+    location_name VARCHAR(255) NOT NULL,
+    notes TEXT,
+    created_by INTEGER,
+    updated_by INTEGER,
+    deleted_by INTEGER,
+    tenant_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
+    deleted_at TIMESTAMP
 );
 
 CREATE TABLE bom (
@@ -276,7 +316,43 @@ CREATE TABLE production_consumption (
     actual_quantity DECIMAL(15,6),
     tenant_id INTEGER NOT NULL
 );
-```
+
+## Sales Order API Endpoints
+
+The Sales Order module provides the following REST API endpoints:
+
+### Order Management
+- `POST /v1/ops/sales-orders` - Create new sales order (DRAFT status)
+- `GET /v1/ops/sales-orders` - List all sales orders with filters and pagination
+- `GET /v1/ops/sales-orders/:id` - Get sales order details
+- `PATCH /v1/ops/sales-orders/:id` - Update sales order (DRAFT only)
+- `DELETE /v1/ops/sales-orders/:id` - Delete sales order (DRAFT only, soft delete)
+
+### Order Workflow
+- `POST /v1/ops/sales-orders/:id/confirm` - Confirm order and allocate stock
+- `POST /v1/ops/sales-orders/:id/ship` - Ship order
+- `POST /v1/ops/sales-orders/:id/deliver` - Deliver items (supports partial delivery)
+- `POST /v1/ops/sales-orders/:id/cancel` - Cancel order (releases allocated stock)
+
+### Query Parameters (for GET /v1/ops/sales-orders)
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 20)
+- `status` - Filter by status (DRAFT, CONFIRMED, SHIPPED, DELIVERED, CANCELLED)
+- `customerName` - Filter by customer name (partial match)
+- `orderNo` - Filter by order number (partial match)
+- `orderDateFrom` - Filter by order date range (start)
+- `orderDateTo` - Filter by order date range (end)
+- `sortBy` - Sort field (default: createdAt)
+- `sortOrder` - Sort order (ASC or DESC, default: DESC)
+
+### Key Features
+- **Automatic Order Numbering**: Generates format `SO-{YYYY}-{sequence}`
+- **Stock Ledger Integration**: Creates stock ledger entries on confirm/deliver/cancel
+- **Partial Delivery**: Supports delivering items in multiple shipments
+- **Denormalized Data**: Stores item, warehouse, and location names for performance
+- **Discount & Tax**: Line-level and order-level discount and tax calculation
+- **Audit Trail**: Tracks who approved, shipped, and delivered orders
+- **Flexible Customer**: customer_id is nullable, customer_name is required
 
 ## 🚀 Build Plan
 
@@ -292,11 +368,14 @@ CREATE TABLE production_consumption (
    - Update stock on receipt
    - Generate stock movements
 
-3. **Sales Orders UI**
-   - Create SO form page
-   - Add stock validation/check
-   - Implement stock reservation
-   - Order status workflow
+3. **Sales Orders UI** (Backend Complete)
+   - Create SO form page with customer selection
+   - Add stock validation/check during confirmation
+   - Implement stock reservation on confirm
+   - Order status workflow (DRAFT → CONFIRMED → SHIPPED → DELIVERED)
+   - Partial delivery support
+   - Warehouse and location selection per item
+   - Discount and tax calculation
 
 ### Phase 2: Production Foundation (Week 3-4)
 1. **Bill of Materials UI**

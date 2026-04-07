@@ -9,8 +9,7 @@ import {
 import { CommonEntity } from '../common.entity';
 import { StockTransferItem } from './stock-transfer-item.entity';
 import { Tenant } from '../system/tenant.entity';
-import { Warehouse } from './warehouse.entity';
-import { WarehouseLocation } from './warehouse-location.entity';
+import { Warehouse, WarehouseLocation } from '@/entities';
 import { User } from '../system/user.entity';
 
 @Entity({ name: 'stock_transfers', schema: 'operations' })
@@ -125,9 +124,6 @@ export class StockTransfer extends CommonEntity {
   @JoinColumn({ name: 'received_by' })
   receivedByUser?: User;
 
-  @OneToMany(
-    () => StockTransferItem,
-    (item: StockTransferItem) => item.stockTransfer,
-  )
+  @OneToMany(() => StockTransferItem, 'stockTransfer')
   items: StockTransferItem[];
 }

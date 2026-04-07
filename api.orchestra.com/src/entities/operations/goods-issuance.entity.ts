@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { CommonEntity } from '@/entities/common.entity';
 import { GoodsIssuanceItem } from './goods-issuance-item.entity';
-import { Warehouse } from './warehouse.entity';
-import { WarehouseLocation } from './warehouse-location.entity';
+import { Warehouse } from '../inventory/warehouse.entity';
+import { WarehouseLocation } from '../inventory/warehouse-location.entity';
 
 export enum GoodsIssuanceType {
   PRODUCTION = 'PRODUCTION',

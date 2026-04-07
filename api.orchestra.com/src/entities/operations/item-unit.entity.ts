@@ -1,8 +1,8 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Tenant } from '../system/tenant.entity';
-import { Item } from './item.entity';
-import { UnitOfMeasure } from './unit-of-measure.entity';
+import { Item } from '../inventory/item.entity';
+import { UnitOfMeasure } from '../inventory/unit-of-measure.entity';
 
 @Entity({ name: 'item_units', schema: 'operations' })
 @Index(['itemId', 'uomId'], { unique: true, where: 'deleted_at IS NULL' })

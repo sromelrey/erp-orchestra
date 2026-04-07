@@ -10,7 +10,7 @@ import { CommonEntity } from '../common.entity';
 import { Tenant } from '../system/tenant.entity';
 import { Warehouse } from './warehouse.entity';
 
-@Entity({ name: 'warehouse_locations', schema: 'operations' })
+@Entity({ name: 'warehouse_locations', schema: 'inventory' })
 @Index(['tenantId'], { where: 'deleted_at IS NULL' })
 export class WarehouseLocation extends CommonEntity {
   @Column({ name: 'tenant_id', type: 'int' })

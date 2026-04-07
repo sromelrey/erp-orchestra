@@ -1,10 +1,10 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { Tenant } from '../system/tenant.entity';
-import { Warehouse } from './warehouse.entity';
-import { WarehouseLocation } from './warehouse-location.entity';
-import { Item } from './item.entity';
-import { UnitOfMeasure } from './unit-of-measure.entity';
+import { Warehouse } from '../inventory/warehouse.entity';
+import { WarehouseLocation } from '../inventory/warehouse-location.entity';
+import { Item } from '../inventory/item.entity';
+import { UnitOfMeasure } from '../inventory/unit-of-measure.entity';
 import { StockMovementType } from '@/types/enums';
 
 @Entity({ name: 'stock_ledger', schema: 'operations' })
