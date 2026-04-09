@@ -4,6 +4,7 @@ import { locationsEndpoints } from './locationsApi';
 import { usersEndpoints } from './usersApi';
 import { stockLedgerEndpoints } from './stockLedgerApi';
 import { itemsEndpoints } from './itemsApi';
+import { salesOrdersEndpoints } from './salesOrdersApi';
 
 // Inject the feature-specific endpoints
 export const api = baseApi
@@ -11,7 +12,8 @@ export const api = baseApi
   .injectEndpoints({ endpoints: locationsEndpoints })
   .injectEndpoints({ endpoints: usersEndpoints })
   .injectEndpoints({ endpoints: stockLedgerEndpoints })
-  .injectEndpoints({ endpoints: itemsEndpoints });
+  .injectEndpoints({ endpoints: itemsEndpoints })
+  .injectEndpoints({ endpoints: salesOrdersEndpoints });
 
 // Export hooks for each API
 export const warehousesHooks = api.endpoints;
@@ -53,6 +55,17 @@ export const useGetItemCategoriesQuery = api.useGetItemCategoriesQuery;
 export const useCreateItemCategoryMutation = api.useCreateItemCategoryMutation;
 export const useGetItemUomsQuery = api.useGetItemUomsQuery;
 export const useCreateItemUomMutation = api.useCreateItemUomMutation;
+
+// Sales Orders hooks
+export const useGetSalesOrdersQuery = api.useGetSalesOrdersQuery;
+export const useGetSalesOrderByIdQuery = api.useGetSalesOrderByIdQuery;
+export const useCreateSalesOrderMutation = api.useCreateSalesOrderMutation;
+export const useUpdateSalesOrderMutation = api.useUpdateSalesOrderMutation;
+export const useDeleteSalesOrderMutation = api.useDeleteSalesOrderMutation;
+export const useConfirmSalesOrderMutation = api.useConfirmSalesOrderMutation;
+export const useShipSalesOrderMutation = api.useShipSalesOrderMutation;
+export const useDeliverSalesOrderMutation = api.useDeliverSalesOrderMutation;
+export const useCancelSalesOrderMutation = api.useCancelSalesOrderMutation;
 
 // Re-export other APIs as needed
 export { materialsApi } from './materialsApi';

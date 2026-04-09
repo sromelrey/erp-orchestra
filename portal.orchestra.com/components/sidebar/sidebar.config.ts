@@ -7,9 +7,6 @@ import {
   KeyRound,
   Activity,
   UserPlus,
-} from 'lucide-react';
-import { MenuItem } from './sidebar.types';
-import {
   Building2,
   Briefcase,
   MapPin,
@@ -20,7 +17,11 @@ import {
   Settings,
   Package,
   Truck,
+  Warehouse,
+  Book,
+  ShoppingCart,
 } from 'lucide-react';
+import { MenuItem } from './sidebar.types';
 
 export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
   {
@@ -199,33 +200,37 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
   },
   {
     label: 'Operations',
-    icon: Package,
-    description: 'Manage inventory and operations',
-    menu_code: 'CP-06',
+    icon: Settings,
+    menu_code: 'OPS',
+    permission: 'operations.view',
     children: [
-      {
-        label: 'Materials',
-        href: '/operations/materials',
-        icon: Package,
-        description: 'Manage raw materials and finished goods',
-        menu_code: 'CP-06-01',
-        permission: 'operations.materials.view',
-      },
       {
         label: 'Warehouses',
         href: '/operations/warehouses',
-        icon: Building2,
-        description: 'Manage warehouse locations and capacity',
-        menu_code: 'CP-06-02',
-        permission: 'operations.warehouse.manage',
+        icon: Warehouse,
+        menu_code: 'CP-06-01',
+        permission: 'operations.warehouses.view',
       },
       {
         label: 'Stock Ledger',
         href: '/operations/stock-ledger',
-        icon: Truck,
-        description: 'Track stock movements',
+        icon: Book,
+        menu_code: 'CP-06-02',
+        permission: 'operations.stock-ledger.view',
+      },
+      {
+        label: 'Materials',
+        href: '/operations/materials',
+        icon: Package,
+        menu_code: 'CP-06-03',
+        permission: 'operations.materials.view',
+      },
+      {
+        label: 'Sales Orders',
+        href: '/operations/sales-orders',
+        icon: ShoppingCart,
         menu_code: 'CP-06-04',
-        permission: 'operations.stock.view',
+        permission: 'operations.sales-order.view',
       },
     ],
   },

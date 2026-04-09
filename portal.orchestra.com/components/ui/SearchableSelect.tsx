@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsUpDown, Search, X } from 'lucide-react';
+import { Check, ChevronsUpDown, Search, X, Loader2 } from 'lucide-react';
 import { Command } from 'cmdk';
 import * as Popover from '@radix-ui/react-popover';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,7 @@ interface SearchableSelectProps {
   onValueChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  isLoading?: boolean;
   className?: string;
 }
 
@@ -27,6 +28,7 @@ export function SearchableSelect({
   onValueChange,
   placeholder = 'Select an option...',
   disabled = false,
+  isLoading = false,
   className,
 }: SearchableSelectProps) {
   const [open, setOpen] = React.useState(false);
@@ -40,16 +42,20 @@ export function SearchableSelect({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          disabled={disabled}
+          disabled={disabled || isLoading}
           className={cn(
             'w-full h-11 justify-between rounded-xl bg-white/50 border-input shadow-sm transition-all duration-200 hover:bg-white hover:border-gray-300 focus:ring-2 focus:ring-ring focus:ring-offset-2 font-normal',
             !value && 'text-muted-foreground',
-            disabled && 'bg-gray-50 text-gray-500 opacity-100 cursor-not-allowed',
+            (disabled || isLoading) && 'bg-gray-50 text-gray-500 opacity-100 cursor-not-allowed',
             className
           )}
         >
           <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          {isLoading ? (
+            <Loader2 className="ml-2 h-4 w-4 shrink-0 animate-spin" />
+          ) : (
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          )}
         </Button>
       </Popover.Trigger>
       <Popover.Portal>

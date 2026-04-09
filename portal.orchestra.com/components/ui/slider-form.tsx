@@ -22,12 +22,14 @@ interface SliderFormProps {
   onSubmit?: () => void;
   onCancel?: () => void;
   isLoading?: boolean;
+  isProcessing?: boolean; // For workflow action processing (locks form)
   submitLabel?: string;
   cancelLabel?: string;
   className?: string;
+  header?: React.ReactNode;
   footer?: React.ReactNode;
   side?: 'top' | 'bottom' | 'left' | 'right';
-  width?: string;
+  width?: string; // Can be percentage like "60%" or fixed like "xl"
 }
 
 export function SliderForm({
@@ -39,9 +41,11 @@ export function SliderForm({
   onSubmit,
   onCancel,
   isLoading = false,
+  isProcessing = false,
   submitLabel = 'Save',
   cancelLabel = 'Cancel',
   className,
+  header,
   footer,
   side = 'right',
   width,
@@ -53,20 +57,34 @@ export function SliderForm({
     onOpenChange(false);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (isProcessing) return;
+    onOpenChange(open);
+  };
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent
         side={side}
         className={cn(
-          'w-full sm:max-w-md flex flex-col h-full',
-          width && `sm:max-w-[${width}]`,
+          'w-full flex flex-col h-full',
+          // Handle percentage-based widths
+          width && !width.includes('%') ? `sm:max-w-[${width}]` : 'sm:max-w-md',
+          width && width.includes('%') ? 'max-w-none!' : '',
           className
         )}
+        style={width && width.includes('%') ? { width: width } : undefined}
       >
         <SheetHeader className="pb-4">
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
+
+        {header && (
+          <div className="px-6 pb-4">
+            {header}
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto py-4">{children}</div>
 

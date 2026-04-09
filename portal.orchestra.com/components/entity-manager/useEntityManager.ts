@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { EntityManagerProps, FormMode } from './types';
+import { toast } from '@/lib/toast';
 
-export function useEntityManager<T>({
+export function useEntityManager<T extends Record<string, unknown>>({
   data,
   entityName,
   entityNamePlural,
@@ -13,6 +14,10 @@ export function useEntityManager<T>({
   onUpdate,
   onDelete,
   onView,
+  onFormOpen,
+  optimisticUpdates,
+  isRowEditable,
+  isRowDeletable,
 }: EntityManagerProps<T>) {
   const [searchQuery, setSearchQuery] = useState('');
   const [formMode, setFormMode] = useState<FormMode | null>(null);
@@ -21,6 +26,18 @@ export function useEntityManager<T>({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const plural = entityNamePlural || `${entityName}s`;
+
+  // Sync form data with optimistic updates when form is open
+  useEffect(() => {
+    if (!formMode || !selectedItem) return;
+
+    const itemId = keyExtractor(selectedItem);
+    const optimisticUpdate = optimisticUpdates?.get(itemId);
+
+    if (optimisticUpdate) {
+      setFormData((prev) => ({ ...prev, ...optimisticUpdate }));
+    }
+  }, [optimisticUpdates, formMode, selectedItem, keyExtractor]);
 
   // Filter data based on search
   const filteredData = useMemo(() => {
@@ -53,16 +70,32 @@ export function useEntityManager<T>({
     }
     setFormMode('view');
     setSelectedItem(item);
-    setFormData(item);
+    // Apply optimistic updates to form data
+    const optimisticUpdate = optimisticUpdates?.get(keyExtractor(item));
+    setFormData(optimisticUpdate ? { ...item, ...optimisticUpdate } : item);
+    onFormOpen?.(item);
   };
 
   const handleEdit = (item: T) => {
+    if (isRowEditable && !isRowEditable(item)) {
+      // If not editable, treat as view mode instead
+      handleView(item);
+      toast.info('Order is in read-only mode');
+      return;
+    }
     setFormMode('edit');
     setSelectedItem(item);
-    setFormData(item);
+    // Apply optimistic updates to form data
+    const optimisticUpdate = optimisticUpdates?.get(keyExtractor(item));
+    setFormData(optimisticUpdate ? { ...item, ...optimisticUpdate } : item);
+    onFormOpen?.(item);
   };
 
   const handleDelete = async (item: T) => {
+    if (isRowDeletable && !isRowDeletable(item)) {
+      toast.warning('Only DRAFT orders can be deleted');
+      return;
+    }
     if (onDelete) {
       const id = keyExtractor(item);
       await onDelete(id);
@@ -129,7 +162,7 @@ export function useEntityManager<T>({
     }
   };
 
-  const handleFieldChange = (name: string, value: string | number | boolean) => {
+  const handleFieldChange = (name: string, value: string | number | boolean | unknown[]) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
