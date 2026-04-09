@@ -10,7 +10,8 @@ export type FormFieldType =
   | 'date'
   | 'password'
   | 'checkbox'
-  | 'custom';
+  | 'custom'
+  | 'nested-array';
 
 export interface FormFieldOption {
   label: string;
@@ -40,6 +41,23 @@ export interface FormField {
   // For dependent fields
   dependsOn?: string; // Field name this field depends on
   getOptions?: (dependencyValue: string | number | boolean) => Promise<FormFieldOption[]> | FormFieldOption[];
+  // For nested array fields (like items in a sales order)
+  nestedArrayConfig?: {
+    columns: Array<{
+      key: string;
+      label: string;
+      type: 'text' | 'number' | 'select';
+      options?: FormFieldOption[];
+      required?: boolean;
+      width?: 'full' | 'half';
+      // For dependent columns within nested arrays
+      dependsOn?: string; // Column key this column depends on
+      getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
+    }>;
+    itemLabel?: string; // e.g., "Item"
+    itemsLabel?: string; // e.g., "Items"
+    emptyMessage?: string;
+  };
 }
 
 export interface StatCard {
@@ -71,11 +89,15 @@ export interface EntityManagerProps<T> {
   onUpdate?: (id: string | number, data: Partial<T>) => void | Promise<void>;
   onDelete?: (id: string | number) => void | Promise<void>;
   onView?: (item: T) => void;
+  onFormOpen?: (item: T) => void; // Called when form opens with an item
+  onFormClose?: () => void; // Called when form is closed
 
   // Optional customization
   searchPlaceholder?: string;
   emptyMessage?: string;
-  isLoading?: boolean;
+  isLoading?: boolean; // For initial data fetch
+  isMutating?: boolean; // For create/update/delete mutations
+  isProcessing?: boolean; // For workflow action processing (locks form)
   error?: string | null;
 
   // Stats cards (optional)
@@ -85,6 +107,10 @@ export interface EntityManagerProps<T> {
   showViewButton?: boolean;
   showEditButton?: boolean;
   showDeleteButton?: boolean;
+
+  // Row-level edit/delete control
+  isRowEditable?: (item: T) => boolean;
+  isRowDeletable?: (item: T) => boolean;
 
   // Expandable row support
   expandedRow?: (item: T) => React.ReactNode;
@@ -100,4 +126,41 @@ export interface EntityManagerProps<T> {
     delete?: string;
     view?: string;
   };
+
+  // Workflow actions (optional)
+  workflowActions?: WorkflowAction<T>[];
+
+  // Optimistic updates (optional)
+  optimisticUpdates?: Map<string | number, Partial<T>>;
+
+  // Custom header for form (optional)
+  header?: (formData: Partial<T> | Record<string, unknown>) => React.ReactNode;
+
+  // Form customization
+  formWidth?: string; // Can be percentage like "60%" or fixed like "lg"
 }
+
+/**
+ * Workflow action definition for use in EntityManager
+ * @template TItem - The entity item type
+ */
+export type WorkflowAction<TItem> = {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  onClick: (item: TItem) => void | Promise<void>;
+  permission?: string;
+  isVisible?: (item: TItem) => boolean;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  isLoading?: boolean;
+  isDisabled?: boolean;
+  disabledReason?: string;
+  requiresConfirmation?: boolean;
+  confirmationMessage?: string | ((item: TItem) => string);
+  // 🔹 Enhancement: Structured confirmation config for custom dialog
+  confirm?: {
+    title: string | ((item: TItem) => string);
+    description: string | ((item: TItem) => string);
+    variant?: 'default' | 'destructive';
+    confirmLabel?: string;
+  };
+};

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { Plus, Search, Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Plus, Search, Loader2, Eye, Edit, Trash2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DataTable, Column } from '@/components/ui/data-table';
@@ -10,26 +10,50 @@ import { FormRenderer } from './FormRenderer';
 import { EntityManagerProps } from './types';
 import { useEntityManager } from './useEntityManager';
 import { HasPermission } from '@/components/auth/HasPermission';
+import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
+import { Badge } from '@/components/ui/badge';
 
-function EntityManager<T>(props: EntityManagerProps<T>) {
+function EntityManager<T extends Record<string, unknown>>(props: EntityManagerProps<T>) {
   const {
     columns,
     entityName,
+    entityNamePlural,
     formFields,
     searchPlaceholder,
     emptyMessage,
     isLoading = false,
+    isMutating = false,
+    isProcessing = false,
     error,
     stats,
     onCreate,
     onDelete,
+    onUpdate,
+    onView,
+    onFormClose,
     keyExtractor,
     showViewButton = true,
     showEditButton = true,
     showDeleteButton = true,
+    isRowEditable,
+    isRowDeletable,
     expandedRow,
+    formWidth = 'lg',
     permissions,
+    workflowActions,
+    optimisticUpdates,
+    header,
   } = props;
+
+  // Confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    title: string;
+    description: string;
+    variant: 'default' | 'destructive';
+    confirmLabel: string;
+    onConfirm: () => void | Promise<void>;
+  } | null>(null);
 
   const {
     searchQuery,
@@ -48,7 +72,10 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
     handleView,
     handleEdit,
     handleDelete,
-  } = useEntityManager(props);
+  } = useEntityManager({
+    ...props,
+    optimisticUpdates,
+  });
 
   // Build columns with action buttons
   const columnsWithActions: Column<T>[] = useMemo(() => {
@@ -60,46 +87,51 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
       {
         header: 'Actions',
         className: 'text-right',
-        cell: (item: T) => (
-          <div className="flex items-center justify-end gap-2">
-            {showViewButton && (
-              <HasPermission permission={permissions?.view}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handleView(item)}
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-              </HasPermission>
-            )}
-            {showEditButton && (
-              <HasPermission permission={permissions?.update}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handleEdit(item)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </HasPermission>
-            )}
-            {showDeleteButton && onDelete && (
-              <HasPermission permission={permissions?.delete}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={() => handleDelete(item)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </HasPermission>
-            )}
-          </div>
-        ),
+        cell: (item: T) => {
+          const canEdit = isRowEditable ? isRowEditable(item) : true;
+          const canDelete = isRowDeletable ? isRowDeletable(item) : true;
+
+          return (
+            <div className="flex items-center justify-end gap-2">
+              {showViewButton && (
+                <HasPermission permission={permissions?.view}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => handleView(item)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                </HasPermission>
+              )}
+              {showEditButton && canEdit && (
+                <HasPermission permission={permissions?.update}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </HasPermission>
+              )}
+              {showDeleteButton && onDelete && canDelete && (
+                <HasPermission permission={permissions?.delete}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => handleDelete(item)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </HasPermission>
+              )}
+            </div>
+          );
+        },
       },
     ];
   }, [
@@ -114,6 +146,8 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
     permissions?.delete,
     permissions?.update,
     permissions?.view,
+    isRowEditable,
+    isRowDeletable,
   ]);
 
   return (
@@ -152,27 +186,140 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
       {/* Slider Form */}
       <SliderForm
         open={formMode !== null}
-        onOpenChange={(open) => !open && setFormMode(null)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setFormMode(null);
+            onFormClose?.();
+          }
+        }}
         title={formTitle}
         description={formDescription}
         onSubmit={formMode !== 'view' ? handleFormSubmit : undefined}
         isLoading={isSubmitting}
+        isProcessing={isProcessing}
         submitLabel={formMode === 'create' ? `Create ${entityName}` : `Save Changes`}
-        // Only show footer buttons if not in view mode
-        footer={formMode === 'view' ? <div /> : undefined}
+        width={formWidth}
+        header={
+          (formMode === 'view' || formMode === 'edit') ? (
+            <div className="space-y-3 pt-3">
+              {/* Read-only badge */}
+              {formMode === 'view' && (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="gap-1">
+                    <Lock className="h-3 w-3" />
+                    Read-only mode
+                  </Badge>
+                </div>
+              )}
+              {/* Custom Header */}
+              {header && header(formData)}
+
+              {/* Workflow Actions */}
+              {workflowActions && workflowActions.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {workflowActions.map((action, index) => {
+                    const isVisible = action.isVisible ? action.isVisible(formData as T) : true;
+                    if (!isVisible) return null;
+                    return (
+                      <HasPermission key={index} permission={action.permission}>
+                        <Button
+                          variant={action.variant || 'default'}
+                          size="sm"
+                          onClick={() => {
+                            // 🔹 Enhancement: Handle confirmation with custom dialog
+                            if (action.confirm) {
+                              const title = typeof action.confirm.title === 'function'
+                                ? action.confirm.title(formData as T)
+                                : action.confirm.title;
+                              const description = typeof action.confirm.description === 'function'
+                                ? action.confirm.description(formData as T)
+                                : action.confirm.description;
+                              const variant: 'default' | 'destructive' = action.confirm.variant || (action.variant === 'destructive' ? 'destructive' : 'default');
+                              const confirmLabel = action.confirm.confirmLabel || action.label;
+
+                              setConfirmDialog({
+                                open: true,
+                                title,
+                                description,
+                                variant,
+                                confirmLabel,
+                                onConfirm: async () => {
+                                  setConfirmDialog(null);
+                                  await action.onClick(formData as T);
+                                },
+                              });
+                            } else if (action.requiresConfirmation) {
+                              const message = typeof action.confirmationMessage === 'function'
+                                ? action.confirmationMessage(formData as T)
+                                : action.confirmationMessage || `Are you sure you want to ${action.label.toLowerCase()}?`;
+                              if (window.confirm(message)) {
+                                action.onClick(formData as T);
+                              }
+                            } else {
+                              action.onClick(formData as T);
+                            }
+                          }}
+                          className="gap-2"
+                          disabled={action.isLoading || action.isDisabled || isProcessing}
+                          title={action.disabledReason || (isProcessing ? 'Processing...' : undefined)}
+                        >
+                          {action.isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <action.icon className="h-4 w-4" />
+                          )}
+                          {action.label}
+                        </Button>
+                      </HasPermission>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ) : undefined
+        }
       >
-        <div className="grid gap-4 py-4 px-6">
-          <FormRenderer
-            fields={formFields}
-            formData={formData as Record<string, string | number | boolean | undefined>}
-            formMode={formMode}
-            onFieldChange={handleFieldChange}
-          />
+        <div className="relative">
+          {/* Processing Overlay */}
+          {isProcessing && (
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-20">
+              <Loader2 className="h-6 w-6 animate-spin mb-2" />
+              <p className="text-sm text-muted-foreground">
+                Processing...
+              </p>
+            </div>
+          )}
+          <div className="grid gap-4 py-4 px-6">
+            <FormRenderer
+              fields={formMode === 'view' || formMode === 'edit' 
+                ? formFields.filter(field => field.name !== 'status') 
+                : formFields}
+              formData={formData as Record<string, string | number | boolean | undefined>}
+              formMode={formMode}
+              onFieldChange={handleFieldChange}
+              isProcessing={isProcessing}
+            />
+          </div>
         </div>
       </SliderForm>
 
-      {/* Loading State */}
-      {isLoading && (
+      {/* Confirmation Dialog */}
+      {confirmDialog && (
+        <ConfirmationDialog
+          open={confirmDialog.open}
+          onOpenChange={(open) => {
+            if (!open) setConfirmDialog(null);
+          }}
+          title={confirmDialog.title}
+          description={confirmDialog.description}
+          variant={confirmDialog.variant}
+          confirmLabel={confirmDialog.confirmLabel}
+          onConfirm={confirmDialog.onConfirm}
+        />
+      )}
+
+      {/* Loading State - only show full loader when initial loading with no data */}
+      {isLoading && filteredData.length === 0 && (
         <div className="flex justify-center p-12">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
@@ -187,7 +334,7 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
       )}
 
       {/* Stats Cards */}
-      {!isLoading && !error && stats && stats.length > 0 && (
+      {!error && stats && stats.length > 0 && (
         <div className="grid gap-4 md:grid-cols-4">
           {stats.map((stat, index) => (
             <div key={index} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">
@@ -207,16 +354,23 @@ function EntityManager<T>(props: EntityManagerProps<T>) {
         </div>
       )}
 
-      {/* Data Table */}
-      {!isLoading && !error && (
-        <DataTable
-          columns={columnsWithActions}
-          data={filteredData}
-          keyExtractor={keyExtractor}
-          emptyMessage={emptyMessage || `No ${plural.toLowerCase()} found`}
-          expandedRow={expandedRow}
-        />
-      )}
+      {/* Data Table with overlay loader for mutations */}
+      <div className="relative">
+        {isMutating && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50 backdrop-blur-sm rounded-lg">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        )}
+        {!error && (
+          <DataTable
+            columns={columnsWithActions}
+            data={filteredData}
+            keyExtractor={keyExtractor}
+            emptyMessage={emptyMessage || `No ${plural.toLowerCase()} found`}
+            expandedRow={expandedRow}
+          />
+        )}
+      </div>
     </div>
   );
 }

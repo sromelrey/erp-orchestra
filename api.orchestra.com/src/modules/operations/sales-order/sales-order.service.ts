@@ -436,17 +436,18 @@ export class SalesOrderService {
           );
         }
 
-        if (
-          orderItem.deliveredQuantity + deliveredItem.deliveredQuantity >
-          orderItem.quantity
-        ) {
+        const currentDelivered = Number(orderItem.deliveredQuantity);
+        const newDelivered = currentDelivered + deliveredItem.deliveredQuantity;
+        const orderedQuantity = Number(orderItem.quantity);
+
+        if (newDelivered > orderedQuantity) {
           throw new BadRequestException(
             `Delivered quantity exceeds ordered quantity for item ${orderItem.itemName}`,
           );
         }
 
         // Update delivered quantity
-        orderItem.deliveredQuantity += deliveredItem.deliveredQuantity;
+        orderItem.deliveredQuantity = newDelivered;
         await queryRunner.manager.save(orderItem);
 
         // Create stock ledger entry
@@ -466,7 +467,7 @@ export class SalesOrderService {
         await queryRunner.manager.save(ledgerEntry);
 
         // Check if all items are delivered
-        if (orderItem.deliveredQuantity < orderItem.quantity) {
+        if (Number(orderItem.deliveredQuantity) < Number(orderItem.quantity)) {
           allDelivered = false;
         }
       }

@@ -4,17 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SearchableSelect } from '@/components/ui/SearchableSelect';
-import { FormField, FormMode } from './types';
+import { FormField, FormMode, FormFieldOption } from './types';
 import { cn } from '@/lib/utils';
+import { NestedArrayField } from './NestedArrayField';
 
 interface FormRendererProps {
   fields: FormField[];
-  formData: Record<string, string | number | boolean | undefined>;
+  formData: Record<string, string | number | boolean | undefined | unknown[]>;
   formMode: FormMode | null;
-  onFieldChange: (name: string, value: string | number | boolean) => void;
+  onFieldChange: (name: string, value: string | number | boolean | unknown[]) => void;
+  isProcessing?: boolean; // For workflow action processing (locks form)
 }
 
-export function FormRenderer({ fields, formData, formMode, onFieldChange }: FormRendererProps) {
+export function FormRenderer({ fields, formData, formMode, onFieldChange, isProcessing = false }: FormRendererProps) {
   const [dependentOptions, setDependentOptions] = useState<Record<string, FormFieldOption[]>>({});
   const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({});
 
@@ -23,10 +25,11 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
     fields.forEach(field => {
       if (field.dependsOn && field.getOptions) {
         const dependencyValue = formData[field.dependsOn];
-        if (dependencyValue !== undefined && dependencyValue !== '') {
+        if (dependencyValue !== undefined && dependencyValue !== '' && !Array.isArray(dependencyValue)) {
+          const typedValue = dependencyValue as string | number | boolean;
           setLoadingFields(prev => ({ ...prev, [field.name]: true }));
           
-          const optionsPromise = field.getOptions(dependencyValue);
+          const optionsPromise = field.getOptions(typedValue);
           if (optionsPromise instanceof Promise) {
             optionsPromise.then(options => {
               setDependentOptions(prev => ({ ...prev, [field.name]: options }));
@@ -47,9 +50,26 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
   }, [fields, formData]);
   const renderField = (field: FormField) => {
     const value = formData[field.name] ?? (field.type === 'checkbox' ? field.defaultValue : '');
-    const isDisabled = formMode === 'view' || field.disabled;
+    const isDisabled = formMode === 'view' || field.disabled || isProcessing;
+    // Skip array fields for non-nested-array types
+    if (field.type !== 'nested-array' && Array.isArray(value)) {
+      return null;
+    }
 
     switch (field.type) {
+      case 'nested-array':
+        const arrayValue = Array.isArray(value) ? value : [];
+        return (
+          <div className="col-span-full">
+            <NestedArrayField
+              value={arrayValue}
+              onChange={(items: unknown[]) => onFieldChange(field.name, items)}
+              field={field}
+              isDisabled={isDisabled || false}
+              formMode={formMode}
+            />
+          </div>
+        );
       case 'custom':
         // @ts-expect-error - Custom render function
         return field.render ? field.render({ value, onChange: (val: string | number | boolean) => onFieldChange(field.name, val), formData, field, isDisabled }) : null;
@@ -62,6 +82,7 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
             value={String(value || field.defaultValue || '')}
             onValueChange={(val) => onFieldChange(field.name, val)}
             disabled={isDisabled || isLoading}
+            isLoading={isLoading}
             placeholder={isLoading ? "Loading..." : (field.placeholder || 'Select an option...')}
           />
         );
@@ -98,8 +119,8 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
         );
       default:
         // For non-checkbox fields, ensure value is string or number
-        // Exclude boolean values as they should only be handled by checkbox fields
-        if (typeof value === 'boolean') {
+        // Exclude boolean and array values as they should be handled by specific field types
+        if (typeof value === 'boolean' || Array.isArray(value)) {
           return null;
         }
         const inputValue = field.type === 'number' ? (value || '') : String(value || '');
@@ -154,18 +175,24 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange }: Form
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {fields.map((field) => (
         <div
           key={field.name}
-          className={cn('grid gap-2', field.width === 'half' ? 'col-span-1' : 'col-span-2')}
+          className={cn(
+            'grid gap-2',
+            field.type === 'nested-array' ? 'col-span-full md:col-span-2' : 
+            (field.width === 'half' ? 'col-span-1' : 'col-span-full md:col-span-2')
+          )}
         >
-          <label
-            htmlFor={field.name}
-            className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 ml-1"
-          >
-            {field.label}
-          </label>
+          {field.type !== 'nested-array' && (
+            <label
+              htmlFor={field.name}
+              className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 ml-1"
+            >
+              {field.label}
+            </label>
+          )}
           {renderField(field)}
         </div>
       ))}

@@ -34,7 +34,7 @@ export function PermissionGuard({
   permission,
   feature,
   children,
-  redirectTo = '/unauthorized',
+  redirectTo = '/system/unauthorized',
 }: PermissionGuardProps) {
   return (
     <HasPermission permission={permission} feature={feature} redirectTo={redirectTo}>
