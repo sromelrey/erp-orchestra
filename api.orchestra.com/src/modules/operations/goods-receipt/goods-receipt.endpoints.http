@@ -24,11 +24,11 @@ Content-Type: application/json
 {
   "receiptType": "PURCHASE_ORDER",
   "referenceType": "PURCHASE_ORDER",
-  "referenceCode": "PO-2024-001",
+  "referenceCode": "PO-2026-8989898",
   "warehouseId": 1,
   "locationId": 1,
-  "receiptDate": "2024-01-15",
-  "expectedDate": "2024-01-15",
+  "receiptDate": "2026-04-10",
+  "expectedDate": "2026-04-10",
   "notes": "Urgent delivery - expedite processing",
   "items": [
     {
@@ -38,18 +38,9 @@ Content-Type: application/json
       "quantityReceived": 100.00,
       "unitPrice": 10.50,
       "totalPrice": 1050.00,
-      "batchNumber": "BATCH-2024-001",
-      "expiryDate": "2024-12-31",
+      "batchNumber": "BATCH-2026-001",
+      "expiryDate": "2026-12-31",
       "notes": "Received in good condition"
-    },
-    {
-      "itemId": 2,
-      "uomId": 1,
-      "quantityOrdered": 50.00,
-      "quantityReceived": 50.00,
-      "unitPrice": 25.00,
-      "totalPrice": 1250.00,
-      "notes": "Premium quality"
     }
   ]
 }

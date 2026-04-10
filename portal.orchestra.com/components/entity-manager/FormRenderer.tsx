@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SearchableSelect } from '@/components/ui/SearchableSelect';
@@ -19,30 +19,39 @@ interface FormRendererProps {
 export function FormRenderer({ fields, formData, formMode, onFieldChange, isProcessing = false }: FormRendererProps) {
   const [dependentOptions, setDependentOptions] = useState<Record<string, FormFieldOption[]>>({});
   const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({});
+  const lastFetchedDependencyValues = useRef<Record<string, unknown>>({});
 
   // Handle dependent fields
   useEffect(() => {
     fields.forEach(field => {
       if (field.dependsOn && field.getOptions) {
         const dependencyValue = formData[field.dependsOn];
-        if (dependencyValue !== undefined && dependencyValue !== '' && !Array.isArray(dependencyValue)) {
+        const lastValue = lastFetchedDependencyValues.current[field.name];
+        
+        // Only fetch if dependency value has changed
+        if (dependencyValue !== lastValue && dependencyValue !== undefined && dependencyValue !== '' && !Array.isArray(dependencyValue)) {
           const typedValue = dependencyValue as string | number | boolean;
+          if (typeof typedValue === 'boolean') return;
+          
+          // Update last fetched value
+          lastFetchedDependencyValues.current[field.name] = dependencyValue;
+          
           setLoadingFields(prev => ({ ...prev, [field.name]: true }));
           
           const optionsPromise = field.getOptions(typedValue);
           if (optionsPromise instanceof Promise) {
             optionsPromise.then(options => {
+              console.log(`Setting options for ${field.name}:`, options);
               setDependentOptions(prev => ({ ...prev, [field.name]: options }));
               setLoadingFields(prev => ({ ...prev, [field.name]: false }));
             }).catch(error => {
               console.error(`Error fetching options for ${field.name}:`, error);
-              setDependentOptions(prev => ({ ...prev, [field.name]: [] }));
               setLoadingFields(prev => ({ ...prev, [field.name]: false }));
             });
           } else {
             setDependentOptions(prev => ({ ...prev, [field.name]: optionsPromise }));
           }
-        } else {
+        } else if (dependencyValue === undefined || dependencyValue === '' || Array.isArray(dependencyValue)) {
           setDependentOptions(prev => ({ ...prev, [field.name]: [] }));
         }
       }

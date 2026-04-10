@@ -31,6 +31,7 @@ function EntityManager<T extends Record<string, unknown>>(props: EntityManagerPr
     onUpdate,
     onView,
     onFormClose,
+    onFormChange,
     keyExtractor,
     showViewButton = true,
     showEditButton = true,
@@ -75,6 +76,7 @@ function EntityManager<T extends Record<string, unknown>>(props: EntityManagerPr
   } = useEntityManager({
     ...props,
     optimisticUpdates,
+    onFormChange,
   });
 
   // Build columns with action buttons

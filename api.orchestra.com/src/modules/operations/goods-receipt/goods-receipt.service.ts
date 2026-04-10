@@ -55,9 +55,11 @@ export class GoodsReceiptService {
         queryRunner.manager,
       );
 
-      // Create goods receipt
+      // Create goods receipt (exclude items to prevent cascade double-insertion)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { items: _, ...receiptData } = createGoodsReceiptDto;
       const goodsReceipt = queryRunner.manager.create(GoodsReceipt, {
-        ...createGoodsReceiptDto,
+        ...receiptData,
         receiptNumber,
         status: GoodsReceiptStatus.DRAFT,
         tenantId: actor?.tenantId || 1,
@@ -75,19 +77,34 @@ export class GoodsReceiptService {
 
       const savedReceipt = await queryRunner.manager.save(goodsReceipt);
 
-      // Create goods receipt items
-      const items = createGoodsReceiptDto.items.map((item) =>
-        queryRunner.manager.create(GoodsReceiptItem, {
-          ...item,
-          goodsReceiptId: savedReceipt.id,
-          quantityReceived: item.quantityReceived || 0,
-          totalPrice:
-            item.totalPrice ||
-            (item.unitPrice ? item.unitPrice * item.quantityOrdered : 0),
-        }),
-      );
+      // Create goods receipt items with duplicate prevention
+      const uniqueItems = new Map<
+        string,
+        (typeof createGoodsReceiptDto.items)[0]
+      >();
+      createGoodsReceiptDto.items.forEach((item) => {
+        const key = `${item.itemId}-${item.uomId}`;
+        if (!uniqueItems.has(key)) {
+          uniqueItems.set(key, item);
+        }
+      });
 
-      await queryRunner.manager.save(items);
+      // Save items one by one to prevent TypeORM duplication
+      const savedItems: GoodsReceiptItem[] = [];
+      for (const itemData of uniqueItems.values()) {
+        const item = queryRunner.manager.create(GoodsReceiptItem, {
+          ...itemData,
+          goodsReceiptId: savedReceipt.id,
+          quantityReceived: itemData.quantityReceived || 0,
+          totalPrice:
+            itemData.totalPrice ||
+            (itemData.unitPrice
+              ? itemData.unitPrice * itemData.quantityOrdered
+              : 0),
+        });
+        const savedItem = await queryRunner.manager.save(item);
+        savedItems.push(savedItem);
+      }
 
       await queryRunner.commitTransaction();
 
@@ -115,7 +132,8 @@ export class GoodsReceiptService {
       .leftJoinAndSelect('items.uom', 'uom')
       .leftJoinAndSelect('gr.warehouse', 'warehouse')
       .leftJoinAndSelect('gr.location', 'location')
-      .where('gr.deletedAt IS NULL');
+      .where('gr.deletedAt IS NULL')
+      .distinct(true);
 
     if (status) {
       queryBuilder.andWhere('gr.status = :status', { status });
@@ -144,7 +162,7 @@ export class GoodsReceiptService {
    * Finds a goods receipt by ID
    */
   async findOne(id: number) {
-    const goodsReceipt = await this.goodsReceiptRepository
+    const goodsReceipts = await this.goodsReceiptRepository
       .createQueryBuilder('gr')
       .leftJoinAndSelect('gr.items', 'items')
       .leftJoinAndSelect('items.item', 'item')
@@ -152,10 +170,23 @@ export class GoodsReceiptService {
       .leftJoinAndSelect('gr.warehouse', 'warehouse')
       .leftJoinAndSelect('gr.location', 'location')
       .where('gr.id = :id AND gr.deletedAt IS NULL', { id })
-      .getOne();
+      .getMany();
 
-    if (!goodsReceipt) {
+    if (!goodsReceipts || goodsReceipts.length === 0) {
       throw new NotFoundException(`Goods receipt with ID ${id} not found`);
+    }
+
+    const goodsReceipt = goodsReceipts[0];
+
+    // Manually deduplicate items array (distinct(true) doesn't work with multiple joins)
+    if (goodsReceipt.items && goodsReceipt.items.length > 0) {
+      const uniqueItems = new Map<number, GoodsReceiptItem>();
+      goodsReceipt.items.forEach((item) => {
+        if (!uniqueItems.has(item.id)) {
+          uniqueItems.set(item.id, item);
+        }
+      });
+      goodsReceipt.items = Array.from(uniqueItems.values());
     }
 
     return goodsReceipt;
@@ -179,8 +210,19 @@ export class GoodsReceiptService {
 
     if (!goodsReceipt) {
       throw new NotFoundException(
-        `Goods receipt with number ${receiptNumber} not found`,
+        `Goods receipt with receipt number ${receiptNumber} not found`,
       );
+    }
+
+    // Manually deduplicate items array (distinct(true) doesn't work with multiple joins)
+    if (goodsReceipt.items && goodsReceipt.items.length > 0) {
+      const uniqueItems = new Map<number, GoodsReceiptItem>();
+      goodsReceipt.items.forEach((item) => {
+        if (!uniqueItems.has(item.id)) {
+          uniqueItems.set(item.id, item);
+        }
+      });
+      goodsReceipt.items = Array.from(uniqueItems.values());
     }
 
     return goodsReceipt;

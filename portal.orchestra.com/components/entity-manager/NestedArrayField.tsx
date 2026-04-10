@@ -22,7 +22,7 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
   const [dependentOptions, setDependentOptions] = useState<Record<string, FormFieldOption[]>>({});
   const [loadingColumns, setLoadingColumns] = useState<Record<string, boolean>>({});
   const fetchedKeysRef = useRef<Set<string>>(new Set());
-  
+
   // State for dual views
   const [viewMode, setViewMode] = useState<'form' | 'table'>('table');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -31,19 +31,10 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
 
   // Handle dependent columns
   useEffect(() => {
-    console.log(`[NestedArrayField] useEffect running, formMode: ${formMode}, items length: ${items.length}`);
-    console.log(`[NestedArrayField] Dependencies:`, {
-      items: items,
-      config: config?.columns?.length,
-      newItem,
-      editingItem,
-      formMode
-    });
     if (!config) return;
-    
+
     // Don't fetch options in view mode
     if (formMode === 'view') {
-      console.log(`[NestedArrayField] Skipping options fetching in view mode`);
       return;
     }
 
@@ -53,27 +44,21 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
         items.forEach((item, index) => {
           const dependencyValue = item[col.dependsOn!];
           const itemKey = `${index}-${col.key}`;
-          
-          console.log(`[NestedArrayField] Checking dependency for ${col.key} in item ${index}, dependency value:`, dependencyValue);
-          
+
           // Skip if we already fetched options for this item
           if (fetchedKeysRef.current.has(itemKey)) {
-            console.log(`[NestedArrayField] Already fetched options for ${itemKey}, skipping`);
             return;
           }
-          
+
           if (dependencyValue !== undefined && dependencyValue !== '') {
-            console.log(`[NestedArrayField] Fetching options for ${col.key} with dependency value:`, dependencyValue);
             // Mark as fetched immediately to prevent duplicate calls
             fetchedKeysRef.current.add(itemKey);
             setLoadingColumns(prev => ({ ...prev, [itemKey]: true }));
-            
+
             const optionsPromise = col.getOptions!(dependencyValue);
-            console.log(`[NestedArrayField] getOptions returned:`, optionsPromise);
-            
+
             if (optionsPromise instanceof Promise) {
               optionsPromise.then(options => {
-                console.log(`[NestedArrayField] Successfully fetched ${options.length} options for ${col.key}:`, options);
                 setDependentOptions(prev => ({ ...prev, [itemKey]: options }));
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               }).catch(error => {
@@ -82,11 +67,9 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               });
             } else {
-              console.log(`[NestedArrayField] Got synchronous options for ${col.key}:`, optionsPromise);
               setDependentOptions(prev => ({ ...prev, [itemKey]: optionsPromise }));
             }
           } else {
-            console.log(`[NestedArrayField] No dependency value for ${col.key}, clearing options`);
             setDependentOptions(prev => ({ ...prev, [itemKey]: [] }));
           }
         });
@@ -95,19 +78,14 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
         if (newItem) {
           const dependencyValue = newItem[col.dependsOn!];
           const itemKey = `new-${col.key}`;
-          
-          console.log(`[NestedArrayField] Checking dependency for ${col.key} in new item, dependency value:`, dependencyValue);
-          
+
           if (dependencyValue !== undefined && dependencyValue !== '') {
-            console.log(`[NestedArrayField] Fetching options for ${col.key} with dependency value:`, dependencyValue);
             setLoadingColumns(prev => ({ ...prev, [itemKey]: true }));
-            
+
             const optionsPromise = col.getOptions!(dependencyValue);
-            console.log(`[NestedArrayField] getOptions returned:`, optionsPromise);
-            
+
             if (optionsPromise instanceof Promise) {
               optionsPromise.then(options => {
-                console.log(`[NestedArrayField] Successfully fetched ${options.length} options for ${col.key}:`, options);
                 setDependentOptions(prev => ({ ...prev, [itemKey]: options }));
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               }).catch(error => {
@@ -116,11 +94,9 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               });
             } else {
-              console.log(`[NestedArrayField] Got synchronous options for ${col.key}:`, optionsPromise);
               setDependentOptions(prev => ({ ...prev, [itemKey]: optionsPromise }));
             }
           } else {
-            console.log(`[NestedArrayField] No dependency value for ${col.key}, clearing options`);
             setDependentOptions(prev => ({ ...prev, [itemKey]: [] }));
           }
         }
@@ -129,19 +105,14 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
         if (editingItem) {
           const dependencyValue = editingItem[col.dependsOn!];
           const itemKey = `edit-${col.key}`;
-          
-          console.log(`[NestedArrayField] Checking dependency for ${col.key} in editing item, dependency value:`, dependencyValue);
-          
+
           if (dependencyValue !== undefined && dependencyValue !== '') {
-            console.log(`[NestedArrayField] Fetching options for ${col.key} with dependency value:`, dependencyValue);
             setLoadingColumns(prev => ({ ...prev, [itemKey]: true }));
-            
+
             const optionsPromise = col.getOptions!(dependencyValue);
-            console.log(`[NestedArrayField] getOptions returned:`, optionsPromise);
-            
+
             if (optionsPromise instanceof Promise) {
               optionsPromise.then(options => {
-                console.log(`[NestedArrayField] Successfully fetched ${options.length} options for ${col.key}:`, options);
                 setDependentOptions(prev => ({ ...prev, [itemKey]: options }));
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               }).catch(error => {
@@ -150,11 +121,9 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               });
             } else {
-              console.log(`[NestedArrayField] Got synchronous options for ${col.key}:`, optionsPromise);
               setDependentOptions(prev => ({ ...prev, [itemKey]: optionsPromise }));
             }
           } else {
-            console.log(`[NestedArrayField] No dependency value for ${col.key}, clearing options`);
             setDependentOptions(prev => ({ ...prev, [itemKey]: [] }));
           }
         }
@@ -201,7 +170,19 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
 
   const saveNewItem = () => {
     if (newItem) {
-      onChange([...items, newItem]);
+      // Check for duplicates based on itemId (or other key fields)
+      const isDuplicate = items.some((existingItem) => {
+        // Check if all key fields match
+        const keyFields = config.columns.filter(col => col.required).map(col => col.key);
+        return keyFields.every(field => existingItem[field] === newItem[field]);
+      });
+
+      if (isDuplicate) {
+        // Don't add duplicate item
+        console.warn('[NestedArrayField] Skipping duplicate item:', newItem);
+      } else {
+        onChange([...items, newItem]);
+      }
       setNewItem(null);
       setViewMode('table');
     }

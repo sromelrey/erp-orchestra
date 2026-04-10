@@ -101,6 +101,7 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
       try {
         // Execute the handler
         const success = await handler(itemId, item);
+        console.log('[Workflow] Handler result:', { itemId, success });
 
         if (success) {
           // Clear optimistic update on success (server data will be refreshed)
@@ -130,6 +131,9 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
             return newMap;
           });
         }
+        
+        // Return the handler result
+        return success;
       } catch (error) {
         // 🔹 Enhancement: Rollback using previousState on error
         const prev = previousState.get(itemId);
@@ -154,6 +158,8 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
         });
 
         console.error('[Workflow] Action execution failed:', error);
+        // Return false on error
+        return false;
       } finally {
         // 🔹 Enhancement: Always clear loading state in finally block
         setLoadingActions((prev) => {
@@ -175,11 +181,19 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
    */
   const mergeWithOptimistic = useCallback(
     (data: TItem[]): TItem[] => {
-      return data.map((item) => {
+      const merged = data.map((item) => {
         const itemId = (item as TItem & { id: string | number }).id;
         const optimistic = optimisticUpdates.get(itemId);
+        if (optimistic) {
+          console.log('[Workflow] Merging optimistic update for item', {
+            itemId,
+            original: (item as { status?: string }).status,
+            optimistic: (optimistic as { status?: string }).status,
+          });
+        }
         return optimistic ? { ...item, ...optimistic } : item;
       });
+      return merged;
     },
     [optimisticUpdates]
   );
