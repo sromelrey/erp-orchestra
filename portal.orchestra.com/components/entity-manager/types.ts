@@ -46,7 +46,7 @@ export interface FormField {
     columns: Array<{
       key: string;
       label: string;
-      type: 'text' | 'number' | 'select';
+      type: 'text' | 'number' | 'select' | 'date';
       options?: FormFieldOption[];
       required?: boolean;
       width?: 'full' | 'half';
@@ -91,6 +91,7 @@ export interface EntityManagerProps<T> {
   onView?: (item: T) => void;
   onFormOpen?: (item: T) => void; // Called when form opens with an item
   onFormClose?: () => void; // Called when form is closed
+  onFormChange?: () => void; // Called when form data changes
 
   // Optional customization
   searchPlaceholder?: string;

@@ -42,6 +42,7 @@ export const baseApi = createApi({
     'ItemUom',
     'Item',
     'SalesOrders',
+    'GoodsReceipt',
   ],
   endpoints: () => ({}), // Endpoints will be injected by feature-specific files
 });
