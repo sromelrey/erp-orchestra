@@ -310,42 +310,42 @@ export const PermissionsSeeder: Seeder = {
           module: 'operations',
           resource: 'goods-receipt',
           action: 'create',
-          slug: 'goods-receipt.create',
+          slug: 'operations.goods-receipt.create',
           name: 'Create Goods Receipt',
         },
         {
           module: 'operations',
           resource: 'goods-receipt',
           action: 'view',
-          slug: 'goods-receipt.view',
+          slug: 'operations.goods-receipt.view',
           name: 'View Goods Receipt',
         },
         {
           module: 'operations',
           resource: 'goods-receipt',
           action: 'update',
-          slug: 'goods-receipt.update',
+          slug: 'operations.goods-receipt.update',
           name: 'Update Goods Receipt',
         },
         {
           module: 'operations',
           resource: 'goods-receipt',
-          action: 'approve',
-          slug: 'goods-receipt.approve',
-          name: 'Approve Goods Receipt',
+          action: 'confirm',
+          slug: 'operations.goods-receipt.confirm',
+          name: 'Confirm Goods Receipt',
         },
         {
           module: 'operations',
           resource: 'goods-receipt',
           action: 'cancel',
-          slug: 'goods-receipt.cancel',
+          slug: 'operations.goods-receipt.cancel',
           name: 'Cancel Goods Receipt',
         },
         {
           module: 'operations',
           resource: 'goods-receipt',
           action: 'delete',
-          slug: 'goods-receipt.delete',
+          slug: 'operations.goods-receipt.delete',
           name: 'Delete Goods Receipt',
         },
         // Operations - Goods Issuance
@@ -655,7 +655,7 @@ export const PermissionsSeeder: Seeder = {
         if (existing.length === 0) {
           // Check if permission exists with same module, action, resource but different slug
           const existingByModule = await queryRunner.query(
-            `SELECT id FROM "system"."permissions" WHERE module = $1 AND resource = $2 AND action = $3`,
+            `SELECT id, slug FROM "system"."permissions" WHERE module = $1 AND resource = $2 AND action = $3`,
             [perm.module, perm.resource, perm.action],
           );
 
@@ -675,9 +675,21 @@ export const PermissionsSeeder: Seeder = {
             );
             console.log(`  ✅ Created permission: ${perm.slug}`);
           } else {
-            console.log(
-              `  ⏭️  Permission with module="${perm.module}", resource="${perm.resource}", action="${perm.action}" already exists, skipping...`,
-            );
+            // Update the slug and name if they differ
+            const existingPerm = existingByModule[0];
+            if (existingPerm.slug !== perm.slug) {
+              await queryRunner.query(
+                `UPDATE "system"."permissions" SET slug = $1, name = $2, updated_at = NOW() WHERE id = $3`,
+                [perm.slug, perm.name, existingPerm.id],
+              );
+              console.log(
+                `  ✅ Updated permission slug: ${existingPerm.slug} -> ${perm.slug}`,
+              );
+            } else {
+              console.log(
+                `  ⏭️  Permission "${perm.slug}" already exists, skipping...`,
+              );
+            }
           }
         } else {
           console.log(

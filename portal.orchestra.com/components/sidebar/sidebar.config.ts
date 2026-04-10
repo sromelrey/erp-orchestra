@@ -232,6 +232,13 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         menu_code: 'CP-06-04',
         permission: 'operations.sales-order.view',
       },
+      {
+        label: 'Goods Receipts',
+        href: '/operations/goods-receipts',
+        icon: Package,
+        menu_code: 'CP-06-05',
+        permission: 'operations.goods-receipt.view',
+      },
     ],
   },
 ];

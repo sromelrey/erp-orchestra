@@ -15,6 +15,7 @@ export function useEntityManager<T extends Record<string, unknown>>({
   onDelete,
   onView,
   onFormOpen,
+  onFormChange,
   optimisticUpdates,
   isRowEditable,
   isRowDeletable,
@@ -106,7 +107,7 @@ export function useEntityManager<T extends Record<string, unknown>>({
     setIsSubmitting(true);
     try {
       // 1. Clean the data (strip metadata and cast types)
-      const cleanedData: Record<string, any> = {};
+      const cleanedData: Record<string, unknown> = {};
       const metadataFields = [
         'id',
         'createdAt',
@@ -119,7 +120,7 @@ export function useEntityManager<T extends Record<string, unknown>>({
       ];
 
       formFields.forEach((field) => {
-        const rawValue = (formData as any)[field.name];
+        const rawValue = (formData as Record<string, unknown>)[field.name];
 
         if (rawValue !== undefined && rawValue !== null) {
           // Priority 1: Explicit valueType
@@ -164,6 +165,7 @@ export function useEntityManager<T extends Record<string, unknown>>({
 
   const handleFieldChange = (name: string, value: string | number | boolean | unknown[]) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    onFormChange?.();
   };
 
   const formTitle = useMemo(() => {
