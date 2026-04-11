@@ -35,7 +35,7 @@ import { ProductionBatch } from '@/entities';
 @ApiTags('Operations - Production')
 @ApiBearerAuth()
 @UseGuards(AuthenticatedGuard)
-@Controller('prod/production-batches')
+@Controller('ops/production-batches')
 export class ProductionController {
   constructor(private readonly productionService: ProductionService) {}
 

@@ -33,11 +33,25 @@ export class UpdateGoodsReceiptPermissions1743950400000 implements MigrationInte
     ];
 
     for (const { oldSlug, newSlug } of updates) {
-      await queryRunner.query(
-        `UPDATE "system"."permissions" SET slug = $1 WHERE slug = $2`,
-        [newSlug, oldSlug],
+      // Check if the target slug already exists
+      const existingPermission = await queryRunner.query(
+        `SELECT id FROM "system"."permissions" WHERE slug = $1`,
+        [newSlug],
       );
-      console.log(`  ✅ Updated permission slug: ${oldSlug} -> ${newSlug}`);
+
+      if (existingPermission.length > 0) {
+        // If target slug exists, just delete the old permission
+        await queryRunner.query(
+          `DELETE FROM "system"."permissions" WHERE slug = $1`,
+          [oldSlug],
+        );
+      } else {
+        // If target doesn't exist, update the old one
+        await queryRunner.query(
+          `UPDATE "system"."permissions" SET slug = $1 WHERE slug = $2`,
+          [newSlug, oldSlug],
+        );
+      }
     }
 
     // Also update the name for the approve -> confirm change
@@ -81,10 +95,25 @@ export class UpdateGoodsReceiptPermissions1743950400000 implements MigrationInte
     ];
 
     for (const { newSlug, oldSlug } of updates) {
-      await queryRunner.query(
-        `UPDATE "system"."permissions" SET slug = $1 WHERE slug = $2`,
-        [newSlug, oldSlug],
+      // Check if the target slug already exists
+      const existingPermission = await queryRunner.query(
+        `SELECT id FROM "system"."permissions" WHERE slug = $1`,
+        [newSlug],
       );
+
+      if (existingPermission.length > 0) {
+        // If target slug exists, just delete the old permission
+        await queryRunner.query(
+          `DELETE FROM "system"."permissions" WHERE slug = $1`,
+          [oldSlug],
+        );
+      } else {
+        // If target doesn't exist, update the old one
+        await queryRunner.query(
+          `UPDATE "system"."permissions" SET slug = $1 WHERE slug = $2`,
+          [newSlug, oldSlug],
+        );
+      }
     }
 
     // Revert the name and action for the confirm -> approve change

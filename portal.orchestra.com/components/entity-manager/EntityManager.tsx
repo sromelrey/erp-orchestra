@@ -17,7 +17,6 @@ function EntityManager<T extends Record<string, unknown>>(props: EntityManagerPr
   const {
     columns,
     entityName,
-    entityNamePlural,
     formFields,
     searchPlaceholder,
     emptyMessage,
@@ -28,8 +27,6 @@ function EntityManager<T extends Record<string, unknown>>(props: EntityManagerPr
     stats,
     onCreate,
     onDelete,
-    onUpdate,
-    onView,
     onFormClose,
     onFormChange,
     keyExtractor,
@@ -199,6 +196,7 @@ function EntityManager<T extends Record<string, unknown>>(props: EntityManagerPr
         onSubmit={formMode !== 'view' ? handleFormSubmit : undefined}
         isLoading={isSubmitting}
         isProcessing={isProcessing}
+        isReadOnly={formMode === 'view' || (formMode === 'edit' && isRowEditable && !isRowEditable(formData as T))}
         submitLabel={formMode === 'create' ? `Create ${entityName}` : `Save Changes`}
         width={formWidth}
         header={

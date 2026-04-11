@@ -41,8 +41,7 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange, isProc
           const optionsPromise = field.getOptions(typedValue);
           if (optionsPromise instanceof Promise) {
             optionsPromise.then(options => {
-              console.log(`Setting options for ${field.name}:`, options);
-              setDependentOptions(prev => ({ ...prev, [field.name]: options }));
+               setDependentOptions(prev => ({ ...prev, [field.name]: options }));
               setLoadingFields(prev => ({ ...prev, [field.name]: false }));
             }).catch(error => {
               console.error(`Error fetching options for ${field.name}:`, error);
@@ -132,7 +131,9 @@ export function FormRenderer({ fields, formData, formMode, onFieldChange, isProc
         if (typeof value === 'boolean' || Array.isArray(value)) {
           return null;
         }
-        const inputValue = field.type === 'number' ? (value || '') : String(value || '');
+        const inputValue = field.type === 'number' ? (value || '') : 
+                    field.type === 'date' ? (value ? String(value).split('T')[0] : '') : 
+                    String(value || '');
         if (field.suffix) {
           return (
             <div className="flex shadow-sm rounded-xl">

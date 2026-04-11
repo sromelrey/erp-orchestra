@@ -40,9 +40,9 @@ describe('Production API (e2e)', () => {
   describe('Production Batches', () => {
     let createdBatchId: number;
 
-    it('POST /v1/prod/production-batches - should create a new production batch', async () => {
+    it('POST /v1/ops/production-batches - should create a new production batch', async () => {
       const response = await request(app.getHttpServer())
-        .post('/v1/prod/production-batches')
+        .post('/v1/ops/production-batches')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           bomId: 1,
@@ -59,9 +59,9 @@ describe('Production API (e2e)', () => {
       createdBatchId = response.body.data.id;
     });
 
-    it('GET /v1/prod/production-batches - should list all production batches', async () => {
+    it('GET /v1/ops/production-batches - should list all production batches', async () => {
       const response = await request(app.getHttpServer())
-        .get('/v1/prod/production-batches')
+        .get('/v1/ops/production-batches')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
@@ -70,9 +70,9 @@ describe('Production API (e2e)', () => {
       expect(Array.isArray(response.body.data.batches)).toBe(true);
     });
 
-    it('GET /v1/prod/production-batches/:id - should get a specific production batch', async () => {
+    it('GET /v1/ops/production-batches/:id - should get a specific production batch', async () => {
       const response = await request(app.getHttpServer())
-        .get(`/v1/prod/production-batches/${createdBatchId}`)
+        .get(`/v1/ops/production-batches/${createdBatchId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
@@ -81,9 +81,9 @@ describe('Production API (e2e)', () => {
       expect(response.body.data).toHaveProperty('consumptions');
     });
 
-    it('PATCH /v1/prod/production-batches/:id - should update a PLANNED batch', async () => {
+    it('PATCH /v1/ops/production-batches/:id - should update a PLANNED batch', async () => {
       const response = await request(app.getHttpServer())
-        .patch(`/v1/prod/production-batches/${createdBatchId}`)
+        .patch(`/v1/ops/production-batches/${createdBatchId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           plannedQuantity: 150,
@@ -94,9 +94,9 @@ describe('Production API (e2e)', () => {
       expect(response.body.data.plannedQuantity).toBe(150);
     });
 
-    it('POST /v1/prod/production-batches/:id/start - should start a production batch', async () => {
+    it('POST /v1/ops/production-batches/:id/start - should start a production batch', async () => {
       const response = await request(app.getHttpServer())
-        .post(`/v1/prod/production-batches/${createdBatchId}/start`)
+        .post(`/v1/ops/production-batches/${createdBatchId}/start`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
@@ -104,9 +104,9 @@ describe('Production API (e2e)', () => {
       expect(response.body.data.startDate).toBeTruthy();
     });
 
-    it('POST /v1/prod/production-batches/:id/complete - should complete a production batch', async () => {
+    it('POST /v1/ops/production-batches/:id/complete - should complete a production batch', async () => {
       const response = await request(app.getHttpServer())
-        .post(`/v1/prod/production-batches/${createdBatchId}/complete`)
+        .post(`/v1/ops/production-batches/${createdBatchId}/complete`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           actualQuantity: 145,
@@ -118,9 +118,9 @@ describe('Production API (e2e)', () => {
       expect(response.body.data.endDate).toBeTruthy();
     });
 
-    it('POST /v1/prod/production-batches - should create another batch for cancellation test', async () => {
+    it('POST /v1/ops/production-batches - should create another batch for cancellation test', async () => {
       const response = await request(app.getHttpServer())
-        .post('/v1/prod/production-batches')
+        .post('/v1/ops/production-batches')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           bomId: 1,
@@ -132,7 +132,7 @@ describe('Production API (e2e)', () => {
 
       // Cancel the batch
       await request(app.getHttpServer())
-        .post(`/v1/prod/production-batches/${newBatchId}/cancel`)
+        .post(`/v1/ops/production-batches/${newBatchId}/cancel`)
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           reason: 'Test cancellation',
@@ -141,7 +141,7 @@ describe('Production API (e2e)', () => {
 
       // Verify it's cancelled
       const cancelledResponse = await request(app.getHttpServer())
-        .get(`/v1/prod/production-batches/${newBatchId}`)
+        .get(`/v1/ops/production-batches/${newBatchId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
@@ -150,10 +150,10 @@ describe('Production API (e2e)', () => {
       );
     });
 
-    it('DELETE /v1/prod/production-batches/:id - should delete a PLANNED batch', async () => {
+    it('DELETE /v1/ops/production-batches/:id - should delete a PLANNED batch', async () => {
       // Create a new batch to delete
       const response = await request(app.getHttpServer())
-        .post('/v1/prod/production-batches')
+        .post('/v1/ops/production-batches')
         .set('Authorization', `Bearer ${authToken}`)
         .send({
           bomId: 1,
@@ -165,14 +165,14 @@ describe('Production API (e2e)', () => {
 
       // Delete it
       await request(app.getHttpServer())
-        .delete(`/v1/prod/production-batches/${batchToDeleteId}`)
+        .delete(`/v1/ops/production-batches/${batchToDeleteId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
     });
 
-    it('GET /v1/prod/production-batches?status=PLANNED - should filter by status', async () => {
+    it('GET /v1/ops/production-batches?status=PLANNED - should filter by status', async () => {
       const response = await request(app.getHttpServer())
-        .get('/v1/prod/production-batches?status=PLANNED')
+        .get('/v1/ops/production-batches?status=PLANNED')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 

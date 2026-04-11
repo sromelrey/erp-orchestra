@@ -1,6 +1,7 @@
 import { EndpointBuilder, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { FetchBaseQueryError, FetchArgs, FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
 import { PaginatedResponse } from '@/types';
+import { TagTypes } from './baseApi';
 
 export enum SalesOrderStatus {
   DRAFT = 'DRAFT',
@@ -132,7 +133,7 @@ export interface SalesOrderFilters {
   sortOrder?: 'ASC' | 'DESC';
 }
 
-export const salesOrdersEndpoints = (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, 'User' | 'Role' | 'Permission' | 'UserPermission' | 'Session' | 'Departments' | 'Designations' | 'Branches' | 'Employees' | 'Attendance' | 'LeaveTypes' | 'LeaveRequests' | 'PayPeriods' | 'Timesheets' | 'Compensation' | 'CompensationHistory' | 'Deductions' | 'Materials' | 'Warehouse' | 'WarehouseCapacity' | 'Location' | 'StockLedger' | 'ItemCategory' | 'ItemUom' | 'Item' | 'SalesOrders', 'baseApi'>) => ({ // eslint-disable-line @typescript-eslint/no-empty-object-type
+export const salesOrdersEndpoints = (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta>, TagTypes, 'baseApi'>) => ({ // eslint-disable-line @typescript-eslint/no-empty-object-type
     getSalesOrders: builder.query<PaginatedResponse<SalesOrder>, SalesOrderFilters>({
       query: (params: SalesOrderFilters) => ({
         url: '/ops/sales-orders',

@@ -108,6 +108,7 @@ export class ProductionService {
       }
 
       // Create consumption records based on BOM
+
       const bomItems = await this.bomItemRepository.find({
         where: { bomId: createProductionBatchDto.bomId },
         relations: ['componentMaterial'],

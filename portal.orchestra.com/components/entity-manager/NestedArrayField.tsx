@@ -62,7 +62,7 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
                 setDependentOptions(prev => ({ ...prev, [itemKey]: options }));
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               }).catch(error => {
-                console.error(`[NestedArrayField] Error fetching options for ${col.key} in item ${index}:`, error);
+                  console.error(`[NestedArrayField] Error fetching options for ${col.key} in item ${index}:`, error);
                 setDependentOptions(prev => ({ ...prev, [itemKey]: [] }));
                 setLoadingColumns(prev => ({ ...prev, [itemKey]: false }));
               });
@@ -170,6 +170,19 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
 
   const saveNewItem = () => {
     if (newItem) {
+      // Validate required fields
+      const requiredFields = config.columns.filter(col => col.required);
+      const missingRequired = requiredFields.filter(col => {
+        const value = newItem[col.key];
+        return value === undefined || value === null || value === '';
+      });
+
+      if (missingRequired.length > 0) {
+        // Don't add item with missing required fields
+        console.warn('[NestedArrayField] Missing required fields:', missingRequired.map(f => f.key));
+        return;
+      }
+
       // Check for duplicates based on itemId (or other key fields)
       const isDuplicate = items.some((existingItem) => {
         // Check if all key fields match
@@ -190,6 +203,19 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
 
   const saveEditItem = () => {
     if (editingIndex !== null && editingItem) {
+      // Validate required fields
+      const requiredFields = config.columns.filter(col => col.required);
+      const missingRequired = requiredFields.filter(col => {
+        const value = editingItem[col.key];
+        return value === undefined || value === null || value === '';
+      });
+
+      if (missingRequired.length > 0) {
+        // Don't save item with missing required fields
+        console.warn('[NestedArrayField] Missing required fields:', missingRequired.map(f => f.key));
+        return;
+      }
+
       const updatedItems = [...items];
       updatedItems[editingIndex] = editingItem;
       onChange(updatedItems);

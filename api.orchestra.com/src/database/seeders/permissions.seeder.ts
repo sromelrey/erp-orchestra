@@ -348,6 +348,56 @@ export const PermissionsSeeder: Seeder = {
           slug: 'operations.goods-receipt.delete',
           name: 'Delete Goods Receipt',
         },
+        // Operations - Production
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'view',
+          slug: 'operations.production.view',
+          name: 'View Production Batches',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'create',
+          slug: 'operations.production.create',
+          name: 'Create Production Batch',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'update',
+          slug: 'operations.production.update',
+          name: 'Update Production Batch',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'start',
+          slug: 'operations.production.start',
+          name: 'Start Production Batch',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'complete',
+          slug: 'operations.production.complete',
+          name: 'Complete Production Batch',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'cancel',
+          slug: 'operations.production.cancel',
+          name: 'Cancel Production Batch',
+        },
+        {
+          module: 'operations',
+          resource: 'production',
+          action: 'delete',
+          slug: 'operations.production.delete',
+          name: 'Delete Production Batch',
+        },
         // Operations - Goods Issuance
         {
           module: 'operations',

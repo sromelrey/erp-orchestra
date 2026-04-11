@@ -20,6 +20,7 @@ import {
   Warehouse,
   Book,
   ShoppingCart,
+  Factory,
 } from 'lucide-react';
 import { MenuItem } from './sidebar.types';
 
@@ -238,6 +239,13 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         icon: Package,
         menu_code: 'CP-06-05',
         permission: 'operations.goods-receipt.view',
+      },
+      {
+        label: 'Production',
+        href: '/operations/production',
+        icon: Factory,
+        menu_code: 'CP-06-06',
+        permission: 'operations.production.view',
       },
     ],
   },
