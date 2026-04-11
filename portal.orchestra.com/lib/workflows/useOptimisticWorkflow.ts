@@ -104,15 +104,9 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
         console.log('[Workflow] Handler result:', { itemId, success });
 
         if (success) {
-          // Clear optimistic update on success (server data will be refreshed)
-          setOptimisticUpdates((prev) => {
-            const newMap = new Map(prev);
-            newMap.delete(itemId);
-            return newMap;
-          });
-
-          // Clear previous state
-          setPreviousState((prev) => {
+          // Keep optimistic update until refetch completes
+          // Clear loading state
+          setLoadingActions((prev) => {
             const newMap = new Map(prev);
             newMap.delete(itemId);
             return newMap;
@@ -130,8 +124,15 @@ export function useOptimisticWorkflow<TStatus extends string | number | symbol, 
             newMap.delete(itemId);
             return newMap;
           });
+
+          // Clear loading state
+          setLoadingActions((prev) => {
+            const newMap = new Map(prev);
+            newMap.delete(itemId);
+            return newMap;
+          });
         }
-        
+
         // Return the handler result
         return success;
       } catch (error) {
