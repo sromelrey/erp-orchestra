@@ -23,6 +23,7 @@ interface SliderFormProps {
   onCancel?: () => void;
   isLoading?: boolean;
   isProcessing?: boolean; // For workflow action processing (locks form)
+  isReadOnly?: boolean; // Disable submit button when form is read-only
   submitLabel?: string;
   cancelLabel?: string;
   className?: string;
@@ -42,6 +43,7 @@ export function SliderForm({
   onCancel,
   isLoading = false,
   isProcessing = false,
+  isReadOnly = false,
   submitLabel = 'Save',
   cancelLabel = 'Cancel',
   className,
@@ -98,7 +100,7 @@ export function SliderForm({
                   {cancelLabel}
                 </Button>
                 {onSubmit && (
-                  <Button onClick={onSubmit} disabled={isLoading}>
+                  <Button onClick={onSubmit} disabled={isLoading || isReadOnly}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {submitLabel}
                   </Button>

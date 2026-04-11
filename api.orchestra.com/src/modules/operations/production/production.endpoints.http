@@ -12,25 +12,25 @@ Content-Type: application/json
 ###
 
 ### List All Production Batches
-GET {{API_BASE_URL}}/v1/prod/production-batches
+GET {{API_BASE_URL}}/v1/ops/production-batches
 Content-Type: application/json
 
 ###
 
 ### List Production Batches with Filters
-GET {{API_BASE_URL}}/v1/prod/production-batches?page=1&limit=10&status=PLANNED
+GET {{API_BASE_URL}}/v1/ops/production-batches?page=1&limit=10&status=PLANNED
 Content-Type: application/json
 
 ###
 
 ### Get Production Batch by ID
-GET {{API_BASE_URL}}/v1/prod/production-batches/1
+GET {{API_BASE_URL}}/v1/ops/production-batches/1
 Content-Type: application/json
 
 ###
 
 ### Create Production Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches
+POST {{API_BASE_URL}}/v1/ops/production-batches
 Content-Type: application/json
 
 {
@@ -58,7 +58,7 @@ Content-Type: application/json
 ###
 
 ### Update Production Batch (PLANNED only)
-PATCH {{API_BASE_URL}}/v1/prod/production-batches/2
+PATCH {{API_BASE_URL}}/v1/ops/production-batches/2
 Content-Type: application/json
 
 {
@@ -69,13 +69,13 @@ Content-Type: application/json
 ###
 
 ### Start Production Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/start
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/start
 Content-Type: application/json
 
 ###
 
 ### Complete Production Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/complete
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/complete
 Content-Type: application/json
 
 {
@@ -85,7 +85,7 @@ Content-Type: application/json
 ###
 
 ### Cancel Production Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/cancel
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/cancel
 Content-Type: application/json
 
 {
@@ -95,49 +95,49 @@ Content-Type: application/json
 ###
 
 ### Delete Production Batch (PLANNED only)
-DELETE {{API_BASE_URL}}/v1/prod/production-batches/2
+DELETE {{API_BASE_URL}}/v1/ops/production-batches/2
 Content-Type: application/json
 
 ###
 
 ### Search Production Batches by Batch Number
-GET {{API_BASE_URL}}/v1/prod/production-batches?batchNo=PB-2026-0001
+GET {{API_BASE_URL}}/v1/ops/production-batches?batchNo=PB-2026-0001
 Content-Type: application/json
 
 ###
 
 ### Filter Production Batches by Date Range
-GET {{API_BASE_URL}}/v1/prod/production-batches?startDateFrom=2026-01-01&startDateTo=2026-01-31
+GET {{API_BASE_URL}}/v1/ops/production-batches?startDateFrom=2026-01-01&startDateTo=2026-01-31
 Content-Type: application/json
 
 ###
 
 ### Sort Production Batches
-GET {{API_BASE_URL}}/v1/prod/production-batches?sortBy=startDate&sortOrder=ASC
+GET {{API_BASE_URL}}/v1/ops/production-batches?sortBy=startDate&sortOrder=ASC
 Content-Type: application/json
 
 ###
 
 ### Get IN_PROGRESS Batches
-GET {{API_BASE_URL}}/v1/prod/production-batches?status=IN_PROGRESS
+GET {{API_BASE_URL}}/v1/ops/production-batches?status=IN_PROGRESS
 Content-Type: application/json
 
 ###
 
 ### Get COMPLETED Batches
-GET {{API_BASE_URL}}/v1/prod/production-batches?status=COMPLETED
+GET {{API_BASE_URL}}/v1/ops/production-batches?status=COMPLETED
 Content-Type: application/json
 
 ###
 
 ### Get CANCELLED Batches
-GET {{API_BASE_URL}}/v1/prod/production-batches?status=CANCELLED
+GET {{API_BASE_URL}}/v1/ops/production-batches?status=CANCELLED
 Content-Type: application/json
 
 ###
 
 ### Test Error - Create Batch with Invalid BOM
-POST {{API_BASE_URL}}/v1/prod/production-batches
+POST {{API_BASE_URL}}/v1/ops/production-batches
 Content-Type: application/json
 
 {
@@ -148,13 +148,13 @@ Content-Type: application/json
 ###
 
 ### Test Error - Start Non-PLANNED Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/start
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/start
 Content-Type: application/json
 
 ###
 
 ### Test Error - Complete Non-IN_PROGRESS Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/complete
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/complete
 Content-Type: application/json
 
 {
@@ -164,7 +164,7 @@ Content-Type: application/json
 ###
 
 ### Test Error - Cancel COMPLETED Batch
-POST {{API_BASE_URL}}/v1/prod/production-batches/2/cancel
+POST {{API_BASE_URL}}/v1/ops/production-batches/2/cancel
 Content-Type: application/json
 
 {
@@ -174,17 +174,17 @@ Content-Type: application/json
 ###
 
 ### Test Error - Delete Non-PLANNED Batch
-DELETE {{API_BASE_URL}}/v1/prod/production-batches/2
+DELETE {{API_BASE_URL}}/v1/ops/production-batches/2
 Content-Type: application/json
 
 ###
 
 ### Test Pagination - Page 2
-GET {{API_BASE_URL}}/v1/prod/production-batches?page=2&limit=5
+GET {{API_BASE_URL}}/v1/ops/production-batches?page=2&limit=5
 Content-Type: application/json
 
 ###
 
 ### Test Complex Filters
-GET {{API_BASE_URL}}/v1/prod/production-batches?status=PLANNED&batchNo=PB&startDateFrom=2024-01-01&sortBy=createdAt&sortOrder=DESC
+GET {{API_BASE_URL}}/v1/ops/production-batches?status=PLANNED&batchNo=PB&startDateFrom=2024-01-01&sortBy=createdAt&sortOrder=DESC
 Content-Type: application/json

@@ -6,6 +6,7 @@ import { stockLedgerEndpoints } from './stockLedgerApi';
 import { itemsEndpoints } from './itemsApi';
 import { salesOrdersEndpoints } from './salesOrdersApi';
 import { goodsReceiptsEndpoints } from './goodsReceiptsApi';
+import { productionEndpoints } from './productionApi';
 
 // Inject the feature-specific endpoints
 export const api = baseApi
@@ -14,8 +15,9 @@ export const api = baseApi
   .injectEndpoints({ endpoints: usersEndpoints })
   .injectEndpoints({ endpoints: stockLedgerEndpoints })
   .injectEndpoints({ endpoints: itemsEndpoints })
+  .injectEndpoints({ endpoints: goodsReceiptsEndpoints })
   .injectEndpoints({ endpoints: salesOrdersEndpoints })
-  .injectEndpoints({ endpoints: goodsReceiptsEndpoints });
+  .injectEndpoints({ endpoints: productionEndpoints });
 
 // Export hooks for each API
 export const warehousesHooks = api.endpoints;
@@ -78,6 +80,17 @@ export const useUpdateGoodsReceiptMutation = api.useUpdateGoodsReceiptMutation;
 export const useDeleteGoodsReceiptMutation = api.useDeleteGoodsReceiptMutation;
 export const useConfirmGoodsReceiptMutation = api.useConfirmGoodsReceiptMutation;
 export const useCancelGoodsReceiptMutation = api.useCancelGoodsReceiptMutation;
+
+// Production Batch hooks
+export const useGetBomsQuery = api.useGetBomsQuery;
+export const useGetProductionBatchesQuery = api.useGetProductionBatchesQuery;
+export const useGetProductionBatchByIdQuery = api.useGetProductionBatchByIdQuery;
+export const useCreateProductionBatchMutation = api.useCreateProductionBatchMutation;
+export const useUpdateProductionBatchMutation = api.useUpdateProductionBatchMutation;
+export const useDeleteProductionBatchMutation = api.useDeleteProductionBatchMutation;
+export const useStartProductionBatchMutation = api.useStartProductionBatchMutation;
+export const useCompleteProductionBatchMutation = api.useCompleteProductionBatchMutation;
+export const useCancelProductionBatchMutation = api.useCancelProductionBatchMutation;
 
 // Re-export other APIs as needed
 export { materialsApi } from './materialsApi';
