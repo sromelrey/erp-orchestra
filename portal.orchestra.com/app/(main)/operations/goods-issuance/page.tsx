@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { EntityManager } from "@/components/entity-manager";
 import { GoodsIssuanceHeader } from "@/components/goods-issuance/GoodsIssuanceHeader";
@@ -20,9 +20,9 @@ export default function GoodsIssuancePage() {
     uoms,
     departments,
     isLoading,
-    error,
-    params,
-    setParams,
+    isCreating,
+    isUpdating,
+    isDeleting,
     handleCreate,
     handleUpdate,
     handleDelete,
@@ -30,6 +30,8 @@ export default function GoodsIssuancePage() {
     handleCancel,
     refetch,
   } = useGoodsIssuance();
+
+  const [isFormDirty, setIsFormDirty] = useState(false);
 
   const { getLocationsByWarehouse } = useGoodsIssuanceForm();
 
@@ -44,30 +46,42 @@ export default function GoodsIssuancePage() {
   } = useGoodsIssuanceWorkflow({
     handleApprove,
     handleCancel,
-    goodsIssuances: data as unknown as Record<string, unknown>[],
+    goodsIssuances: data,
     userId: 1, // TODO: Get from auth context
     refetch,
   });
 
   // Merge data with optimistic updates
   const dataWithOptimistic = useMemo(() => {
-    return mergeWithOptimistic(data as unknown as Record<string, unknown>[]);
+    return mergeWithOptimistic(data);
   }, [data, optimisticUpdates, mergeWithOptimistic]);
 
   // Form handlers
   const handleFormOpen = useCallback((item: Record<string, unknown>) => {
+    setIsFormDirty(false);
     // Use merged optimistic data to get the latest status
-    const mergedItem = mergeWithOptimistic([item])[0];
+    const mergedItem = mergeWithOptimistic([item as GoodsIssuance])[0];
     handleWorkflowFormOpen(mergedItem);
   }, [mergeWithOptimistic, handleWorkflowFormOpen]);
+
+  const handleFormChange = useCallback(() => {
+    setIsFormDirty(true);
+  }, []);
 
   const handleFormClose = useCallback(() => {
     if (isProcessing) {
       return false;
     }
+    if (isFormDirty) {
+      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to close?');
+      if (!confirmed) {
+        return false;
+      }
+    }
     handleWorkflowFormClose();
+    setIsFormDirty(false);
     return true;
-  }, [isProcessing, handleWorkflowFormClose]);
+  }, [isProcessing, isFormDirty, handleWorkflowFormClose]);
 
   // Get form fields with context
   const formFields = useMemo(() => {
@@ -101,47 +115,58 @@ export default function GoodsIssuancePage() {
 
   // Check if a row is editable (only DRAFT)
   const isRowEditable = useCallback((item: Record<string, unknown>) => {
-    const status = item?.status as string;
-    return status === 'DRAFT';
+    return (item as GoodsIssuance).status === 'DRAFT';
   }, []);
 
   // Check if a row is deletable (only DRAFT)
   const isRowDeletable = useCallback((item: Record<string, unknown>) => {
-    const status = item?.status as string;
-    return status === 'DRAFT';
+    return (item as GoodsIssuance).status === 'DRAFT';
   }, []);
+
+  const handleCreateGoodsIssuance = async (formData: Partial<Record<string, unknown>>) => {
+    const result = await handleCreate(formData);
+    if (result) setIsFormDirty(false);
+  };
+
+  const handleUpdateGoodsIssuance = async (id: string | number, formData: Partial<Record<string, unknown>>) => {
+    const result = await handleUpdate(id, formData);
+    if (result) setIsFormDirty(false);
+  };
+
+  const handleDeleteGoodsIssuance = async (id: string | number) => {
+    await handleDelete(id);
+  };
 
   return (
     <PermissionGuard permission="goods-issuance.view">
-      <div className="p-6">
-        <EntityManager<GoodsIssuance>
-          title="Goods Issuance"
-          subtitle="Manage goods issuance for production, sales, transfers, and adjustments"
-          columns={columns}
-          data={dataWithOptimistic as unknown as GoodsIssuance[]}
-          isLoading={isLoading}
-          error={error ? (typeof error === 'string' ? error : 'Failed to fetch goods issuances') : null}
-          params={params}
-          setParams={setParams}
+      <div className="p-6 space-y-6">
+        <EntityManager
+          entityName="Goods Issuance"
+          entityNamePlural="Goods Issuances"
+          data={dataWithOptimistic as unknown as Record<string, unknown>[]}
+          columns={columns as unknown as import('@/components/ui/data-table').Column<Record<string, unknown>>[]}
+          formFields={formFields}
+          formWidth="50%"
+          keyExtractor={(item) => (item as { id: string | number }).id}
+          onCreate={handleCreateGoodsIssuance}
+          onUpdate={handleUpdateGoodsIssuance}
+          onDelete={handleDeleteGoodsIssuance}
           onFormOpen={handleFormOpen}
           onFormClose={handleFormClose}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          isRowEditable={isRowEditable}
-          isRowDeletable={isRowDeletable}
-          formFields={formFields}
-          workflowActions={workflowActions}
+          onFormChange={handleFormChange}
+          isLoading={isLoading}
+          isMutating={isCreating || isUpdating || isDeleting}
+          workflowActions={workflowActions as unknown as import('@/lib/workflows/types').WorkflowAction<Record<string, unknown>>[]}
           isProcessing={isProcessing}
           optimisticUpdates={optimisticUpdates}
+          isRowEditable={isRowEditable}
+          isRowDeletable={isRowDeletable}
           header={GoodsIssuanceHeader}
-          formWidth="50%"
-          keyExtractor={(item) => item.id}
-          entityName="Goods Issuance"
           permissions={{
             create: "goods-issuance.create",
             update: "goods-issuance.update",
             delete: "goods-issuance.delete",
+            view: "goods-issuance.view",
           }}
         />
       </div>

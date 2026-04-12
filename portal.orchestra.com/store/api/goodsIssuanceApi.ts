@@ -32,6 +32,7 @@ export interface GoodsIssuance {
   items: GoodsIssuanceItem[];
   createdAt: string;
   updatedAt: string;
+  [key: string]: unknown; // Index signature for workflow compatibility
 }
 
 export interface CreateGoodsIssuanceRequest {

@@ -10,6 +10,7 @@ import { User } from '../../../entities/system/user.entity';
 import { UserPermission } from '../../../entities/system/user-permission.entity';
 import { Permission } from '../../../entities/system/permission.entity';
 import { Tenant } from '../../../entities/system/tenant.entity';
+import { UserRole } from '../../../entities/system/user-role.entity';
 import { CreateTenantUserDto } from './dto/create-tenant-user.dto';
 import { UpdateTenantUserDto } from './dto/update-tenant-user.dto';
 import { CursorPaginationDto } from '../../../common/dto/cursor-pagination.dto';
@@ -26,6 +27,8 @@ export class UserService {
     private readonly permissionRepository: Repository<Permission>,
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
   ) {}
 
   /**
@@ -57,8 +60,9 @@ export class UserService {
     const passwordHash = await bcrypt.hash(createDto.password, salt);
 
     // Create user
+    const { roleIds, ...userData } = createDto;
     const user = this.userRepository.create({
-      ...createDto,
+      ...userData,
       passwordHash,
       tenantId,
       isSystemAdmin: false,
@@ -66,7 +70,19 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(user);
 
-    return savedUser;
+    // Assign roles if provided
+    if (roleIds && roleIds.length > 0) {
+      const userRoles = roleIds.map((roleId) => {
+        const userRole = new UserRole();
+        userRole.userId = savedUser.id;
+        userRole.roleId = roleId;
+        userRole.assignedAt = new Date();
+        return userRole;
+      });
+      await this.userRoleRepository.save(userRoles);
+    }
+
+    return this.findOneForTenant(tenantId, savedUser.id);
   }
 
   /**
@@ -170,7 +186,7 @@ export class UserService {
     const user = await this.findOneForTenant(tenantId, id);
 
     // Update basic fields
-    const { password, ...rest } = dto;
+    const { password, roleIds, ...rest } = dto;
     Object.assign(user, rest);
 
     if (password) {
@@ -179,6 +195,24 @@ export class UserService {
     }
 
     await this.userRepository.save(user);
+
+    // Handle role assignments if provided
+    if (roleIds !== undefined) {
+      // Remove existing role assignments
+      await this.userRoleRepository.delete({ userId: id });
+
+      // Add new role assignments if any
+      if (roleIds.length > 0) {
+        const userRoles = roleIds.map((roleId) => {
+          const userRole = new UserRole();
+          userRole.userId = id;
+          userRole.roleId = roleId;
+          userRole.assignedAt = new Date();
+          return userRole;
+        });
+        await this.userRoleRepository.save(userRoles);
+      }
+    }
 
     return this.findOneForTenant(tenantId, id);
   }

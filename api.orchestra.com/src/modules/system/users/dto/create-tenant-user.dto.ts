@@ -5,9 +5,12 @@ import {
   MinLength,
   IsEnum,
   IsOptional,
+  IsArray,
+  IsInt,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Status } from '@/types/enums';
+import { Transform } from 'class-transformer';
 
 export class CreateTenantUserDto {
   @ApiProperty({ example: 'john.doe@example.com' })
@@ -44,5 +47,24 @@ export class CreateTenantUserDto {
   @IsOptional()
   isTenantAdmin?: boolean;
 
-  // Role IDs to assign to this user
+  @ApiProperty({
+    example: [1, 2, 3],
+    description: 'Role IDs to assign to this user',
+    required: false,
+    type: [Number],
+  })
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  @Transform(({ value }: { value: unknown }): number[] => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value) as number[];
+      } catch {
+        return [];
+      }
+    }
+    return Array.isArray(value) ? (value as number[]) : [];
+  })
+  roleIds?: number[];
 }

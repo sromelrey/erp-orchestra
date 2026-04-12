@@ -33,8 +33,12 @@ export interface User {
   firstName?: string;
   lastName?: string;
   avatarUrl?: string;
-  status: 'ACTIVE' | 'INACTIVE';
+  status: 'ACTIVE' | 'INACTIVE' | 'BANNED';
   tenantId?: number;
+  isTenantAdmin?: boolean;
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt?: string;
   userRoles?: Array<{
     role?: Role;
   }>;
@@ -46,12 +50,16 @@ export interface CreateUserRequest {
   password?: string;
   firstName?: string;
   lastName?: string;
-  status?: 'ACTIVE' | 'INACTIVE';
+  status?: 'ACTIVE' | 'INACTIVE' | 'BANNED';
+  isTenantAdmin?: boolean;
+  roleIds?: number[];
 }
 
 export interface UpdateUserRequest extends Partial<Omit<User, 'id'>> {
   id: number;
   password?: string;
+  isTenantAdmin?: boolean;
+  roleIds?: number[];
 }
 
 export interface UserPermission {
@@ -135,14 +143,7 @@ export interface LoginRequest {
   password?: string;
 }
 
-// Re-export Material types from API
-export type {
-  Material,
-  MaterialType,
-  CreateMaterialRequest,
-  UpdateMaterialRequest,
-  MaterialsQueryParams,
-} from '@/store/api/materialsApi';
+// Note: Material types are imported directly from @/store/api/materialsApi to avoid circular dependency
 
 // Re-export Operations types
 export type {
