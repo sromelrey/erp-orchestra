@@ -8,7 +8,7 @@ import { GoodsIssuance } from '@/store/api/goodsIssuanceApi';
 interface UseGoodsIssuanceWorkflowProps {
   handleApprove: (id: string | number, notes?: string, approvedBy?: number) => Promise<boolean>;
   handleCancel: (id: string | number, reason?: string, notes?: string) => Promise<boolean>;
-  goodsIssuances: Record<string, unknown>[];
+  goodsIssuances: GoodsIssuance[];
   userId?: number;
   refetch?: () => void;
 }
@@ -21,14 +21,14 @@ export function useGoodsIssuanceWorkflow({
   refetch,
 }: UseGoodsIssuanceWorkflowProps) {
   const { optimisticUpdates, loadingActions, executeAction, mergeWithOptimistic } =
-    useOptimisticWorkflow<GoodsIssuanceStatus, Record<string, unknown>>();
+    useOptimisticWorkflow<GoodsIssuanceStatus, GoodsIssuance>();
 
   const [currentOpenItemId, setCurrentOpenItemId] = useState<string | number | null>(null);
 
   const isProcessing = currentOpenItemId ? loadingActions.has(currentOpenItemId) : false;
 
-  const handleFormOpen = useCallback((item: Record<string, unknown>) => {
-    setCurrentOpenItemId((item as unknown as GoodsIssuance).id);
+  const handleFormOpen = useCallback((item: GoodsIssuance) => {
+    setCurrentOpenItemId(item.id);
   }, []);
 
   const handleCloseForm = useCallback(() => {
@@ -36,7 +36,7 @@ export function useGoodsIssuanceWorkflow({
   }, []);
 
   const currentStatus = currentOpenItemId && Array.isArray(goodsIssuances)
-    ? (goodsIssuances.find((gi) => (gi as unknown as GoodsIssuance).id === currentOpenItemId) as unknown as GoodsIssuance)?.status as GoodsIssuanceStatus
+    ? goodsIssuances.find((gi) => gi.id === currentOpenItemId)?.status as GoodsIssuanceStatus
     : 'DRAFT' as GoodsIssuanceStatus; // Default to DRAFT for table view
 
   // Helper to create workflow handlers
@@ -45,16 +45,16 @@ export function useGoodsIssuanceWorkflow({
       handler: (id: string | number) => Promise<boolean>,
       targetStatus: GoodsIssuanceStatus
     ) => {
-      return async (id: string | number, item: Record<string, unknown>) => {
+      return async (id: string | number, item: GoodsIssuance) => {
         setCurrentOpenItemId(id);
 
         const result = await executeAction(
           id,
-          item as unknown as GoodsIssuance as unknown as Record<string, unknown>,
+          item,
           targetStatus,
           handler,
-          goodsIssuanceWorkflow as unknown as WorkflowConfig<GoodsIssuanceStatus, Record<string, unknown>>,
-          'status' as keyof Record<string, unknown>,
+          goodsIssuanceWorkflow as unknown as WorkflowConfig<GoodsIssuanceStatus, GoodsIssuance>,
+          'status' as keyof GoodsIssuance,
           userId
         );
 
@@ -76,8 +76,8 @@ export function useGoodsIssuanceWorkflow({
   );
 
   const workflowActions = useMemo(() => {
-    return buildWorkflowActions<GoodsIssuanceStatus, Record<string, unknown>>({
-      workflow: goodsIssuanceWorkflow as unknown as WorkflowConfig<GoodsIssuanceStatus, Record<string, unknown>>,
+    return buildWorkflowActions<GoodsIssuanceStatus, GoodsIssuance>({
+      workflow: goodsIssuanceWorkflow as unknown as WorkflowConfig<GoodsIssuanceStatus, GoodsIssuance>,
       currentStatus: currentStatus as GoodsIssuanceStatus | undefined,
       itemId: currentOpenItemId || undefined,
       handlers: {
@@ -92,7 +92,7 @@ export function useGoodsIssuanceWorkflow({
       },
       loadingActions,
     });
-  }, [currentStatus, currentOpenItemId, loadingActions, createWorkflowHandler, handleApprove, handleCancel, userId]);
+  }, [currentStatus, currentOpenItemId, loadingActions, createWorkflowHandler, handleApprove, handleCancel]);
 
   return {
     workflowActions,

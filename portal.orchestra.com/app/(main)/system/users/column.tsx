@@ -17,27 +17,36 @@ export const columns: Column<User>[] = [
     cell: (item) => <span className="text-sm text-gray-600">{item.email}</span>,
   },
   {
-    header: 'Role',
+    header: 'Roles',
     cell: (item) => (
-      <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-        {item.userRoles?.[0]?.role?.name || 'No Role'}
-      </Badge>
+      <div className="flex flex-wrap gap-1">
+        {item.userRoles && item.userRoles.length > 0 ? (
+          item.userRoles.map((ur) => (
+            <Badge key={ur.role?.id} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+              {ur.role?.name}
+            </Badge>
+          ))
+        ) : (
+          <span className="text-sm text-gray-500">No roles</span>
+        )}
+      </div>
     ),
   },
   {
     header: 'Status',
     accessorKey: 'status',
-    cell: (item) => (
-      <Badge
-        variant="outline"
-        className={
-          item.status === 'ACTIVE'
-            ? 'bg-green-50 text-green-700 border-green-200'
-            : 'bg-gray-50 text-gray-700 border-gray-200'
-        }
-      >
-        {item.status}
-      </Badge>
-    ),
+    cell: (item) => {
+      const statusConfig = {
+        ACTIVE: { label: 'Active', className: 'bg-green-50 text-green-700 border-green-200' },
+        INACTIVE: { label: 'Inactive', className: 'bg-gray-50 text-gray-700 border-gray-200' },
+        BANNED: { label: 'Banned', className: 'bg-red-50 text-red-700 border-red-200' },
+      };
+      const config = statusConfig[item.status as keyof typeof statusConfig] || statusConfig.INACTIVE;
+      return (
+        <Badge variant="outline" className={config.className}>
+          {config.label}
+        </Badge>
+      );
+    },
   },
 ];

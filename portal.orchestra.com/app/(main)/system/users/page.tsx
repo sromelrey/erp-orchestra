@@ -11,6 +11,7 @@ import {
   useUpdateUserMutation,
   useDeleteUserMutation,
 } from '@/store/api';
+import { useGetRolesQuery } from '@/store/api/rolesApi';
 import { toast } from 'sonner';
 import { UserRolesManager } from '@/components/users/UserRolesManager';
 import { UserPermissionManager } from '@/components/users/UserPermissionManager';
@@ -20,9 +21,11 @@ import { Column } from '@/components/ui/data-table';
 import { PermissionGuard } from '@/components/auth/PermissionGuard';
 import { HasPermission } from '@/components/auth/HasPermission';
 import { User, CreateUserRequest, UpdateUserRequest } from '@/types';
+import { FormField } from '@/components/entity-manager/types';
 
 export default function UsersPage() {
   const { data: users = [], isLoading } = useGetUsersQuery();
+  const { data: roles = [] } = useGetRolesQuery();
   const [createUser] = useCreateUserMutation();
   const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
@@ -30,6 +33,28 @@ export default function UsersPage() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
   const [isPermissionDialogOpen, setIsPermissionDialogOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; userId: number | null }>({ open: false, userId: null });
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Prepare role options for form (filter out System Admin)
+  const roleOptions = useMemo(() => {
+    return roles
+      .filter((role: { code: string }) => role.code !== 'SYSTEM_ADMIN')
+      .map((role: { id: number; name: string }) => ({
+        value: role.id.toString(),
+        label: role.name,
+      }));
+  }, [roles]);
+
+  // Dynamic form fields with role options
+  const formFields = useMemo(() => {
+    return userFormFields.map((field: FormField) => {
+      if (field.name === 'roleIds') {
+        return { ...field, options: roleOptions };
+      }
+      return field;
+    });
+  }, [roleOptions]);
 
   // Derive the selected user from the live RTK Query cache.
   const selectedUser = useMemo(
@@ -54,7 +79,16 @@ export default function UsersPage() {
 
   const handleCreate = async (formData: Partial<User>) => {
     try {
-      await createUser(formData as unknown as CreateUserRequest).unwrap();
+      const createData: CreateUserRequest = {
+        ...(formData as unknown as CreateUserRequest),
+      };
+      // Ensure roleIds is included and is an array
+      if ('roleIds' in formData && formData.roleIds) {
+        createData.roleIds = Array.isArray(formData.roleIds)
+          ? (formData.roleIds as number[])
+          : [formData.roleIds as number];
+      }
+      await createUser(createData).unwrap();
       toast.success('User created successfully');
     } catch (error) {
       toast.error('Failed to create user');
@@ -64,10 +98,17 @@ export default function UsersPage() {
 
   const handleUpdate = async (id: string | number, formData: Partial<User>) => {
     try {
-      await updateUser({
+      const updateData: Partial<UpdateUserRequest> = {
         id: Number(id),
-        ...(formData as unknown as Omit<UpdateUserRequest, 'id'>),
-      }).unwrap();
+        ...(formData as unknown as Partial<UpdateUserRequest>),
+      };
+      // Ensure roleIds is included and is an array
+      if ('roleIds' in formData && formData.roleIds) {
+        updateData.roleIds = Array.isArray(formData.roleIds)
+          ? (formData.roleIds as number[])
+          : [formData.roleIds as number];
+      }
+      await updateUser(updateData as UpdateUserRequest).unwrap();
       toast.success('User updated successfully');
     } catch (error) {
       toast.error('Failed to update user');
@@ -76,12 +117,25 @@ export default function UsersPage() {
   };
 
   const handleDelete = async (id: string | number) => {
-    try {
-      await deleteUser(Number(id)).unwrap();
-      toast.success('User deleted successfully');
-    } catch (error) {
-      toast.error('Failed to delete user');
-      throw error;
+    const user = users.find((u: User) => u.id === Number(id));
+    if (user) {
+      setDeleteConfirm({ open: true, userId: Number(id) });
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (deleteConfirm.userId) {
+      setIsDeleting(true);
+      try {
+        await deleteUser(deleteConfirm.userId).unwrap();
+        toast.success('User deleted successfully');
+        setDeleteConfirm({ open: false, userId: null });
+      } catch (error) {
+        toast.error('Failed to delete user');
+        throw error;
+      } finally {
+        setIsDeleting(false);
+      }
     }
   };
 
@@ -137,8 +191,9 @@ export default function UsersPage() {
         entityNamePlural="Users"
         data={users}
         columns={columns}
-        formFields={userFormFields}
+        formFields={formFields}
         keyExtractor={(item) => item.id}
+        formWidth='50%'
         onCreate={handleCreate}
         onUpdate={handleUpdate}
         onDelete={handleDelete}
@@ -180,6 +235,35 @@ export default function UsersPage() {
               onClose={() => setIsPermissionDialogOpen(false)}
             />
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirm.open} onOpenChange={(open) => !isDeleting && setDeleteConfirm({ open, userId: null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Delete</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-gray-600">
+              Are you sure you want to delete this user? This action cannot be undone.
+            </p>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeleteConfirm({ open: false, userId: null })} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={isDeleting}>
+              {isDeleting ? (
+                <>
+                  <span className="animate-spin mr-2">⏳</span>
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </PermissionGuard>

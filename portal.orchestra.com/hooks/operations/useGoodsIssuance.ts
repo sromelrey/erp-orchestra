@@ -54,9 +54,9 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
   const departments = deptResponse?.data || [];
 
   // Mutations
-  const [createIssuance] = useCreateGoodsIssuanceMutation();
-  const [updateIssuance] = useUpdateGoodsIssuanceMutation();
-  const [deleteIssuance] = useDeleteGoodsIssuanceMutation();
+  const [createIssuance, { isLoading: isCreating }] = useCreateGoodsIssuanceMutation();
+  const [updateIssuance, { isLoading: isUpdating }] = useUpdateGoodsIssuanceMutation();
+  const [deleteIssuance, { isLoading: isDeleting }] = useDeleteGoodsIssuanceMutation();
   const [approveIssuance] = useApproveGoodsIssuanceMutation();
   const [cancelIssuance] = useCancelGoodsIssuanceMutation();
 
@@ -101,13 +101,15 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
       await createIssuance(createData).unwrap();
       toast.success("Goods issuance created successfully");
       refetch();
+      return true;
     } catch (error: unknown) {
       const err = error as { data?: { message?: string } };
       toast.error(err.data?.message || "Failed to create goods issuance");
+      return false;
     }
   };
 
-  const handleUpdate = async (id: number, data: Partial<GoodsIssuance>) => {
+  const handleUpdate = async (id: string | number, data: Partial<GoodsIssuance>) => {
     try {
       const updateData: UpdateGoodsIssuanceRequest = {};
       
@@ -133,12 +135,14 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
         }));
       }
 
-      await updateIssuance({ id, body: updateData }).unwrap();
+      await updateIssuance({ id: Number(id), body: updateData }).unwrap();
       toast.success("Goods issuance updated successfully");
       refetch();
+      return true;
     } catch (error: unknown) {
       const err = error as { data?: { message?: string } };
       toast.error(err.data?.message || "Failed to update goods issuance");
+      return false;
     }
   };
 
@@ -153,7 +157,7 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
     }
   };
 
-  const handleApprove = async (id: string | number, notes?: string, approvedBy?: number) => {
+  const handleApprove = async (id: string | number, notes?: string) => {
     try {
       await approveIssuance({ id: Number(id), body: { notes } }).unwrap();
       toast.success("Goods issuance approved successfully");
@@ -165,9 +169,9 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
     }
   };
 
-  const handleCancel = async (id: string | number, reason?: string, notes?: string) => {
+  const handleCancel = async (id: string | number) => {
     try {
-      await cancelIssuance({ id: Number(id), body: { reason, notes } }).unwrap();
+      await cancelIssuance(Number(id)).unwrap();
       toast.success("Goods issuance cancelled successfully");
       return true;
     } catch (error: unknown) {
@@ -198,6 +202,9 @@ export function useGoodsIssuance(options: UseGoodsIssuanceOptions = {}) {
 
     // Loading states
     isLoading,
+    isCreating,
+    isUpdating,
+    isDeleting,
     error,
 
     // Params
