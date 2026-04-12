@@ -19,6 +19,7 @@ interface NestedArrayFieldProps {
 export function NestedArrayField({ value, onChange, field, isDisabled, formMode }: NestedArrayFieldProps) {
   const items = useMemo(() => (value || []) as Record<string, string | number>[], [value]);
   const config = field.nestedArrayConfig;
+  const [rawInputValues, setRawInputValues] = useState<Record<string, string>>({});
   const [dependentOptions, setDependentOptions] = useState<Record<string, FormFieldOption[]>>({});
   const [loadingColumns, setLoadingColumns] = useState<Record<string, boolean>>({});
   const fetchedKeysRef = useRef<Set<string>>(new Set());
@@ -133,6 +134,8 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
 
   if (!config) return null;
 
+  const getRawKey = (context: string, key: string) => `${context}-${key}`;
+
   const addItem = () => {
     const newItem: Record<string, string | number> = {};
     config.columns.forEach(col => {
@@ -244,7 +247,7 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
     }
   };
 
-  const renderCell = (item: Record<string, string | number>, col: { key: string; label: string; type: string; options?: FormFieldOption[]; width?: 'full' | 'half'; dependsOn?: string; getOptions?: (value: string | number) => Promise<FormFieldOption[]> | FormFieldOption[] }, index: number) => {
+  const renderCell = (item: Record<string, string | number>, col: { key: string; label: string; type: string; options?: FormFieldOption[]; width?: 'full' | 'half'; dependsOn?: string; getOptions?: (value: string | number) => Promise<FormFieldOption[]> | FormFieldOption[]; allowNegative?: boolean; allowDecimal?: boolean; decimalScale?: number }, index: number) => {
     const cellValue = item[col.key] ?? '';
     const itemKey = `${index}-${col.key}`;
     const isLoading = loadingColumns[itemKey] || false;
@@ -271,19 +274,54 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
       );
     }
 
+    if (col.type === 'number') {
+      const rawKey = getRawKey(String(index), col.key);
+      const displayValue = rawInputValues[rawKey] ?? String(cellValue);
+      return (
+        <Input
+          type="text"
+          inputMode={col.allowDecimal !== false ? 'decimal' : 'numeric'}
+          value={displayValue}
+          onChange={(e) => {
+            const raw = e.target.value;
+            if (raw === '' || raw === '-' || (col.allowNegative && raw === '-') || /^-?\d*\.?\d*$/.test(raw)) {
+              setRawInputValues(prev => ({ ...prev, [rawKey]: raw }));
+              if (raw !== '' && raw !== '-' && raw !== '.') {
+                const num = parseFloat(raw);
+                if (!isNaN(num)) updateItem(index, col.key, num);
+              }
+            }
+          }}
+          onBlur={() => {
+            const raw = rawInputValues[rawKey];
+            if (raw === undefined) return;
+            const num = parseFloat(raw);
+            const finalNum = isNaN(num) ? 0 : (col.decimalScale !== undefined ? parseFloat(num.toFixed(col.decimalScale)) : num);
+            setRawInputValues(prev => { const next = { ...prev }; delete next[rawKey]; return next; });
+            updateItem(index, col.key, finalNum);
+          }}
+          disabled={isDisabled}
+          className={`h-7 text-xs border-gray-200 ${
+            col.width === 'full' ? 'w-full' :
+            col.width === 'half' ? 'w-1/2 max-w-[50%]' : 'w-full'
+          }`}
+          placeholder={col.allowNegative ? `e.g. ${col.key === 'quantityAdjusted' ? '-5' : '0'}` : col.label}
+        />
+      );
+    }
+
     return (
       <Input
         type={col.type}
         value={String(cellValue)}
         onChange={(e) => {
-          const newValue = col.type === 'number' ? Number(e.target.value) : e.target.value;
-          updateItem(index, col.key, newValue);
+          updateItem(index, col.key, e.target.value);
         }}
         disabled={isDisabled}
         className={`h-7 text-xs border-gray-200 ${
-                      col.width === 'full' ? 'w-full' : 
-                      col.width === 'half' ? 'w-1/2 max-w-[50%]' : 'w-full'
-                    }`}
+          col.width === 'full' ? 'w-full' :
+          col.width === 'half' ? 'w-1/2 max-w-[50%]' : 'w-full'
+        }`}
         placeholder={col.label}
       />
     );
@@ -337,21 +375,56 @@ export function NestedArrayField({ value, onChange, field, isDisabled, formMode 
                       ))}
                     </SelectContent>
                   </Select>
-                ) : (
+                ) : col.type === 'number' ? (
                   <Input
-                    type={col.type}
-                    value={String(currentValue)}
+                    type="text"
+                    inputMode={col.allowDecimal !== false ? 'decimal' : 'numeric'}
+                    value={(() => {
+                      const rawKey = getRawKey(isEditing ? 'edit' : 'new', col.key);
+                      return rawInputValues[rawKey] ?? String(currentValue ?? '');
+                    })()}
                     onChange={(e) => {
-                      const newValue = col.type === 'number' ? Number(e.target.value) : e.target.value;
-                      if (isEditing) {
-                        updateEditingItem(col.key, newValue);
-                      } else {
-                        updateNewItem(col.key, newValue);
+                      const raw = e.target.value;
+                      const rawKey = getRawKey(isEditing ? 'edit' : 'new', col.key);
+                      if (raw === '' || raw === '-' || /^-?\d*\.?\d*$/.test(raw)) {
+                        setRawInputValues(prev => ({ ...prev, [rawKey]: raw }));
+                        if (raw !== '' && raw !== '-' && raw !== '.') {
+                          const num = parseFloat(raw);
+                          if (!isNaN(num)) {
+                            if (isEditing) updateEditingItem(col.key, num);
+                            else updateNewItem(col.key, num);
+                          }
+                        }
                       }
+                    }}
+                    onBlur={() => {
+                      const rawKey = getRawKey(isEditing ? 'edit' : 'new', col.key);
+                      const raw = rawInputValues[rawKey];
+                      if (raw === undefined) return;
+                      const num = parseFloat(raw);
+                      const finalNum = isNaN(num) ? 0 : (col.decimalScale !== undefined ? parseFloat(num.toFixed(col.decimalScale)) : num);
+                      setRawInputValues(prev => { const next = { ...prev }; delete next[rawKey]; return next; });
+                      if (isEditing) updateEditingItem(col.key, finalNum);
+                      else updateNewItem(col.key, finalNum);
                     }}
                     disabled={isDisabled}
                     className={`h-8 text-xs ${
-                      col.width === 'full' ? 'w-full' : 
+                      col.width === 'full' ? 'w-full' :
+                      col.width === 'half' ? 'w-1/2 max-w-[50%]' : 'w-full'
+                    }`}
+                    placeholder={col.allowNegative ? `e.g. ${col.key === 'quantityAdjusted' ? '-5' : '0'}` : col.label}
+                  />
+                ) : (
+                  <Input
+                    type={col.type}
+                    value={String(currentValue ?? '')}
+                    onChange={(e) => {
+                      if (isEditing) updateEditingItem(col.key, e.target.value);
+                      else updateNewItem(col.key, e.target.value);
+                    }}
+                    disabled={isDisabled}
+                    className={`h-8 text-xs ${
+                      col.width === 'full' ? 'w-full' :
                       col.width === 'half' ? 'w-1/2 max-w-[50%]' : 'w-full'
                     }`}
                     placeholder={col.label}

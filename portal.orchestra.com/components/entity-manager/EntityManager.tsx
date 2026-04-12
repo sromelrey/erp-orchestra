@@ -13,7 +13,7 @@ import { HasPermission } from '@/components/auth/HasPermission';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { Badge } from '@/components/ui/badge';
 
-function EntityManager<T extends Record<string, unknown>>(props: EntityManagerProps<T>) {
+function EntityManager<T extends object>(props: EntityManagerProps<T>) {
   const {
     columns,
     entityName,

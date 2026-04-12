@@ -35,7 +35,7 @@ export function useGoodsIssuanceWorkflow({
     setCurrentOpenItemId(null);
   }, []);
 
-  const currentStatus = currentOpenItemId
+  const currentStatus = currentOpenItemId && Array.isArray(goodsIssuances)
     ? (goodsIssuances.find((gi) => (gi as unknown as GoodsIssuance).id === currentOpenItemId) as unknown as GoodsIssuance)?.status as GoodsIssuanceStatus
     : 'DRAFT' as GoodsIssuanceStatus; // Default to DRAFT for table view
 

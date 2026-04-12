@@ -20,13 +20,13 @@ import {
 
 export function useStockLedger() {
   const [search, setSearch] = useState("");
-  const [selectedWarehouse, setSelectedWarehouse] = useState<string>("");
+  const [selectedWarehouse, setSelectedWarehouse] = useState<string>("all");
   const [selectedMovementType, setSelectedMovementType] = useState<StockMovementType | undefined>();
   const [dateRange, setDateRange] = useState<{ start?: string; end?: string }>({});
 
   // Query params for stock ledger
   const queryParams: StockLedgerQueryParams = useMemo(() => ({
-    warehouseId: selectedWarehouse || undefined,
+    warehouseId: selectedWarehouse && selectedWarehouse !== "all" ? selectedWarehouse : undefined,
     movementType: selectedMovementType,
     referenceCode: search || undefined,
     startDate: dateRange.start,
@@ -46,8 +46,8 @@ export function useStockLedger() {
   const { data: warehouses = [] } = useGetWarehousesQuery({ limit: 1000 });
   // Only fetch locations when a warehouse is selected
   const { data: locations = [] } = useGetLocationsQuery(
-    { warehouseId: selectedWarehouse || '', limit: 1000 },
-    { skip: !selectedWarehouse }
+    { warehouseId: selectedWarehouse && selectedWarehouse !== "all" ? selectedWarehouse : '', limit: 1000 },
+    { skip: !selectedWarehouse || selectedWarehouse === "all" }
   );
   const { data: uoms = [] } = useGetItemUomsQuery();
 
