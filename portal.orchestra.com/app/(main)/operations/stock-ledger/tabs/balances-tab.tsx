@@ -99,7 +99,7 @@ export function BalancesTab() {
                   <SelectValue placeholder="All Warehouses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Warehouses</SelectItem>
+                  <SelectItem value="all">All Warehouses</SelectItem>
                   {warehouses.map((warehouse) => (
                     <SelectItem key={warehouse.id} value={warehouse.id}>
                       {warehouse.code} - {warehouse.name}

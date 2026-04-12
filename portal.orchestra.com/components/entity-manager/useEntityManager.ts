@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { EntityManagerProps, FormMode } from './types';
 import { toast } from '@/lib/toast';
 
-export function useEntityManager<T extends Record<string, unknown>>({
+export function useEntityManager<T extends object>({
   data,
   entityName,
   entityNamePlural,
@@ -108,16 +108,6 @@ export function useEntityManager<T extends Record<string, unknown>>({
     try {
       // 1. Clean the data (strip metadata and cast types)
       const cleanedData: Record<string, unknown> = {};
-      const metadataFields = [
-        'id',
-        'createdAt',
-        'updatedAt',
-        'deletedAt',
-        'createdBy',
-        'updatedBy',
-        'deletedBy',
-        'tenantId',
-      ];
 
       formFields.forEach((field) => {
         const rawValue = (formData as Record<string, unknown>)[field.name];

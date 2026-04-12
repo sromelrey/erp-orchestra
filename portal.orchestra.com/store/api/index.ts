@@ -7,18 +7,25 @@ import { itemsEndpoints } from './itemsApi';
 import { salesOrdersEndpoints } from './salesOrdersApi';
 import { goodsReceiptsEndpoints } from './goodsReceiptsApi';
 import { productionEndpoints } from './productionApi';
+import { stockAdjustmentsEndpoints } from './stockAdjustmentsApi';
+import { stockTransfersEndpoints } from './stockTransfersApi';
+import { goodsIssuanceEndpoints } from './goodsIssuanceApi';
+import { departmentsApi, useGetDepartmentsQuery, useCreateDepartmentMutation, useGetDepartmentByIdQuery, useUpdateDepartmentMutation } from './departmentsApi';
 
 // Inject the feature-specific endpoints
 export const api = baseApi
-  .injectEndpoints({ endpoints: warehousesEndpoints })
-  .injectEndpoints({ endpoints: locationsEndpoints })
-  .injectEndpoints({ endpoints: usersEndpoints })
-  .injectEndpoints({ endpoints: stockLedgerEndpoints })
-  .injectEndpoints({ endpoints: itemsEndpoints })
-  .injectEndpoints({ endpoints: goodsReceiptsEndpoints })
-  .injectEndpoints({ endpoints: salesOrdersEndpoints })
-  .injectEndpoints({ endpoints: productionEndpoints });
-
+  .injectEndpoints({ endpoints: warehousesEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: locationsEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: usersEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: stockLedgerEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: itemsEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: goodsReceiptsEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: salesOrdersEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: productionEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: stockAdjustmentsEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: stockTransfersEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: goodsIssuanceEndpoints, overrideExisting: true })
+  
 // Export hooks for each API
 export const warehousesHooks = api.endpoints;
 export const locationsHooks = api.endpoints;
@@ -36,6 +43,9 @@ export const useGetLocationsQuery = api.useGetLocationsQuery;
 export const useGetLocationTreeQuery = api.useGetLocationTreeQuery;
 export const useCreateLocationMutation = api.useCreateLocationMutation;
 export const useUpdateLocationMutation = api.useUpdateLocationMutation;
+
+// Export departments hooks
+export { useGetDepartmentsQuery, useCreateDepartmentMutation, useGetDepartmentByIdQuery, useUpdateDepartmentMutation };
 
 export const useGetUsersQuery = api.useGetUsersQuery;
 export const useGetUserQuery = api.useGetUserQuery;
@@ -91,6 +101,36 @@ export const useDeleteProductionBatchMutation = api.useDeleteProductionBatchMuta
 export const useStartProductionBatchMutation = api.useStartProductionBatchMutation;
 export const useCompleteProductionBatchMutation = api.useCompleteProductionBatchMutation;
 export const useCancelProductionBatchMutation = api.useCancelProductionBatchMutation;
+
+// Stock Adjustments hooks
+export const useGetStockAdjustmentsQuery = api.useGetStockAdjustmentsQuery;
+export const useGetStockAdjustmentQuery = api.useGetStockAdjustmentQuery;
+export const useCreateStockAdjustmentMutation = api.useCreateStockAdjustmentMutation;
+export const useUpdateStockAdjustmentMutation = api.useUpdateStockAdjustmentMutation;
+export const useApproveStockAdjustmentMutation = api.useApproveStockAdjustmentMutation;
+export const useCancelStockAdjustmentMutation = api.useCancelStockAdjustmentMutation;
+export const useDeleteStockAdjustmentMutation = api.useDeleteStockAdjustmentMutation;
+
+// Stock Transfers hooks
+export const useGetStockTransfersQuery = api.useGetStockTransfersQuery;
+export const useGetStockTransferQuery = api.useGetStockTransferQuery;
+export const useCreateStockTransferMutation = api.useCreateStockTransferMutation;
+export const useUpdateStockTransferMutation = api.useUpdateStockTransferMutation;
+export const useApproveStockTransferMutation = api.useApproveStockTransferMutation;
+export const useShipStockTransferMutation = api.useShipStockTransferMutation;
+export const useReceiveStockTransferMutation = api.useReceiveStockTransferMutation;
+export const useCancelStockTransferMutation = api.useCancelStockTransferMutation;
+export const useDeleteStockTransferMutation = api.useDeleteStockTransferMutation;
+
+// Goods Issuance hooks
+export const useGetGoodsIssuancesQuery = api.useGetGoodsIssuancesQuery;
+export const useGetGoodsIssuanceQuery = api.useGetGoodsIssuanceQuery;
+export const useGetGoodsIssuanceByNumberQuery = api.useGetGoodsIssuanceByNumberQuery;
+export const useCreateGoodsIssuanceMutation = api.useCreateGoodsIssuanceMutation;
+export const useUpdateGoodsIssuanceMutation = api.useUpdateGoodsIssuanceMutation;
+export const useApproveGoodsIssuanceMutation = api.useApproveGoodsIssuanceMutation;
+export const useCancelGoodsIssuanceMutation = api.useCancelGoodsIssuanceMutation;
+export const useDeleteGoodsIssuanceMutation = api.useDeleteGoodsIssuanceMutation;
 
 // Re-export other APIs as needed
 export { materialsApi } from './materialsApi';

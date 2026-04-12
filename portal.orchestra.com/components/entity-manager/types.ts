@@ -53,6 +53,10 @@ export interface FormField {
       // For dependent columns within nested arrays
       dependsOn?: string; // Column key this column depends on
       getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
+      // For number columns
+      allowNegative?: boolean;
+      allowDecimal?: boolean;
+      decimalScale?: number;
     }>;
     itemLabel?: string; // e.g., "Item"
     itemsLabel?: string; // e.g., "Items"
