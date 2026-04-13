@@ -268,6 +268,13 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         menu_code: 'CP-06-09',
         permission: 'operations.production.view',
       },
+      {
+        label: 'Bill of Materials',
+        href: '/operations/bom',
+        icon: Package,
+        menu_code: 'CP-06-10',
+        permission: 'operations.bom.view',
+      },
     ],
   },
 ];

@@ -33,6 +33,7 @@ export const TAG_TYPES = [
   'SalesOrders',
   'GoodsReceipt',
   'ProductionBatch',
+  'Bom',
   'StockAdjustment',
   'StockTransfer',
   'GoodsIssuance',

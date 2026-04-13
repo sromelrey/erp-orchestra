@@ -83,12 +83,20 @@
 - [x] **Goods Receipt Permissions** - Specific permissions for goods receipts operations
 - [x] **Permission Migrations** - Database migrations for permission updates
 
-### 9. Core Infrastructure ✅ **COMPLETED** (100%)
+### 9. Core Infrastructure 🚧 **IN PROGRESS** (40% Desktop Deployment Ready)
 - [x] **Database Schema** - PostgreSQL with TypeORM
 - [x] **API Framework** - NestJS with REST endpoints
 - [x] **Authentication** - Session-based auth
 - [x] **Validation** - DTO-based request validation
 - [x] **Error Handling** - Centralized error management
+- [ ] **Desktop Installer** - Windows/Mac installer for local deployment
+- [ ] **Local Database Setup** - Automated PostgreSQL installation/config
+- [ ] **Service Management** - Windows Service / systemd daemon
+- [ ] **Auto-Start Configuration** - Start services on boot
+- [ ] **Local File Storage** - Desktop file system for imports/exports
+- [ ] **Backup/Restore** - Local database backup automation
+- [ ] **Update Mechanism** - Desktop app update system
+- [ ] **Offline Mode Support** - Cached data for offline operation
 
 ### 10. Customer Management 📋 **NOT STARTED** (0% Backend, 0% Frontend) - **LOWEST PRIORITY**
 - [ ] **Customer CRUD** - Create, view, update, delete customers

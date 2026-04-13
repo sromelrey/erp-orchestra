@@ -7,6 +7,7 @@ import { itemsEndpoints } from './itemsApi';
 import { salesOrdersEndpoints } from './salesOrdersApi';
 import { goodsReceiptsEndpoints } from './goodsReceiptsApi';
 import { productionEndpoints } from './productionApi';
+import { bomEndpoints } from './bomApi';
 import { stockAdjustmentsEndpoints } from './stockAdjustmentsApi';
 import { stockTransfersEndpoints } from './stockTransfersApi';
 import { goodsIssuanceEndpoints } from './goodsIssuanceApi';
@@ -22,6 +23,7 @@ export const api = baseApi
   .injectEndpoints({ endpoints: goodsReceiptsEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: salesOrdersEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: productionEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: bomEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: stockAdjustmentsEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: stockTransfersEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: goodsIssuanceEndpoints, overrideExisting: true })
@@ -101,6 +103,17 @@ export const useDeleteProductionBatchMutation = api.useDeleteProductionBatchMuta
 export const useStartProductionBatchMutation = api.useStartProductionBatchMutation;
 export const useCompleteProductionBatchMutation = api.useCompleteProductionBatchMutation;
 export const useCancelProductionBatchMutation = api.useCancelProductionBatchMutation;
+
+// BOM hooks
+export const useGetBomsListQuery = api.useGetBomsQuery;
+export const useGetBomByIdQuery = api.useGetBomByIdQuery;
+export const useCreateBomMutation = api.useCreateBomMutation;
+export const useUpdateBomMutation = api.useUpdateBomMutation;
+export const useDeleteBomMutation = api.useDeleteBomMutation;
+export const useUpdateBomStatusMutation = api.useUpdateBomStatusMutation;
+export const useActivateBomMutation = api.useActivateBomMutation;
+export const useDeactivateBomMutation = api.useDeactivateBomMutation;
+export const useCalculateBomCostMutation = api.useCalculateBomCostMutation;
 
 // Stock Adjustments hooks
 export const useGetStockAdjustmentsQuery = api.useGetStockAdjustmentsQuery;
