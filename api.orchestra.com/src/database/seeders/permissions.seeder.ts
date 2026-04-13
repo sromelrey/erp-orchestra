@@ -272,6 +272,20 @@ export const PermissionsSeeder: Seeder = {
         },
         {
           module: 'operations',
+          resource: 'bom',
+          action: 'view',
+          slug: 'operations.bom.view',
+          name: 'View Bill of Materials',
+        },
+        {
+          module: 'operations',
+          resource: 'bom',
+          action: 'manage',
+          slug: 'operations.bom.manage',
+          name: 'Manage Bill of Materials',
+        },
+        {
+          module: 'operations',
           resource: 'bom_costing',
           action: 'view',
           slug: 'operations.bom_costing.view',
