@@ -206,6 +206,13 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
     permission: 'operations.view',
     children: [
       {
+        label: 'Dashboard',
+        href: '/operations/dashboard',
+        icon: LayoutDashboard,
+        menu_code: 'CP-06-00',
+        permission: 'operations.dashboard.view',
+      },
+      {
         label: 'Warehouses',
         href: '/operations/warehouses',
         icon: Warehouse,

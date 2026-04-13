@@ -1,14 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { baseApi } from './api/baseApi';
+import { dashboardApi } from './api/dashboardApi';
 import authReducer from './slices/authSlice';
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
     auth: authReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
+  middleware: (getDefaultMiddleware) => 
+    getDefaultMiddleware().concat(baseApi.middleware, dashboardApi.middleware),
 });
 
 setupListeners(store.dispatch);

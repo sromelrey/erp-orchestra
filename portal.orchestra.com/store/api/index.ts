@@ -12,6 +12,7 @@ import { stockAdjustmentsEndpoints } from './stockAdjustmentsApi';
 import { stockTransfersEndpoints } from './stockTransfersApi';
 import { goodsIssuanceEndpoints } from './goodsIssuanceApi';
 import { departmentsApi, useGetDepartmentsQuery, useCreateDepartmentMutation, useGetDepartmentByIdQuery, useUpdateDepartmentMutation } from './departmentsApi';
+import { dashboardApi } from './dashboardApi';
 
 // Inject the feature-specific endpoints
 export const api = baseApi
@@ -159,3 +160,4 @@ export { payPeriodsApi } from './payPeriodsApi';
 export { rolesApi } from './rolesApi';
 export { sessionsApi } from './sessionsApi';
 export { timesheetsApi } from './timesheetsApi';
+export { dashboardApi } from './dashboardApi';

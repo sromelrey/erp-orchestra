@@ -1,0 +1,56 @@
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+### Get Dashboard Overview
+GET {{API_BASE_URL}}/v1/ops/dashboard/overview
+Content-Type: application/json
+###
+
+### Get Sales Overview
+GET {{API_BASE_URL}}/v1/ops/dashboard/sales
+Content-Type: application/json
+###
+
+### Get Inventory Overview
+GET {{API_BASE_URL}}/v1/ops/dashboard/inventory
+Content-Type: application/json
+###
+
+### Get Production Overview
+GET {{API_BASE_URL}}/v1/ops/dashboard/production
+Content-Type: application/json
+###
+
+### Get Materials Overview
+GET {{API_BASE_URL}}/v1/ops/dashboard/materials
+Content-Type: application/json
+###
+
+### Test without authentication (should return 401)
+GET {{API_BASE_URL}}/v1/ops/dashboard/overview
+Content-Type: application/json
+
+###
+
+### Test with wrong permissions (should return 403)
+# Use a user without operations.dashboard.view permission
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+###
+
+GET {{API_BASE_URL}}/v1/ops/dashboard/overview
+Content-Type: application/json
