@@ -286,6 +286,13 @@ export const PermissionsSeeder: Seeder = {
         },
         {
           module: 'operations',
+          resource: 'dashboard',
+          action: 'view',
+          slug: 'operations.dashboard.view',
+          name: 'View Operations Dashboard',
+        },
+        {
+          module: 'operations',
           resource: 'bom_costing',
           action: 'view',
           slug: 'operations.bom_costing.view',

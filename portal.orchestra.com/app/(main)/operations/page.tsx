@@ -8,15 +8,15 @@ export default function OperationsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to materials page as the default operations page
-    router.push('/operations/materials');
+    // Redirect to dashboard page as the default operations page
+    router.push('/operations/dashboard');
   }, [router]);
 
   return (
     <div className="flex items-center justify-center h-96">
       <div className="text-center">
         <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-        <p className="text-gray-600">Redirecting to Materials...</p>
+        <p className="text-gray-600">Redirecting to Dashboard...</p>
       </div>
     </div>
   );
