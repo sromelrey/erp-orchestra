@@ -4,7 +4,7 @@ import { FormFieldOption } from '@/components/entity-manager/types';
 
 export function useGoodsIssuanceLocations() {
   const [warehouseId, setWarehouseId] = useState<string | null>(null);
-  const pendingResolvers = useRef<Map<string, (options: FormFieldOption[]) => void>>(new Map());
+  const pendingResolvers = useRef<Map<string, ((options: FormFieldOption[]) => void)[]>>(new Map());
 
   // Query locations for the selected warehouse
   const { data: warehouseLocations = [], isLoading: isLoadingLocations } = useGetLocationsQuery(

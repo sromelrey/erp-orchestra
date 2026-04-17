@@ -105,7 +105,7 @@ export function StepWorkSchedule({ data, updateData }: StepWorkScheduleProps) {
   return (
     <div className="space-y-6">
       <div className="text-sm text-muted-foreground">
-        Configure the employee's work schedule and hours.
+        Configure the employee&apos;s work schedule and hours.
       </div>
 
       {/* Work Days Selection */}

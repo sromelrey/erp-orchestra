@@ -5,10 +5,11 @@ import {
   useGetMyLeaveRequestsQuery,
   useCreateLeaveRequestMutation,
   useGetLeaveTypesQuery,
+  LeaveRequest,
 } from '@/store/api/leaveApi';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Info } from 'lucide-react';
+import { Clock, Info } from 'lucide-react';
 import { toast } from '@/lib/toast';
 import EntityManager from '@/components/entity-manager/EntityManager';
 import { columns } from './columns';
@@ -21,12 +22,12 @@ export default function MyLeavesPage() {
 
   const formFields = useMemo(() => getFormFields(leaveTypes), [leaveTypes]);
 
-  const handleCreate = async (data: any) => {
+  const handleCreate = async (data: Partial<LeaveRequest>) => {
     try {
       await createRequest(data).unwrap();
       toast.success('Leave request submitted successfully');
-    } catch (err: any) {
-      toast.error(err);
+    } catch (err: unknown) {
+      toast.error(err as string);
     }
   };
 

@@ -1,20 +1,12 @@
 import { Column } from '@/components/ui/data-table';
+import { LeaveType } from '@/store/api/leaveApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<LeaveType>[] = [
   { header: 'Name', accessorKey: 'name' },
   { header: 'Description', accessorKey: 'description' },
   {
     header: 'Paid',
-    cell: (item: any) => (item.isPaid ? 'Yes' : 'No'),
+    cell: (item: LeaveType) => (item.isPaid ? 'Yes' : 'No'),
   },
   { header: 'Default Days', accessorKey: 'defaultDaysPerYear' },
-  { header: 'Advance Notice', accessorKey: 'minDaysAdvance' },
-  {
-    header: 'Allow Past',
-    cell: (item: any) => (item.allowPastDates ? 'Yes' : 'No'),
-  },
-  {
-    header: 'Allow Today',
-    cell: (item: any) => (item.allowSameDay ? 'Yes' : 'No'),
-  },
 ];

@@ -9,8 +9,8 @@ import {
   useDeleteUserMutation,
   useAssignUserPermissionsMutation,
   useRemoveUserPermissionsMutation,
-  useGetRolesQuery,
 } from "@/store/api";
+import { useGetRolesQuery } from "@/store/api/rolesApi";
 import { User, CreateUserRequest, UpdateUserRequest } from "@/types";
 
 export interface UseUsersOptions {
@@ -52,9 +52,6 @@ export function useUsers(options: UseUsersOptions = {}) {
       }
       if (!data.lastName) {
         throw new Error("Last name is required");
-      }
-      if (!data.roleIds || data.roleIds.length === 0) {
-        throw new Error("At least one role is required");
       }
 
       const createData: CreateUserRequest = {

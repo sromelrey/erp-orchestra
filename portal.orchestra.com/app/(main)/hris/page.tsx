@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TimeClock } from '@/components/hris/attendance/TimeClock';
 import { Badge } from '@/components/ui/badge';
-import { useGetMyLeaveRequestsQuery } from '@/store/api/leaveApi';
+import { useGetMyLeaveRequestsQuery, LeaveRequest } from '@/store/api/leaveApi';
 import { useGetEmployeesQuery } from '@/store/api/employeesApi';
 import {
   Users,
@@ -26,7 +26,7 @@ export default function HRISOverviewPage() {
   const { data: myRequests } = useGetMyLeaveRequestsQuery();
   const { data: employees } = useGetEmployeesQuery({});
 
-  const dashboardLeaveColumns: Column<any>[] = [
+  const dashboardLeaveColumns: Column<LeaveRequest>[] = [
     {
       header: 'Staff',
       cell: (req) => (

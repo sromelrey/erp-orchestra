@@ -30,7 +30,7 @@ export function useProductionBatches(options: UseProductionBatchesOptions = {}) 
   });
 
   const { data: productionData, isLoading, error, refetch } = useGetProductionBatchesQuery(params);
-  const { data: bomsData } = useGetBomsQuery();
+  const { data: bomsData } = useGetBomsQuery({ limit: 1000 });
 
   const [createProductionBatch, { isLoading: isCreating }] = useCreateProductionBatchMutation();
   const [updateProductionBatch, { isLoading: isUpdating }] = useUpdateProductionBatchMutation();
@@ -117,11 +117,11 @@ export function useProductionBatches(options: UseProductionBatchesOptions = {}) 
 
   const bomOptions = useMemo(() => {
     if (!bomsData) return [];
-    return bomsData.map((bom) => ({
+    return bomsData.data.map((bom) => ({
       value: bom.id.toString(),
       label: bom.parentMaterial
-        ? `${bom.bomCode || `BOM #${bom.id}`} - ${bom.parentMaterial.name}`
-        : bom.bomCode || `BOM #${bom.id}`,
+        ? `${bom.code || `BOM #${bom.id}`} - ${bom.parentMaterial.name}`
+        : bom.code || `BOM #${bom.id}`,
     }));
   }, [bomsData]);
 

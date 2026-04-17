@@ -1,9 +1,9 @@
 import { Column } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
-import { PayPeriodStatus } from '@/store/api/payPeriodsApi';
+import { PayPeriod } from '@/store/api/payPeriodsApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<PayPeriod>[] = [
   {
     header: 'Name',
     accessorKey: 'name',

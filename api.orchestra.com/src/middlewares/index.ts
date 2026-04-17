@@ -35,8 +35,11 @@ export function applyMiddlewares(app: INestApplication) {
     .get(SessionService).repository;
   const cookieSecret = configService.getOrThrow<string>('SESSION_SECRET');
   const nodeEnv = configService.getOrThrow<string>('NODE_ENV');
+  console.log(`[Middleware] NODE_ENV loaded: ${nodeEnv}`);
   const isProduction = nodeEnv === (Env.Prod as string);
+  console.log(`[Middleware] isProduction: ${isProduction}`);
   const secure = isProduction;
+  console.log(`[Middleware] secure cookie: ${secure}`);
 
   // Configure helmet with development-friendly settings
   app.use(

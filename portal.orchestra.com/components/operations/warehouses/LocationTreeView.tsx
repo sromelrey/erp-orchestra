@@ -35,8 +35,8 @@ export function LocationTreeView({
     const hasChildren = node.children.length > 0;
     const isExpanded = expandedNodes.has(node.id);
     const isSelected = selectedLocationId === node.id;
-    const utilization = node.capacity 
-      ? (node.currentStock / node.capacity) * 100 
+    const utilization = node.capacity && node.currentStock !== undefined
+      ? (node.currentStock / node.capacity) * 100
       : 0;
 
     return (
@@ -81,7 +81,7 @@ export function LocationTreeView({
               {node.type}
             </Badge>
             
-            {node.capacity && (
+            {node.capacity && node.currentStock !== undefined && (
               <div className="flex items-center gap-1 min-w-0">
                 <Package className="h-3 w-3 text-muted-foreground" />
                 <span className="text-xs text-muted-foreground">

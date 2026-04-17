@@ -324,7 +324,7 @@ export function MovementForm({
           <FormRenderer
             key={formKey}
             fields={getFormFields()}
-            formData={formData}
+            formData={formData as Record<string, string | number | boolean | unknown[] | undefined>}
             formMode="create"
             onFieldChange={handleFieldChange}
           />

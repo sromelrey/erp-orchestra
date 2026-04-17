@@ -11,6 +11,7 @@ import {
   useUpdatePayPeriodMutation,
   useDeletePayPeriodMutation,
   PayPeriodStatus,
+  PayPeriod,
 } from '@/store/api/payPeriodsApi';
 
 export default function PayPeriodsPage() {
@@ -45,24 +46,26 @@ export default function PayPeriodsPage() {
     },
   ];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<PayPeriod>) => {
     try {
       await createPeriod(formData).unwrap();
       toast.success('Pay Period created successfully');
       refetch();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to create pay period');
+    } catch (error: unknown) {
+      const apiError = error as { data?: { message?: string } };
+      toast.error(apiError?.data?.message || 'Failed to create pay period');
       throw error;
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<PayPeriod>) => {
     try {
       await updatePeriod({ id, body: formData }).unwrap();
       toast.success('Pay Period updated successfully');
       refetch();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to update pay period');
+    } catch (error: unknown) {
+      const apiError = error as { data?: { message?: string } };
+      toast.error(apiError?.data?.message || 'Failed to update pay period');
       throw error;
     }
   };
@@ -72,8 +75,9 @@ export default function PayPeriodsPage() {
       await deletePeriod(id).unwrap();
       toast.success('Pay Period deleted successfully');
       refetch();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to delete pay period');
+    } catch (error: unknown) {
+      const apiError = error as { data?: { message?: string } };
+      toast.error(apiError?.data?.message || 'Failed to delete pay period');
       throw error;
     }
   };
@@ -85,7 +89,7 @@ export default function PayPeriodsPage() {
       data={payPeriods}
       columns={columns}
       formFields={formFields}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item: PayPeriod) => item.id}
       onCreate={handleCreate}
       onUpdate={handleUpdate}
       permissions={{

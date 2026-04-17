@@ -4,11 +4,12 @@ import React, { useMemo, useState } from 'react';
 import {
   useGetLeaveRequestsQuery,
   useUpdateLeaveRequestStatusMutation,
+  LeaveRequest,
 } from '@/store/api/leaveApi';
 import EntityManager from '@/components/entity-manager/EntityManager';
 import { columns as baseColumns } from './column';
 import { formFields } from './form-fields';
-import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Clock, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,30 +22,30 @@ export default function LeaveRequestsPage() {
   const [updateStatus, { isLoading: isUpdating }] = useUpdateLeaveRequestStatusMutation();
 
   // Local state for the custom review modal
-  const [selectedRequest, setSelectedRequest] = useState<any>(null);
+  const [selectedRequest, setSelectedRequest] = useState<LeaveRequest | null>(null);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [comment, setComment] = useState('');
 
-  const data = requests || [];
+  const data = useMemo(() => requests || [], [requests]);
 
   // Calculate statistics
   const stats = useMemo(
     () => [
       {
         label: 'Pending Requests',
-        value: data.filter((r: any) => r.status === 'PENDING').length,
+        value: data.filter((r: LeaveRequest) => r.status === 'PENDING').length,
         icon: Clock,
         color: 'bg-amber-100 text-amber-700',
       },
       {
         label: 'Approved Today',
-        value: data.filter((r: any) => r.status === 'APPROVED').length, // Simplified for demo
+        value: data.filter((r: LeaveRequest) => r.status === 'APPROVED').length, // Simplified for demo
         icon: CheckCircle,
         color: 'bg-emerald-100 text-emerald-700',
       },
       {
         label: 'Rejected',
-        value: data.filter((r: any) => r.status === 'REJECTED').length,
+        value: data.filter((r: LeaveRequest) => r.status === 'REJECTED').length,
         icon: XCircle,
         color: 'bg-red-100 text-red-700',
       },
@@ -52,13 +53,14 @@ export default function LeaveRequestsPage() {
     [data]
   );
 
-  const handleReview = (request: any) => {
+  const handleReview = (request: LeaveRequest) => {
     setSelectedRequest(request);
     setComment('');
     setIsReviewOpen(true);
   };
 
   const processStatus = async (status: 'APPROVED' | 'REJECTED') => {
+    if (!selectedRequest) return;
     try {
       await updateStatus({
         id: selectedRequest.id,
@@ -67,8 +69,9 @@ export default function LeaveRequestsPage() {
       }).unwrap();
       toast.success(`Request ${status.toLowerCase()}ed successfully`);
       setIsReviewOpen(false);
-    } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to update request');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error.data?.message || 'Failed to update request');
     }
   };
 
@@ -79,7 +82,7 @@ export default function LeaveRequestsPage() {
       {
         header: 'Actions',
         className: 'text-right',
-        cell: (item: any) =>
+        cell: (item: LeaveRequest) =>
           item.status === 'PENDING' ? (
             <Button variant="ghost" size="sm" onClick={() => handleReview(item)}>
               Review
@@ -100,7 +103,7 @@ export default function LeaveRequestsPage() {
         error={error ? 'Failed to fetch leave requests' : null}
         columns={columns}
         formFields={formFields}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: LeaveRequest) => item.id}
         stats={stats}
         showViewButton={false} // Customizing buttons for workflow
         showEditButton={false}

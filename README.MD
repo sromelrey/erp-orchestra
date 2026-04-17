@@ -96,6 +96,7 @@ erp-orchestra/
 * PNPM or Yarn
 * PostgreSQL >= 14
 * Docker (optional)
+* PM2 (for production deployment)
 
 ### Installation
 
@@ -110,6 +111,144 @@ pnpm install
 # Run the development environment
 pnpm dev
 
+```
+
+---
+
+## Production Deployment with PM2
+
+### Environment Configuration
+
+1. **Configure Backend Environment** (`api.orchestra.com/.env`):
+```env
+DATABASE_URL=postgresql://user:password@host:5432/database
+SESSION_SECRET=your-secret-key
+NODE_ENV=development  # or production
+FRONTEND_URL=http://localhost:3001
+API_BASE_URL=http://localhost:3000/api
+```
+
+2. **Important: PM2 Ecosystem Config**
+   - The `api.orchestra.com/ecosystem.config.js` file sets the `NODE_ENV` environment variable for PM2
+   - **Critical**: Ensure `NODE_ENV` matches your environment (development/production)
+   - For development: `NODE_ENV: "development"` (sets secure cookies to false)
+   - For production: `NODE_ENV: "production"` (sets secure cookies to true)
+
+### Building the Application
+
+```bash
+# Build backend
+cd api.orchestra.com
+npm run build
+cd ..
+
+# Build frontend
+cd portal.orchestra.com
+npm run build
+cd ..
+```
+
+### Starting with PM2
+
+```bash
+# Start backend
+pm2 start api.orchestra.com/ecosystem.config.js
+
+# Start frontend
+pm2 start portal.orchestra.com/ecosystem.config.cjs
+
+# Check status
+pm2 list
+
+# View logs
+pm2 logs backend
+pm2 logs frontend
+```
+
+### PM2 Management Commands
+
+```bash
+# Restart applications
+pm2 restart all
+pm2 restart backend
+pm2 restart frontend
+
+# Stop applications
+pm2 stop all
+pm2 stop backend
+pm2 stop frontend
+
+# Delete applications
+pm2 delete all
+pm2 delete backend
+pm2 delete frontend
+
+# Save PM2 configuration (auto-start on reboot)
+pm2 save
+pm2 startup
+```
+
+### Troubleshooting
+
+**Port Already in Use Error (EADDRINUSE):**
+```powershell
+# Find process using the port
+Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object OwningProcess, State
+
+# Kill the process
+Stop-Process -Id <PID> -Force
+```
+
+**Session Cookie Issues (403 on /me endpoint):**
+- Ensure `NODE_ENV=development` in both `.env` and `ecosystem.config.js`
+- Development mode sets `secure: false` on cookies (works with HTTP)
+- Production mode sets `secure: true` on cookies (requires HTTPS)
+- After changing NODE_ENV, rebuild and restart PM2
+
+**PM2 Process Not Found:**
+```bash
+pm2 kill
+pm2 start api.orchestra.com/ecosystem.config.js
+pm2 start portal.orchestra.com/ecosystem.config.cjs
+```
+
+### Accessing the Application
+
+- **Frontend**: http://localhost:3001
+- **Backend API**: http://localhost:3000/api
+- **Swagger Documentation**: http://localhost:3000/api/docs
+
+### Deploying to Another Computer
+
+1. Pull the latest changes:
+```bash
+git pull
+```
+
+2. Install dependencies:
+```bash
+cd api.orchestra.com
+npm install
+cd ../portal.orchestra.com
+npm install
+cd ..
+```
+
+3. Configure environment variables in `.env` files
+
+4. Build the applications:
+```bash
+cd api.orchestra.com
+npm run build
+cd ../portal.orchestra.com
+npm run build
+cd ..
+```
+
+5. Start with PM2:
+```bash
+pm2 start api.orchestra.com/ecosystem.config.js
+pm2 start portal.orchestra.com/ecosystem.config.cjs
 ```
 
 ---

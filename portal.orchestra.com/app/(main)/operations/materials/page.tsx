@@ -70,8 +70,8 @@ export default function MaterialsPage() {
     // Convert boolean isActive from string if needed
     const processedData = {
       ...formData,
-      isActive: formData.isActive === true || formData.isActive === 'true',
-    };
+      isActive: formData.isActive === true || (typeof formData.isActive === 'string' && formData.isActive === 'true'),
+    } as CreateMaterialRequest;
     await handleCreate(processedData);
   };
 
@@ -82,7 +82,7 @@ export default function MaterialsPage() {
     // Convert boolean isActive from string if needed
     const processedData = {
       ...formData,
-      isActive: formData.isActive === true || formData.isActive === 'true',
+      isActive: formData.isActive === true || (typeof formData.isActive === 'string' && formData.isActive === 'true'),
     };
     await handleUpdate(id, processedData);
   };

@@ -71,7 +71,10 @@ export function UserPermissionManager({ user, onClose }: UserPermissionManagerPr
 
       // Remove permissions
       if (toRemove.length > 0) {
-        await removePermissions({ userId: user.id, permissions: toRemove.map((slug: string) => ({ slug })) }).unwrap();
+        const permissionIds = toRemove
+          .map((slug) => allPermissions.find((p) => p.slug === slug)?.id)
+          .filter((id): id is number => id !== undefined);
+        await removePermissions({ userId: user.id, permissionIds }).unwrap();
       }
 
       toast.success(`User ${permissionType.toLowerCase()} permissions updated successfully`);
