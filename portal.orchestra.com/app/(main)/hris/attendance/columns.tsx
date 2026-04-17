@@ -2,8 +2,9 @@ import { Column } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { LogIn, LogOut, MapPin } from 'lucide-react';
+import { TimeEvent } from '@/store/api/attendanceApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<TimeEvent>[] = [
   {
     header: 'Event Type',
     cell: (row) => (

@@ -8,7 +8,7 @@ import { EntityManager } from "@/components/entity-manager";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { Activity } from "lucide-react";
-import { CreateStockMovementRequest, StockMovementType } from "@/types";
+import { CreateStockMovementRequest, StockMovementType, StockLedgerEntry } from "@/types/operations";
 import { useMemo, useState } from "react";
 import { useGetLocationsQuery } from "@/store/api";
 
@@ -67,7 +67,7 @@ export function MovementsTab() {
 
     const apiRequest: CreateStockMovementRequest = {
       itemId: String(data.itemId),
-      quantity: parseFloat(data.quantity as string),
+      quantity: typeof data.quantity === 'string' ? parseFloat(data.quantity) : Number(data.quantity),
       uomId: String(data.uomId),
       warehouseId: String(data.warehouseId),
       movementType: data.movementType as StockMovementType,

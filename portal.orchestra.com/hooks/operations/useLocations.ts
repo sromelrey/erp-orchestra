@@ -34,7 +34,7 @@ export function useLocations(warehouseId?: string) {
     data: locationTree = [],
     isLoading: isLoadingTree,
     error: treeError,
-  } = useGetLocationTreeQuery(selectedWarehouseId, { skip: !selectedWarehouseId });
+  } = useGetLocationTreeQuery(selectedWarehouseId || '', { skip: !selectedWarehouseId });
 
   // Get warehouses for selection
   const { data: warehouses = [] } = useGetWarehousesQuery({ limit: 1000 });

@@ -17,9 +17,6 @@ export default function StockTransfersPage() {
     items,
     warehouses,
     isLoading,
-    error,
-    params,
-    setParams,
     handleCreate,
     handleUpdate,
     handleDelete,
@@ -49,9 +46,21 @@ export default function StockTransfersPage() {
     return mergeWithOptimistic(data as unknown as Record<string, unknown>[]);
   }, [data, mergeWithOptimistic]);
 
+  const handleCreateStockTransfer = async (formData: Partial<StockTransfer>) => {
+    await handleCreate(formData);
+  };
+
+  const handleUpdateStockTransfer = async (id: string | number, formData: Partial<StockTransfer>) => {
+    await handleUpdate(Number(id), formData);
+  };
+
+  const handleDeleteStockTransfer = async (id: string | number) => {
+    await handleDelete(Number(id));
+  };
+
   // Form handlers
-  const handleFormOpen = useCallback((item: StockTransfer) => {
-    const mergedItem = mergeWithOptimistic([item as unknown as Record<string, unknown>])[0];
+  const handleFormOpen = useCallback((item: Record<string, unknown>) => {
+    const mergedItem = mergeWithOptimistic([item])[0];
     handleWorkflowFormOpen(mergedItem);
   }, [mergeWithOptimistic, handleWorkflowFormOpen]);
 
@@ -61,20 +70,20 @@ export default function StockTransfersPage() {
     return true;
   }, [isProcessing, handleWorkflowFormClose]);
 
-  const isRowEditable = useCallback((item: StockTransfer) => {
-    return item?.status === 'PENDING';
+  const isRowEditable = useCallback((item: Record<string, unknown>) => {
+    return (item as unknown as StockTransfer)?.status === 'PENDING';
   }, []);
 
-  const isRowDeletable = useCallback((item: StockTransfer) => {
-    return item?.status === 'PENDING';
+  const isRowDeletable = useCallback((item: Record<string, unknown>) => {
+    return (item as unknown as StockTransfer)?.status === 'PENDING';
   }, []);
 
   // Derive currentStatus from optimistic data for form locking
   const currentStatus = useMemo(() => {
-    if (!optimisticUpdates || Object.keys(optimisticUpdates).length === 0) return undefined;
-    const keys = Object.keys(optimisticUpdates);
-    if (keys.length === 0) return undefined;
-    const latest = optimisticUpdates[keys[keys.length - 1]] as Record<string, unknown>;
+    if (!optimisticUpdates || optimisticUpdates.size === 0) return undefined;
+    const values = Array.from(optimisticUpdates.values());
+    if (values.length === 0) return undefined;
+    const latest = values[values.length - 1] as Record<string, unknown>;
     return latest?.status as string | undefined;
   }, [optimisticUpdates]);
 
@@ -98,35 +107,33 @@ export default function StockTransfersPage() {
   return (
     <PermissionGuard permission="inventory.transfer.read">
       <div className="p-6">
-        <EntityManager<StockTransfer>
-          title="Stock Transfers"
-          subtitle="Manage stock transfers between warehouses"
-          columns={columns}
-          data={dataWithOptimistic as unknown as StockTransfer[]}
-          isLoading={isLoading}
-          error={error ? (typeof error === 'string' ? error : 'Failed to fetch stock transfers') : null}
-          params={params}
-          setParams={setParams}
+        <EntityManager
+          entityName="Stock Transfer"
+          entityNamePlural="Stock Transfers"
+          data={dataWithOptimistic}
+          columns={columns as unknown as import('@/components/ui/data-table').Column<Record<string, unknown>>[]}
+          formWidth="50%"
+          formFields={formFields}
+          keyExtractor={(item) => (item as { id: string | number }).id}
+          onCreate={handleCreateStockTransfer}
+          onUpdate={handleUpdateStockTransfer}
+          onDelete={handleDeleteStockTransfer}
           onFormOpen={handleFormOpen}
           onFormClose={handleFormClose}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          isRowEditable={isRowEditable}
-          isRowDeletable={isRowDeletable}
-          formFields={formFields}
-          workflowActions={workflowActions}
+          searchPlaceholder="Search stock transfers by reference..."
+          isLoading={isLoading}
           isProcessing={isProcessing}
-          optimisticUpdates={optimisticUpdates}
-          header={StockTransferHeader}
-          formWidth="50%"
-          keyExtractor={(item) => item.id}
-          entityName="Stock Transfer"
           permissions={{
             create: "inventory.transfer.create",
             update: "inventory.transfer.edit",
             delete: "inventory.transfer.delete",
+            view: "inventory.transfer.read",
           }}
+          workflowActions={workflowActions}
+          optimisticUpdates={optimisticUpdates}
+          header={StockTransferHeader}
+          isRowEditable={isRowEditable}
+          isRowDeletable={isRowDeletable}
         />
       </div>
     </PermissionGuard>

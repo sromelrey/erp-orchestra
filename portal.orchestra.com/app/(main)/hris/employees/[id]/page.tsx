@@ -7,7 +7,7 @@ import {
   useGetEmployeeDeductionsQuery,
 } from '@/store/api/compensationApi';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, User, Briefcase, MapPin, Building2, DollarSign, Target } from 'lucide-react';
+import { ArrowLeft, User, Briefcase, MapPin, Building2, DollarSign } from 'lucide-react';
 import { PermissionGuard } from '@/components/auth/PermissionGuard';
 import { Skeleton } from '@/components/ui/skeleton';
 

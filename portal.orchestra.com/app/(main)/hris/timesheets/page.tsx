@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EntityManager, StatCard } from '@/components/entity-manager';
 import { columns } from './column';
 import { formFields } from './form-fields';
@@ -10,7 +10,7 @@ import {
   useGetTimesheetSummaryQuery,
   useGenerateTimesheetsMutation,
   useUpdateTimesheetStatusMutation,
-  TimesheetStatus,
+  Timesheet,
 } from '@/store/api/timesheetsApi';
 import {
   Users,
@@ -31,11 +31,21 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
+
 export default function TimesheetsPage() {
-  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
+  const [userSelectedPeriodId, setUserSelectedPeriodId] = useState<number | null>(null);
 
   // Queries
   const { data: payPeriods = [], isLoading: loadingPeriods } = useGetPayPeriodsQuery();
+
+  // Compute current period ID: use user selection if set, otherwise default to first pay period
+  const selectedPeriodId = userSelectedPeriodId ?? (payPeriods.length > 0 ? payPeriods[0].id : null);
+
   const {
     data: timesheets = [],
     isLoading: loadingTimesheets,
@@ -53,13 +63,6 @@ export default function TimesheetsPage() {
   const [generate] = useGenerateTimesheetsMutation();
   const [updateStatus] = useUpdateTimesheetStatusMutation();
 
-  // Set initial period
-  useEffect(() => {
-    if (payPeriods.length > 0 && !selectedPeriodId) {
-      setSelectedPeriodId(payPeriods[0].id);
-    }
-  }, [payPeriods, selectedPeriodId]);
-
   const handleGenerate = async () => {
     if (!selectedPeriodId) return;
     const promise = generate({ payPeriodId: selectedPeriodId }).unwrap();
@@ -74,20 +77,27 @@ export default function TimesheetsPage() {
       await promise;
       refetchTimesheets();
       refetchSummary();
-    } catch (e) {}
+    } catch {
+      // Error already handled by toast.promise
+    }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, data: Partial<Timesheet>) => {
     try {
+      if (!data.status) {
+        toast.error('Status is required');
+        return;
+      }
       await updateStatus({
         id: id.toString(),
-        status: formData.status,
+        status: data.status,
       }).unwrap();
       toast.success('Timesheet status updated successfully');
       refetchTimesheets();
       refetchSummary();
-    } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to update timesheet');
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      toast.error(apiError?.data?.message || 'Failed to update timesheet');
       throw error;
     }
   };
@@ -137,7 +147,7 @@ export default function TimesheetsPage() {
           <div className="min-w-[200px]">
             <Select
               value={selectedPeriodId?.toString()}
-              onValueChange={(v) => setSelectedPeriodId(parseInt(v))}
+              onValueChange={(v) => setUserSelectedPeriodId(parseInt(v))}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select Pay Period" />

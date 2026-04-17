@@ -17,9 +17,6 @@ export default function StockAdjustmentsPage() {
     items,
     warehouses,
     isLoading,
-    error,
-    params,
-    setParams,
     handleCreate,
     handleUpdate,
     handleDelete,
@@ -49,9 +46,21 @@ export default function StockAdjustmentsPage() {
     return mergeWithOptimistic(data as unknown as Record<string, unknown>[]);
   }, [data, mergeWithOptimistic]);
 
+  const handleCreateStockAdjustment = async (formData: Partial<StockAdjustment>) => {
+    await handleCreate(formData);
+  };
+
+  const handleUpdateStockAdjustment = async (id: string | number, formData: Partial<StockAdjustment>) => {
+    await handleUpdate(id, formData);
+  };
+
+  const handleDeleteStockAdjustment = async (id: string | number) => {
+    await handleDelete(id);
+  };
+
   // Form handlers
-  const handleFormOpen = useCallback((item: StockAdjustment) => {
-    const mergedItem = mergeWithOptimistic([item as unknown as Record<string, unknown>])[0];
+  const handleFormOpen = useCallback((item: Record<string, unknown>) => {
+    const mergedItem = mergeWithOptimistic([item])[0];
     handleWorkflowFormOpen(mergedItem);
   }, [mergeWithOptimistic, handleWorkflowFormOpen]);
 
@@ -62,13 +71,13 @@ export default function StockAdjustmentsPage() {
   }, [isProcessing, handleWorkflowFormClose]);
 
   // Check if a row is editable (only DRAFT)
-  const isRowEditable = useCallback((item: StockAdjustment) => {
-    return item?.status === 'DRAFT';
+  const isRowEditable = useCallback((item: Record<string, unknown>) => {
+    return (item as unknown as StockAdjustment)?.status === 'DRAFT';
   }, []);
 
   // Check if a row is deletable (only DRAFT)
-  const isRowDeletable = useCallback((item: StockAdjustment) => {
-    return item?.status === 'DRAFT';
+  const isRowDeletable = useCallback((item: Record<string, unknown>) => {
+    return (item as unknown as StockAdjustment)?.status === 'DRAFT';
   }, []);
 
   // Get form fields with context
@@ -92,35 +101,33 @@ export default function StockAdjustmentsPage() {
   return (
     <PermissionGuard permission="inventory.adjustment.read">
       <div className="p-6">
-        <EntityManager<StockAdjustment>
-          title="Stock Adjustments"
-          subtitle="Manage stock adjustments for damage, loss, found items, and stock counts"
-          columns={columns}
-          data={dataWithOptimistic as unknown as StockAdjustment[]}
-          isLoading={isLoading}
-          error={error ? (typeof error === 'string' ? error : 'Failed to fetch stock adjustments') : null}
-          params={params}
-          setParams={setParams}
+        <EntityManager
+          entityName="Stock Adjustment"
+          entityNamePlural="Stock Adjustments"
+          data={dataWithOptimistic}
+          columns={columns as unknown as import('@/components/ui/data-table').Column<Record<string, unknown>>[]}
+          formWidth="50%"
+          formFields={formFields}
+          keyExtractor={(item) => (item as { id: string | number }).id}
+          onCreate={handleCreateStockAdjustment}
+          onUpdate={handleUpdateStockAdjustment}
+          onDelete={handleDeleteStockAdjustment}
           onFormOpen={handleFormOpen}
           onFormClose={handleFormClose}
-          onCreate={handleCreate}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          isRowEditable={isRowEditable}
-          isRowDeletable={isRowDeletable}
-          formFields={formFields}
-          workflowActions={workflowActions}
+          searchPlaceholder="Search stock adjustments by reference or notes..."
+          isLoading={isLoading}
           isProcessing={isProcessing}
-          optimisticUpdates={optimisticUpdates}
-          header={StockAdjustmentHeader}
-          formWidth="50%"
-          keyExtractor={(item) => item.id}
-          entityName="Stock Adjustment"
           permissions={{
             create: "inventory.adjustment.create",
             update: "inventory.adjustment.edit",
             delete: "inventory.adjustment.delete",
+            view: "inventory.adjustment.read",
           }}
+          workflowActions={workflowActions}
+          optimisticUpdates={optimisticUpdates}
+          header={StockAdjustmentHeader}
+          isRowEditable={isRowEditable}
+          isRowDeletable={isRowDeletable}
         />
       </div>
     </PermissionGuard>

@@ -31,8 +31,8 @@ export function SalesChart({ data, loading = false }: SalesChartProps) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
-          <Tooltip 
-            formatter={(value: number) => [value.toLocaleString(), 'Orders']}
+          <Tooltip
+            formatter={(value) => [typeof value === 'number' ? value.toLocaleString() : value, 'Orders']}
             contentStyle={{ backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '0.375rem' }}
           />
           <Bar dataKey="value" radius={[8, 8, 0, 0]}>

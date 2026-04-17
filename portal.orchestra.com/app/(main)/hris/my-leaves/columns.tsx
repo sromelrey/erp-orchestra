@@ -1,11 +1,12 @@
 import { Column } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { format, differenceInBusinessDays } from 'date-fns';
+import { LeaveRequest } from '@/store/api/leaveApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<LeaveRequest>[] = [
   {
     header: 'Leave Type',
-    cell: (item: any) => (
+    cell: (item: LeaveRequest) => (
       <div className="flex flex-col">
         <span className="font-semibold text-gray-900">{item.leaveType?.name}</span>
         <span className="text-xs text-muted-foreground italic truncate max-w-[200px]">
@@ -16,7 +17,7 @@ export const columns: Column<any>[] = [
   },
   {
     header: 'Dates',
-    cell: (item: any) => (
+    cell: (item: LeaveRequest) => (
       <div className="flex flex-col text-sm">
         <span className="font-medium text-gray-700">
           {format(new Date(item.startDate), 'MMM d')} -{' '}
@@ -30,7 +31,7 @@ export const columns: Column<any>[] = [
   },
   {
     header: 'Duration',
-    cell: (item: any) => {
+    cell: (item: LeaveRequest) => {
       const days = differenceInBusinessDays(new Date(item.endDate), new Date(item.startDate)) + 1;
       return (
         <span className="font-mono font-bold text-gray-600">
@@ -41,7 +42,7 @@ export const columns: Column<any>[] = [
   },
   {
     header: 'Status',
-    cell: (item: any) => {
+    cell: (item: LeaveRequest) => {
       const status = item.status || 'PENDING';
       const variants: Record<string, string> = {
         PENDING: 'bg-amber-100 text-amber-700 border-amber-200',

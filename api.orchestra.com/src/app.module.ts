@@ -14,6 +14,7 @@ import { InventoryModule } from './modules/inventory/inventory.module';
     // Global config module
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env', '.env.local'],
     }),
 
     // Database configuration

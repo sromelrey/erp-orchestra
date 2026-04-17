@@ -9,7 +9,6 @@ import {
   WorkflowConfig,
   WorkflowAction,
   BuildWorkflowActionsOptions,
-  LoadingState,
 } from './types';
 
 /**
@@ -91,7 +90,10 @@ export function buildWorkflowActions<TStatus extends string | number | symbol, T
         requiresConfirmation: transition.requiresConfirmation,
         confirmationMessage: transition.confirmationMessage?.({} as TItem),
         // 🔹 Enhancement: Structured confirmation config
-        confirm: transition.confirm,
+        confirm: transition.confirm ? {
+          title: typeof transition.confirm.title === 'function' ? transition.confirm.title({} as TItem) : transition.confirm.title,
+          description: typeof transition.confirm.description === 'function' ? transition.confirm.description({} as TItem) : transition.confirm.description,
+        } : undefined,
         onClick: async (item: TItem) => {
           const handler = handlers[transition.handlerKey];
           if (!handler) {
@@ -124,6 +126,7 @@ export function buildWorkflowActions<TStatus extends string | number | symbol, T
           );
 
           await handler(itemIdValue, item);
+          // Ignore return value to match EntityManager's expected void return type
         },
       };
 

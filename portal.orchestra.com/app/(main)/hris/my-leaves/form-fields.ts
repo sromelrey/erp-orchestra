@@ -1,6 +1,7 @@
 import { FormField } from '@/components/entity-manager/types';
+import { LeaveType } from '@/store/api/leaveApi';
 
-export const getFormFields = (leaveTypes: any[] = []): FormField[] => [
+export const getFormFields = (leaveTypes: LeaveType[] = []): FormField[] => [
   {
     name: 'leaveTypeId',
     label: 'Leave Type',

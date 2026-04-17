@@ -1,8 +1,8 @@
 import { Column } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
-import { TimesheetStatus } from '@/store/api/timesheetsApi';
+import { TimesheetStatus, Timesheet } from '@/store/api/timesheetsApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<Timesheet>[] = [
   {
     header: 'Employee',
     cell: (item) => (
@@ -31,7 +31,7 @@ export const columns: Column<any>[] = [
   {
     header: 'Status',
     cell: (item) => {
-      const statusActions: Record<string, { variant: any; className: string }> = {
+      const statusActions: Record<TimesheetStatus, { variant: 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'; className: string }> = {
         [TimesheetStatus.DRAFT]: {
           variant: 'outline',
           className: 'bg-slate-50 text-slate-600',

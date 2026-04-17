@@ -7,6 +7,7 @@ import {
   useCreateLeaveTypeMutation,
   useUpdateLeaveTypeMutation,
   useDeleteLeaveTypeMutation,
+  LeaveType,
 } from '@/store/api/leaveApi';
 import { toast } from 'sonner';
 import { columns } from './column';
@@ -20,21 +21,23 @@ export default function LeaveTypesPage() {
 
   const data = response || [];
 
-  const handleCreate = async (formData: any) => {
+  const handleCreate = async (formData: Partial<LeaveType>) => {
     try {
       await createLeaveType(formData).unwrap();
       toast.success('Leave type created successfully');
-    } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to create leave type');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error.data?.message || 'Failed to create leave type');
     }
   };
 
-  const handleUpdate = async (id: string | number, formData: any) => {
+  const handleUpdate = async (id: string | number, formData: Partial<LeaveType>) => {
     try {
       await updateLeaveType({ id: Number(id), data: formData }).unwrap();
       toast.success('Leave type updated successfully');
-    } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to update leave type');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error.data?.message || 'Failed to update leave type');
     }
   };
 
@@ -42,8 +45,9 @@ export default function LeaveTypesPage() {
     try {
       await deleteLeaveType(Number(id)).unwrap();
       toast.success('Leave type deleted successfully');
-    } catch (err: any) {
-      toast.error(err.data?.message || 'Failed to delete leave type');
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error.data?.message || 'Failed to delete leave type');
     }
   };
 
@@ -55,7 +59,7 @@ export default function LeaveTypesPage() {
         data={data}
         isLoading={isLoading}
         error={error ? 'Failed to fetch leave types' : null}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: LeaveType) => item.id}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
         onDelete={handleDelete}

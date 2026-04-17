@@ -112,15 +112,14 @@ export function useStockAdjustments(options: UseStockAdjustmentsOptions = {}) {
       await createAdjustment(createData).unwrap();
       toast.success("Stock adjustment created successfully");
       refetch();
-      return true;
     } catch (error: unknown) {
       const err = error as { data?: { message?: string } };
       toast.error(err.data?.message || "Failed to create stock adjustment");
-      return false;
+      throw error;
     }
   };
 
-  const handleUpdate = async (id: number, data: Partial<StockAdjustment>) => {
+  const handleUpdate = async (id: string | number, data: Partial<StockAdjustment>) => {
     try {
       const updateData: UpdateStockAdjustmentRequest = {};
 
@@ -164,27 +163,25 @@ export function useStockAdjustments(options: UseStockAdjustmentsOptions = {}) {
         });
       }
 
-      await updateAdjustment({ id, data: updateData }).unwrap();
+      await updateAdjustment({ id: Number(id), body: updateData }).unwrap();
       toast.success("Stock adjustment updated successfully");
       refetch();
-      return true;
     } catch (error: unknown) {
       const err = error as { data?: { message?: string } };
       toast.error(err.data?.message || "Failed to update stock adjustment");
-      return false;
+      throw error;
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string | number) => {
     try {
-      await deleteAdjustment(id).unwrap();
+      await deleteAdjustment(Number(id)).unwrap();
       toast.success("Stock adjustment deleted successfully");
       refetch();
-      return true;
     } catch (error: unknown) {
       const err = error as { data?: { message?: string } };
       toast.error(err.data?.message || "Failed to delete stock adjustment");
-      return false;
+      throw error;
     }
   };
 

@@ -45,7 +45,7 @@ export const columns: Column<GoodsReceipt>[] = [
     ),
   },
   {
-    accessorKey: 'warehouse.name',
+    accessorKey: 'warehouse',
     header: 'Warehouse',
     cell: (receipt: GoodsReceipt) => (
       <span>{receipt.warehouse?.name || `ID: ${receipt.warehouseId}`}</span>

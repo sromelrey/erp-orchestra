@@ -1,0 +1,5 @@
+ecosystem.config.js
+dist/
+node_modules/
+coverage/
+*.log

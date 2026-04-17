@@ -3,14 +3,14 @@
 import React from 'react';
 import { TimeClock } from '@/components/hris/attendance/TimeClock';
 import { useGetAttendanceLogsQuery } from '@/store/api/attendanceApi';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card} from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import { DataTable } from '@/components/ui/data-table';
 import { columns } from './columns';
 
 export default function AttendancePage() {
-  const { data: logs = [], isLoading: isLoadingLogs } = useGetAttendanceLogsQuery();
+  const { data: logs = [] } = useGetAttendanceLogsQuery();
 
   return (
     <div className="p-6 space-y-8 max-w-6xl mx-auto">

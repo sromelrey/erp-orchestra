@@ -1,8 +1,9 @@
 import { Column } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { LeaveRequest } from '@/store/api/leaveApi';
 
-export const columns: Column<any>[] = [
+export const columns: Column<LeaveRequest>[] = [
   {
     header: 'Employee',
     cell: (item) => (
@@ -35,7 +36,7 @@ export const columns: Column<any>[] = [
   {
     header: 'Status',
     cell: (item) => {
-      const variants: any = {
+      const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'> = {
         PENDING: 'secondary',
         APPROVED: 'default',
         REJECTED: 'destructive',
