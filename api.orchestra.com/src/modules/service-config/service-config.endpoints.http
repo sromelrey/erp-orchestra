@@ -1,0 +1,476 @@
+### Service Configuration API Testing
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== SERVICE TYPES ====================
+
+### List All Service Types
+GET {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+###
+
+### List Service Types with Filters
+GET {{API_BASE_URL}}/v1/service-config/service-types?page=1&limit=10&isActive=true
+Content-Type: application/json
+
+###
+
+### Search Service Types
+GET {{API_BASE_URL}}/v1/service-config/service-types?search=SILK
+Content-Type: application/json
+
+###
+
+### Get Service Type by ID
+GET {{API_BASE_URL}}/v1/service-config/service-types/1
+Content-Type: application/json
+
+###
+
+### Create Service Type
+POST {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+{
+  "code": "EMBROIDERY",
+  "name": "Embroidery",
+  "description": "Custom embroidery service for logos and designs",
+  "isActive": true
+}
+
+###
+
+### Update Service Type
+PATCH {{API_BASE_URL}}/v1/service-config/service-types/1
+Content-Type: application/json
+
+{
+  "name": "Silk Screen Printing - Updated",
+  "description": "Updated description for silk screen printing"
+}
+
+###
+
+### Delete Service Type
+DELETE {{API_BASE_URL}}/v1/service-config/service-types/1
+Content-Type: application/json
+
+###
+
+# ==================== SERVICE OPTIONS ====================
+
+### List All Service Options
+GET {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+###
+
+### List Service Options with Filters
+GET {{API_BASE_URL}}/v1/service-config/service-options?page=1&limit=10&isActive=true
+Content-Type: application/json
+
+###
+
+### Search Service Options
+GET {{API_BASE_URL}}/v1/service-config/service-options?search=PRINT
+Content-Type: application/json
+
+###
+
+### Get Service Option by ID
+GET {{API_BASE_URL}}/v1/service-config/service-options/1
+Content-Type: application/json
+
+###
+
+### Create Service Option
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "PRINT_ONLY",
+  "name": "Print Only",
+  "description": "Printing service without additional materials",
+  "isActive": true
+}
+
+###
+
+### Update Service Option
+PATCH {{API_BASE_URL}}/v1/service-config/service-options/1
+Content-Type: application/json
+
+{
+  "name": "Print Only - Updated",
+  "description": "Updated description"
+}
+
+###
+
+### Delete Service Option
+DELETE {{API_BASE_URL}}/v1/service-config/service-options/1
+Content-Type: application/json
+
+###
+
+# ==================== SERVICE CONDITIONS ====================
+
+### List All Service Conditions
+GET {{API_BASE_URL}}/v1/service-config/service-conditions
+Content-Type: application/json
+
+###
+
+### List Service Conditions with Filters
+GET {{API_BASE_URL}}/v1/service-config/service-conditions?page=1&limit=10&isActive=true
+Content-Type: application/json
+
+###
+
+### Search Service Conditions
+GET {{API_BASE_URL}}/v1/service-config/service-conditions?search=LABEL
+Content-Type: application/json
+
+###
+
+### Get Service Condition by ID
+GET {{API_BASE_URL}}/v1/service-config/service-conditions/1
+Content-Type: application/json
+
+###
+
+### Create Service Condition
+POST {{API_BASE_URL}}/v1/service-config/service-conditions
+Content-Type: application/json
+
+{
+  "code": "PRINT_SIZE",
+  "name": "Print Size",
+  "values": ["SMALL", "MEDIUM", "LARGE", "XL"],
+  "isActive": true
+}
+
+###
+
+### Update Service Condition
+PATCH {{API_BASE_URL}}/v1/service-config/service-conditions/1
+Content-Type: application/json
+
+{
+  "name": "Label Source - Updated",
+  "values": ["CUSTOMER", "COMPANY", "SUPPLIER"]
+}
+
+###
+
+### Delete Service Condition
+DELETE {{API_BASE_URL}}/v1/service-config/service-conditions/1
+Content-Type: application/json
+
+###
+
+# ==================== SERVICE CONFIGURATIONS ====================
+
+### List All Service Configurations
+GET {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+###
+
+### List Service Configurations with Filters
+GET {{API_BASE_URL}}/v1/service-config/service-configurations?page=1&limit=10&serviceTypeId=1&serviceOptionId=1
+Content-Type: application/json
+
+###
+
+### Get Service Configuration by ID
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/1
+Content-Type: application/json
+
+###
+
+### Create Service Configuration
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 1,
+  "conditionKey": "LABEL_SOURCE",
+  "conditionValue": "CUSTOMER",
+  "bomId": 1,
+  "price": 10.50,
+  "isActive": true
+}
+
+###
+
+### Create Service Configuration without Conditions
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 2,
+  "bomId": 2,
+  "price": 15.00,
+  "isActive": true
+}
+
+###
+
+### Update Service Configuration
+PATCH {{API_BASE_URL}}/v1/service-config/service-configurations/1
+Content-Type: application/json
+
+{
+  "price": 12.00,
+  "bomId": 3
+}
+
+###
+
+### Delete Service Configuration
+DELETE {{API_BASE_URL}}/v1/service-config/service-configurations/1
+Content-Type: application/json
+
+###
+
+### Lookup Service Configuration
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/lookup?service_type_id=1&service_option_id=1&condition_key=LABEL_SOURCE&condition_value=CUSTOMER
+Content-Type: application/json
+
+###
+
+### Lookup Service Configuration without Conditions
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/lookup?service_type_id=1&service_option_id=2
+Content-Type: application/json
+
+###
+
+# ==================== INTEGRATION TESTS ====================
+
+### Create Sales Order with Service Configuration
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Test Customer with Service Config",
+  "orderDate": "2024-01-15",
+  "deliveryDate": "2024-01-20",
+  "notes": "Testing service configuration integration",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 100,
+      "unitOfMeasureId": 1,
+      "unitPrice": 10.00,
+      "warehouseId": 1,
+      "locationId": 1,
+      "serviceTypeId": 1,
+      "serviceOptionId": 1,
+      "labelSource": "CUSTOMER"
+    }
+  ]
+}
+
+###
+
+### Create Sales Order with Different Service Configuration
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Test Customer - Company Labels",
+  "orderDate": "2024-01-15",
+  "items": [
+    {
+      "itemId": 2,
+      "quantity": 50,
+      "unitOfMeasureId": 1,
+      "unitPrice": 15.00,
+      "warehouseId": 1,
+      "locationId": 1,
+      "serviceTypeId": 1,
+      "serviceOptionId": 2,
+      "labelSource": "COMPANY"
+    }
+  ]
+}
+
+###
+
+# ==================== ERROR TESTS ====================
+
+### Test Error - Create Service Type with Duplicate Code
+POST {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+{
+  "code": "SILK_SCREEN",
+  "name": "Duplicate Silk Screen",
+  "isActive": true
+}
+
+###
+
+### Test Error - Create Configuration with Invalid Service Type
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 99999,
+  "serviceOptionId": 1,
+  "price": 10.00
+}
+
+###
+
+### Test Error - Create Configuration with Invalid BOM
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 1,
+  "bomId": 99999,
+  "price": 10.00
+}
+
+###
+
+### Test Error - Access without Authentication
+GET {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+###
+
+### Test Error - Access without Permission
+# (Use a user without SERVICE_CONFIG permissions)
+GET {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+###
+
+# ==================== BULK OPERATIONS ====================
+
+### Create Multiple Service Types
+POST {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+{
+  "code": "HEAT_TRANSFER",
+  "name": "Heat Transfer",
+  "description": "Heat transfer printing service"
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+{
+  "code": "DTG_PRINTING",
+  "name": "Direct to Garment Printing",
+  "description": "Digital direct to garment printing"
+}
+
+###
+
+### Create Multiple Service Options
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "PRINT_PLUS_LABEL",
+  "name": "Print + Label",
+  "description": "Printing service with label included"
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "PRINT_PLUS_FABRIC",
+  "name": "Print + Fabric",
+  "description": "Printing service with fabric included"
+}
+
+###
+
+### Create Complex Configuration Matrix
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 1,
+  "conditionKey": "LABEL_SOURCE",
+  "conditionValue": "CUSTOMER",
+  "bomId": 1,
+  "price": 10.00
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 1,
+  "conditionKey": "LABEL_SOURCE",
+  "conditionValue": "COMPANY",
+  "bomId": 2,
+  "price": 9.50
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 2,
+  "bomId": 3,
+  "price": 15.00
+}
+
+###
+
+# ==================== PERFORMANCE TESTS ====================
+
+### List All Configurations with Relations
+GET {{API_BASE_URL}}/v1/service-config/service-configurations?page=1&limit=50
+Content-Type: application/json
+
+###
+
+### Lookup Multiple Configurations
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/lookup?service_type_id=1&service_option_id=1&condition_key=LABEL_SOURCE&condition_value=CUSTOMER
+Content-Type: application/json
+
+###
+
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/lookup?service_type_id=1&service_option_id=1&condition_key=LABEL_SOURCE&condition_value=COMPANY
+Content-Type: application/json
+
+###
+
+GET {{API_BASE_URL}}/v1/service-config/service-configurations/lookup?service_type_id=1&service_option_id=2
+Content-Type: application/json
+
+###

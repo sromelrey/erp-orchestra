@@ -1,0 +1,96 @@
+### Seed Data: Items (Shirts)
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== ITEM CATEGORIES ====================
+
+### Create Item Category: Shirts
+POST {{API_BASE_URL}}/v1/ops/item-categories
+Content-Type: application/json
+
+{
+  "code": "CAT_SHIRTS",
+  "name": "Shirts",
+  "description": "All types of shirts"
+}
+
+###
+
+# ==================== ITEMS ====================
+
+### Create Item: Basic Shirt
+POST {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+
+{
+  "code": "SHIRT_0001",
+  "name": "Basic Shirt",
+  "description": "Standard basic t-shirt",
+  "baseUomId": 8,
+  "categoryId": 1,
+  "isActive": true
+}
+
+###
+
+### Create Item: Premium Shirt
+POST {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+
+{
+  "code": "SHIRT_0002",
+  "name": "Premium Shirt",
+  "description": "High quality premium t-shirt",
+  "baseUomId": 8,
+  "categoryId": 1,
+  "isActive": true
+}
+
+###
+
+# ==================== VERIFICATION ====================
+
+### List All Items (Cursor Pagination)
+GET {{API_BASE_URL}}/v1/ops/items
+Content-Type: application/json
+
+###
+
+### Search Items by Code
+GET {{API_BASE_URL}}/v1/ops/items?search=SHIRT
+Content-Type: application/json
+
+###
+
+### List Items with Cursor Pagination
+GET {{API_BASE_URL}}/v1/ops/items?limit=5
+Content-Type: application/json
+
+###
+
+### List Items with Cursor
+GET {{API_BASE_URL}}/v1/ops/items?cursor=10&limit=5
+Content-Type: application/json
+
+###
+
+### Filter Items by Category
+GET {{API_BASE_URL}}/v1/ops/items?categoryId=1
+Content-Type: application/json
+
+###
+
+### Filter Items by Active Status
+GET {{API_BASE_URL}}/v1/ops/items?isActive=true
+Content-Type: application/json
+
+###

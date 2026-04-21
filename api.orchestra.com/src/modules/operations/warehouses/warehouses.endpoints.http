@@ -13,12 +13,21 @@ POST {{API_BASE_URL}}/v1/ops/warehouses
 Content-Type: application/json
 
 {
-  "code": "WH-CEB",
-  "name": "Liloan Head Quarter",
-  "description": "Primary T-shirt printing warehouse",
+  "code": "WH-MAIN",
+  "name": "Main Warehouse",
+  "description": "Main warehouse for operations",
   "isDefault": true
 }
 
+
+POST {{API_BASE_URL}}/v1/ops/warehouses/4/locations
+Content-Type: application/json
+
+{
+  "code": "A-01",
+  "name": "Location A-01",
+  "isActive": true
+}
 ### List Warehouses
 GET {{API_BASE_URL}}/v1/ops/warehouses
 
@@ -29,7 +38,7 @@ GET {{API_BASE_URL}}/v1/ops/warehouses/1
 GET {{API_BASE_URL}}/v1/ops/warehouses/1/capacity
 
 ### Get Warehouse Locations
-GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations
+GET {{API_BASE_URL}}/v1/ops/warehouses/4/locations
 
 ### Get Warehouse Location Tree
 GET {{API_BASE_URL}}/v1/ops/warehouses/1/locations/tree

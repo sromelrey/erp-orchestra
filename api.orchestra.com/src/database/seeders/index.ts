@@ -8,6 +8,9 @@ import { PermissionsSeeder } from './permissions.seeder';
 import { UnitsOfMeasureSeeder } from './units-of-measure.seeder';
 import { MaterialsSeeder } from './materials.seeder';
 import { BomSeeder } from './bom.seeder';
+import { WarehousesSeeder } from './warehouses.seeder';
+import { ServiceConfigSeeder } from './service-config.seeder';
+import { AddonsSeeder } from './addons.seeder';
 
 /**
  * Export all seeders in execution order.
@@ -21,7 +24,10 @@ export const seeders: Seeder[] = [
   StandardRolesSeeder,
   AdminUserSeeder,
   // * Operations Module Seeders
-  // UnitsOfMeasureSeeder,
-  // MaterialsSeeder,
-  // BomSeeder,
+  UnitsOfMeasureSeeder,
+  WarehousesSeeder,
+  // MaterialsSeeder, // Commented out - using HTTPYac seed data instead
+  BomSeeder,
+  // ServiceConfigSeeder, // Commented out - using HTTPYac seed data instead
+  // AddonsSeeder, // Commented out - using HTTPYac seed data instead
 ];

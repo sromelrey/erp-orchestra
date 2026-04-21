@@ -1,0 +1,75 @@
+### Seed Data: Sales Orders with Add-ons
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== SALES ORDERS ====================
+
+### Create Sales Order with Multiple Items + Add-ons
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "GVBA",
+  "orderDate": "2026-01-01",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 50,
+      "unitOfMeasureId": 1,
+      "unitPrice": 220,
+      "warehouseId": 1,
+      "locationId": 1,
+      "serviceTypeId": 1,
+      "serviceOptionId": 1,
+      "labelSource": "COMPANY",
+      "addons": [
+        {
+          "addonId": 1,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "itemId": 2,
+      "quantity": 30,
+      "unitOfMeasureId": 1,
+      "unitPrice": 250,
+      "warehouseId": 1,
+      "locationId": 1,
+      "serviceTypeId": 1,
+      "serviceOptionId": 2,
+      "labelSource": "COMPANY",
+      "addons": [
+        {
+          "addonId": 2,
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# ==================== VERIFICATION ====================
+
+### Get Sales Order by ID
+GET {{API_BASE_URL}}/v1/ops/sales-orders/1
+Content-Type: application/json
+
+###
+
+### List All Sales Orders
+GET {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+###

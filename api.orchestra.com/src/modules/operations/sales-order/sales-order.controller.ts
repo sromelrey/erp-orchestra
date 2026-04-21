@@ -10,6 +10,8 @@ import {
   UseGuards,
   ParseIntPipe,
   Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -24,7 +26,9 @@ import { AuthenticatedGuard } from '@/guards/authenticated.guard';
 import { RequireAccess } from '@/decorators/require-access.decorator';
 import { AuthenticatedRequest } from '@/types/authenticated-request';
 import { SalesOrderService } from './sales-order.service';
+import { SalesOrderImportService } from './sales-order-import.service';
 import { CreateSalesOrderDto } from './dto/create-sales-order.dto';
+import { ImportSalesOrdersDto } from './dto/import-sales-order.dto';
 import { UpdateSalesOrderDto } from './dto/update-sales-order.dto';
 import {
   ConfirmSalesOrderDto,
@@ -40,13 +44,34 @@ import { SalesOrder } from '@/entities';
 @UseGuards(AuthenticatedGuard)
 @Controller('ops/sales-orders')
 export class SalesOrderController {
-  constructor(private readonly salesOrderService: SalesOrderService) {}
+  constructor(
+    private readonly salesOrderService: SalesOrderService,
+    private readonly salesOrderImportService: SalesOrderImportService,
+  ) {}
 
   private getActor(req: AuthenticatedRequest) {
     if (!req.user?.id || !req.user?.tenantId) {
       throw new Error('Missing authenticated user context');
     }
     return { userId: req.user.id, tenantId: req.user.tenantId };
+  }
+
+  @Post('import')
+  @RequireAccess({
+    feature: 'OPERATIONS',
+    permission: 'operations.sales-order.create',
+  })
+  @ApiOperation({
+    summary: 'Bulk import sales orders from flat row data (e.g. Excel)',
+  })
+  @ApiResponse({ status: 200, description: 'Import result summary.' })
+  @ApiBody({ type: ImportSalesOrdersDto })
+  @HttpCode(HttpStatus.OK)
+  importBulk(
+    @Body() dto: ImportSalesOrdersDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.salesOrderImportService.import(dto, this.getActor(req));
   }
 
   @Post()

@@ -106,6 +106,50 @@
 - [ ] **Customer History** - Order history and payment tracking
 - [ ] **Integration** - Link to Sales Orders (replace customer_name field)
 
+### 11. Service Configuration (Printing MRP) ✅ **COMPLETED** (100% Backend, 0% Frontend)
+- Enables service-based order entry for printing operations (Silk Screen, Sublimation)
+- Acts as a decision layer between Sales Orders and BOM
+- Automatically assigns BOM and pricing based on service selection
+
+#### Features
+- [x] **Service Types** - Silk Screen, Sublimation
+- [x] **Service Options** - Print Only, Print + Label, Fabric Print
+- [x] **Service Configuration Mapping** - Service Type + Option + Condition → BOM + Price
+- [x] **Label Source Handling** - CUSTOMER / COMPANY
+- [x] **Automatic BOM Assignment** - No manual selection required
+
+#### Integration Notes
+- Extend `sales_order_items` with:
+  - `service_type_id`
+  - `service_option_id`
+  - `label_source`
+  - `bom_id` (auto-assigned)
+- No changes required for:
+  - BOM module
+  - Production module
+  - Inventory module
+
+### 12. Add-ons & Inclusion Rules 📋 **NOT STARTED** (0%)
+- Supports optional add-ons per sales order item:
+  - Etekita
+  - Inner Label
+  - Hangtag
+  - Size Label
+  - Hem Tag
+  - Patch Neck
+  - Sleeve Tag
+
+#### Features
+- [ ] **Add-on Selection** - Per Sales Order item
+- [ ] **Pricing per Add-on** - Individual add-on pricing
+- [ ] **Free Inclusion Rules** - Example: Free if quantity ≥ 40
+- [ ] **Conditional Inventory Deduction** - Deduct only if company provided, skip if customer provided
+
+#### Notes
+- Add-ons must NOT be part of Service Types
+- Add-ons extend BOM dynamically (do not modify base BOM)
+- This feature is implemented AFTER Service Configuration
+
 ## Implementation Status Summary
 
 | Module | Backend API | Frontend UI | Overall | Status | Priority |
@@ -120,6 +164,8 @@
 | Materials | ✅ 100% | ✅ 100% | 100% | Complete | High |
 | User Management | ✅ 100% | ✅ 100% | 100% | Complete | Critical |
 | Infrastructure | ✅ 100% | 🚧 40% | 70% | In Progress | Critical |
+| Service Configuration | ✅ 100% | 📋 0% | 50% | Backend Complete | High |
+| Add-ons & Inclusion Rules | ✅ 100% | 📋 0% | 50% | Backend Complete | Medium |
 
 ### Legend
 - ✅ Completed/High Progress (80-100%)
@@ -128,24 +174,25 @@
 
 ### Summary by Status
 - **Complete**: Item Master (100%), Materials (100%), Sales Orders (100%), Goods Receipt (100%), Production (100%), Inventory Management (100%), Goods Issuance (100%), User Management (100%), BOM (100%)
+- **Backend Complete**: Service Configuration (100%), Add-ons & Inclusion Rules (100%)
 - **In Progress**: Infrastructure (70%)
 
 ## Completion Summary
 
 ### Backend API (100% Complete)
-- **Fully Completed**: 9 out of 9 modules (Item Master, Inventory Management, Goods Issuance, Goods Receipt, Sales Orders, BOM, Production, Materials, User Management, Infrastructure)
+- **Fully Completed**: 11 out of 11 modules (Item Master, Inventory Management, Goods Issuance, Goods Receipt, Sales Orders, BOM, Production, Materials, User Management, Infrastructure, Service Configuration, Add-ons & Inclusion Rules)
 - **In Progress**: 0 modules
 - **Not Started**: 0 modules
 
-### Frontend UI (90% Complete)
+### Frontend UI (85% Complete)
 - **Fully Completed**: 9 modules (Item Master, Materials, Sales Orders, Goods Receipt, Production, Inventory Management, Goods Issuance, User Management, BOM)
 - **In Progress**: 1 module (Common Components)
-- **Not Started**: 0 modules
+- **Not Started**: 2 modules (Service Configuration, Add-ons & Inclusion Rules)
 
-### Overall Project (95% Complete)
-- **Backend Complete**: 9/9 modules ready
-- **UI Complete**: 9/9 modules complete
-- **Next Priority**: Phase 2 tasks
+### Overall Project (93% Complete)
+- **Backend Complete**: 11/11 modules ready
+- **UI Complete**: 9/11 modules complete
+- **Next Priority**: Build frontend for Service Configuration and Add-ons & Inclusion Rules
 
 ## Next Steps
 
@@ -183,6 +230,8 @@
 
 | Task | Backend | Frontend/Portal | Testing | Overall | Status | Priority |
 |------|---------|-----------------|---------|---------|---------|----------|
+| **Service Configuration (Printing MRP) Frontend** | ✅ 100% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
+| **Add-ons & Inclusion Rules Frontend** | ✅ 100% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
 | **Selectable Values API** | 📋 0% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
 | **Entity Manager Cleanup** | - | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
 | **Form Component Creation** | - | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |

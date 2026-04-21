@@ -24,6 +24,7 @@ import {
   DeliverSalesOrderDto,
   CancelSalesOrderDto,
 } from './dto';
+import { ServiceConfigService } from '@/modules/service-config/services/service-config.service';
 
 export interface SalesOrderFilters {
   page?: number;
@@ -53,6 +54,7 @@ export class SalesOrderService {
     @InjectRepository(WarehouseLocation)
     private readonly warehouseLocationRepository: Repository<WarehouseLocation>,
     private readonly dataSource: DataSource,
+    private readonly serviceConfigService: ServiceConfigService,
   ) {}
 
   /**
@@ -132,8 +134,37 @@ export class SalesOrderService {
           );
         }
 
+        // Handle service configuration for pricing and BOM lookup
+        let unitPrice = itemDto.unitPrice;
+
+        if (itemDto.serviceTypeId && itemDto.serviceOptionId) {
+          // Build conditions array
+          const conditions: { key: string; value: string }[] = [];
+          if (itemDto.labelSource) {
+            conditions.push({
+              key: 'LABEL_SOURCE',
+              value: itemDto.labelSource,
+            });
+          }
+
+          // Get configuration details
+          const configDetails =
+            await this.serviceConfigService.getConfigurationDetails(
+              actor?.tenantId || 0,
+              itemDto.serviceTypeId,
+              itemDto.serviceOptionId,
+              conditions,
+            );
+
+          if (configDetails) {
+            // Use configuration price if available
+            unitPrice = configDetails.price;
+            // TODO: Store bomId for future use in production planning
+          }
+        }
+
         // Calculate line totals
-        const lineTotal = itemDto.quantity * itemDto.unitPrice;
+        const lineTotal = itemDto.quantity * unitPrice;
         const discountAmount =
           (lineTotal * (itemDto.discountPercent || 0)) / 100;
         const afterDiscount = lineTotal - discountAmount;
@@ -148,7 +179,7 @@ export class SalesOrderService {
           quantity: itemDto.quantity,
           unitOfMeasureId: itemDto.unitOfMeasureId,
           unitOfMeasureCode: uom.code,
-          unitPrice: itemDto.unitPrice,
+          unitPrice,
           discountPercent: itemDto.discountPercent || 0,
           discountAmount,
           taxPercent: itemDto.taxPercent || 0,
@@ -159,6 +190,9 @@ export class SalesOrderService {
           locationId: itemDto.locationId,
           locationName: location.name,
           notes: itemDto.notes,
+          serviceTypeId: itemDto.serviceTypeId,
+          serviceOptionId: itemDto.serviceOptionId,
+          labelSource: itemDto.labelSource,
         });
 
         items.push(salesOrderItem);

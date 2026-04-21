@@ -11,6 +11,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { AddonSelectionDto } from '@/modules/addons/dto/addon-selection.dto';
 
 export class CreateSalesOrderItemDto {
   @ApiProperty({ example: 1, description: 'Item ID' })
@@ -61,6 +62,31 @@ export class CreateSalesOrderItemDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ example: 1, description: 'Service Type ID' })
+  @IsOptional()
+  @IsNumber()
+  serviceTypeId?: number;
+
+  @ApiPropertyOptional({ example: 1, description: 'Service Option ID' })
+  @IsOptional()
+  @IsNumber()
+  serviceOptionId?: number;
+
+  @ApiPropertyOptional({ example: 'CUSTOMER', description: 'Label Source' })
+  @IsOptional()
+  @IsString()
+  labelSource?: string;
+
+  @ApiPropertyOptional({
+    description: 'Add-ons for this item',
+    type: [AddonSelectionDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AddonSelectionDto)
+  addons?: AddonSelectionDto[];
 }
 
 export class CreateSalesOrderDto {

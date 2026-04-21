@@ -50,8 +50,8 @@ export const BomSeeder: Seeder = {
         `INSERT INTO "operations"."boms" (
           "tenant_id", "parent_material_id", "code", "name", "version", 
           "status", "effective_date", "expiry_date", "is_active", 
-          "created_at", "updated_at"
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+          "created_by", "updated_by", "created_at", "updated_at"
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 2, 2, NOW(), NOW())
         RETURNING id`,
         [
           bomData.tenantId,
@@ -73,8 +73,8 @@ export const BomSeeder: Seeder = {
         await queryRunner.query(
           `INSERT INTO "operations"."bom_items" (
             "bom_id", "component_material_id", "quantity", "uom", 
-            "scrap_percentage", "sort_order", "created_at", "updated_at"
-          ) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`,
+            "scrap_percentage", "sort_order", "created_by", "updated_by", "created_at", "updated_at"
+          ) VALUES ($1, $2, $3, $4, $5, $6, 2, 2, NOW(), NOW())`,
           [
             bomId,
             item.componentMaterialId,
@@ -103,114 +103,269 @@ export const BomSeeder: Seeder = {
 
       const tenantId = tenantResult[0].id;
 
-      // Check if materials exist
-      const materialsExist = await queryRunner.query(
-        `SELECT COUNT(*) as count FROM "operations"."materials" WHERE "tenant_id" = $1 AND deleted_at IS NULL`,
-        [tenantId],
-      );
+      // Helper: get material id by sku code
+      const getMaterialId = async (sku: string): Promise<number | null> => {
+        const result = await queryRunner.query(
+          `SELECT id FROM "inventory"."materials" WHERE "tenant_id" = $1 AND "sku" = $2 AND deleted_at IS NULL`,
+          [tenantId, sku],
+        );
+        if (result.length === 0) {
+          console.log(`  ⚠️  Material not found: ${sku}`);
+          return null;
+        }
+        return result[0].id;
+      };
 
-      if (parseInt(materialsExist[0].count) < 3) {
+      // Resolve all required material IDs by code
+      const [
+        silkInkId,
+        silkChemId,
+        subliInkId,
+        subliPaperId,
+        fabricId,
+        labelId,
+        fgSilkPrintId,
+        fgSilkLabelId,
+        fgSubliPrintId,
+      ] = await Promise.all([
+        getMaterialId('SILK-INK'),
+        getMaterialId('SILK-CHEM'),
+        getMaterialId('SUBLI-INK'),
+        getMaterialId('SUBLI-PAPER'),
+        getMaterialId('FABRIC'),
+        getMaterialId('LABEL'),
+        getMaterialId('FG-SILK-PRINT'),
+        getMaterialId('FG-SILK-LABEL'),
+        getMaterialId('FG-SUBLIMATION-PRINT'),
+      ]);
+
+      if (
+        !silkInkId ||
+        !silkChemId ||
+        !subliInkId ||
+        !subliPaperId ||
+        !fabricId ||
+        !labelId
+      ) {
         console.log(
-          '  ⚠️  Not enough materials found for BOM seeding. Please seed materials first.',
+          '  ⚠️  Required raw materials not found. Please seed materials first.',
         );
         return;
       }
 
-      // Get sample materials
-      const materials = await queryRunner.query(
-        `SELECT id, name FROM "operations"."materials" WHERE "tenant_id" = $1 AND deleted_at IS NULL ORDER BY id LIMIT 5`,
-        [tenantId],
-      );
-
-      if (materials.length < 3) {
-        console.log('  ⚠️  Need at least 3 materials to create sample BOMs.');
+      if (!fgSilkPrintId || !fgSilkLabelId || !fgSubliPrintId) {
+        console.log(
+          '  ⚠️  Required finished goods not found. Please seed materials first.',
+        );
         return;
       }
 
-      // Create sample BOMs
-      const bom1 = await createBom(
+      // --- Silk Screen BOMs ---
+
+      // 1. BOM-SILK-PRINT: Ink + Chemicals only
+      await createBom(
         queryRunner,
         {
           tenantId,
-          parentMaterialId: materials[0].id, // Finished good
-          code: 'BOM-FG-001',
-          name: `Finished Good BOM for ${materials[0].name}`,
-          version: '1.0',
+          parentMaterialId: fgSilkPrintId,
+          code: 'BOM-SILK-PRINT',
+          name: 'Silk Screen Print Only',
+          version: 'v1',
           status: 'ACTIVE',
           effectiveDate: new Date(),
         },
         [
           {
-            componentMaterialId: materials[1].id,
-            quantity: 2.5,
-            uom: 'PCS',
-            scrapPercentage: 5,
+            componentMaterialId: silkInkId,
+            quantity: 10,
+            uom: 'ML',
+            scrapPercentage: 3,
             sortOrder: 1,
           },
           {
-            componentMaterialId: materials[2].id,
-            quantity: 1.0,
-            uom: 'KG',
+            componentMaterialId: silkChemId,
+            quantity: 2,
+            uom: 'ML',
             scrapPercentage: 2,
             sortOrder: 2,
           },
         ],
       );
 
-      const bom2 = await createBom(
+      // 2. BOM-SILK-LABEL-COMPANY: Ink + Chemicals + Company Label
+      await createBom(
         queryRunner,
         {
           tenantId,
-          parentMaterialId: materials[1].id, // Semi-finished
-          code: 'BOM-SF-001',
-          name: `Semi-finished BOM for ${materials[1].name}`,
-          version: '1.0',
-          status: 'DRAFT',
+          parentMaterialId: fgSilkLabelId,
+          code: 'BOM-SILK-LABEL-COMPANY',
+          name: 'Silk Screen Print + Label (Company)',
+          version: 'v1',
+          status: 'ACTIVE',
+          effectiveDate: new Date(),
         },
         [
           {
-            componentMaterialId: materials[2].id,
-            quantity: 0.5,
-            uom: 'KG',
+            componentMaterialId: silkInkId,
+            quantity: 10,
+            uom: 'ML',
             scrapPercentage: 3,
             sortOrder: 1,
+          },
+          {
+            componentMaterialId: silkChemId,
+            quantity: 2,
+            uom: 'ML',
+            scrapPercentage: 2,
+            sortOrder: 2,
+          },
+          {
+            componentMaterialId: labelId,
+            quantity: 1,
+            uom: 'PCS',
+            scrapPercentage: 0,
+            sortOrder: 3,
           },
         ],
       );
 
-      // Create a second version of the first BOM to demonstrate versioning
-      if (bom1 && materials.length >= 4) {
-        await createBom(
-          queryRunner,
+      // 3. BOM-SILK-LABEL-CUSTOMER: Ink + Chemicals only (customer provides label)
+      await createBom(
+        queryRunner,
+        {
+          tenantId,
+          parentMaterialId: fgSilkLabelId,
+          code: 'BOM-SILK-LABEL-CUSTOMER',
+          name: 'Silk Screen Print + Label (Customer)',
+          version: 'v1',
+          status: 'ACTIVE',
+          effectiveDate: new Date(),
+        },
+        [
           {
-            tenantId,
-            parentMaterialId: materials[0].id,
-            code: 'BOM-FG-001',
-            name: `Updated BOM for ${materials[0].name}`,
-            version: '2.0',
-            status: 'DRAFT',
-            effectiveDate: new Date(),
+            componentMaterialId: silkInkId,
+            quantity: 10,
+            uom: 'ML',
+            scrapPercentage: 3,
+            sortOrder: 1,
           },
-          [
-            {
-              componentMaterialId: materials[1].id,
-              quantity: 2.0, // Reduced quantity
-              uom: 'PCS',
-              scrapPercentage: 4,
-              sortOrder: 1,
-            },
-            {
-              componentMaterialId: materials[3]?.id || materials[2].id,
-              quantity: 1.5,
-              uom: 'KG',
-              scrapPercentage: 2,
-              sortOrder: 2,
-            },
-          ],
-        );
-      }
+          {
+            componentMaterialId: silkChemId,
+            quantity: 2,
+            uom: 'ML',
+            scrapPercentage: 2,
+            sortOrder: 2,
+          },
+        ],
+      );
 
-      console.log('  ✅ Created sample BOMs and BOM items');
+      // 4. BOM-SILK-FABRIC: Ink + Chemicals + Fabric (per meter)
+      await createBom(
+        queryRunner,
+        {
+          tenantId,
+          parentMaterialId: fgSilkPrintId,
+          code: 'BOM-SILK-FABRIC',
+          name: 'Silk Screen Print on Fabric',
+          version: 'v1',
+          status: 'ACTIVE',
+          effectiveDate: new Date(),
+        },
+        [
+          {
+            componentMaterialId: silkInkId,
+            quantity: 10,
+            uom: 'ML',
+            scrapPercentage: 3,
+            sortOrder: 1,
+          },
+          {
+            componentMaterialId: silkChemId,
+            quantity: 2,
+            uom: 'ML',
+            scrapPercentage: 2,
+            sortOrder: 2,
+          },
+          {
+            componentMaterialId: fabricId,
+            quantity: 1,
+            uom: 'MTR',
+            scrapPercentage: 5,
+            sortOrder: 3,
+          },
+        ],
+      );
+
+      // --- Sublimation BOMs ---
+
+      // 5. BOM-SUBLIMATION-PRINT: Ink + Paper only
+      await createBom(
+        queryRunner,
+        {
+          tenantId,
+          parentMaterialId: fgSubliPrintId,
+          code: 'BOM-SUBLIMATION-PRINT',
+          name: 'Sublimation Print Only',
+          version: 'v1',
+          status: 'ACTIVE',
+          effectiveDate: new Date(),
+        },
+        [
+          {
+            componentMaterialId: subliInkId,
+            quantity: 5,
+            uom: 'ML',
+            scrapPercentage: 3,
+            sortOrder: 1,
+          },
+          {
+            componentMaterialId: subliPaperId,
+            quantity: 1,
+            uom: 'SHEET',
+            scrapPercentage: 2,
+            sortOrder: 2,
+          },
+        ],
+      );
+
+      // 6. BOM-SUBLIMATION-FABRIC: Ink + Paper + Fabric (per meter)
+      await createBom(
+        queryRunner,
+        {
+          tenantId,
+          parentMaterialId: fgSubliPrintId,
+          code: 'BOM-SUBLIMATION-FABRIC',
+          name: 'Sublimation Print on Fabric',
+          version: 'v1',
+          status: 'ACTIVE',
+          effectiveDate: new Date(),
+        },
+        [
+          {
+            componentMaterialId: subliInkId,
+            quantity: 5,
+            uom: 'ML',
+            scrapPercentage: 3,
+            sortOrder: 1,
+          },
+          {
+            componentMaterialId: subliPaperId,
+            quantity: 1,
+            uom: 'SHEET',
+            scrapPercentage: 2,
+            sortOrder: 2,
+          },
+          {
+            componentMaterialId: fabricId,
+            quantity: 1,
+            uom: 'MTR',
+            scrapPercentage: 5,
+            sortOrder: 3,
+          },
+        ],
+      );
+
+      console.log('  ✅ Created 6 printing BOMs (silk screen + sublimation)');
     } catch (error) {
       console.error('  ❌ BOM seeding failed:', error);
       throw error;

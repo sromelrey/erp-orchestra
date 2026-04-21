@@ -53,6 +53,11 @@ export * from './operations/production-batch.entity';
 export * from './operations/production-work-order.entity';
 export * from './operations/production-consumption.entity';
 
+// * Add-ons
+export * from './addons/addon.entity';
+export * from './addons/addon-inclusion-rule.entity';
+export * from './addons/sales-order-item-addon.entity';
+
 // * HRIS
 export * from './hris/branch.entity';
 export * from './hris/department.entity';

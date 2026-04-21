@@ -1,0 +1,441 @@
+### Add-ons API Testing
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== ADD-ON MANAGEMENT ====================
+
+### List All Add-ons
+GET {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+###
+
+### List Add-ons with Filters
+GET {{API_BASE_URL}}/v1/addons?page=1&limit=10&isActive=true
+Content-Type: application/json
+
+###
+
+### Filter by Type (Physical)
+GET {{API_BASE_URL}}/v1/addons?type=PHYSICAL
+Content-Type: application/json
+
+###
+
+### Filter by Type (Service)
+GET {{API_BASE_URL}}/v1/addons?type=SERVICE
+Content-Type: application/json
+
+###
+
+### Search Add-ons
+GET {{API_BASE_URL}}/v1/addons?search=Label
+Content-Type: application/json
+
+###
+
+### Get Add-on by ID
+GET {{API_BASE_URL}}/v1/addons/1
+Content-Type: application/json
+
+###
+
+### Create Physical Add-on
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ETEKITA",
+  "name": "Etekita",
+  "description": "Neck label with etekita material",
+  "type": "PHYSICAL",
+  "basePrice": 2.50,
+  "materialId": 1,
+  "isActive": true
+}
+
+###
+
+### Create Service Add-on
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "VIP_HANDLING",
+  "name": "VIP Handling",
+  "description": "Priority processing for VIP customers",
+  "type": "SERVICE",
+  "basePrice": 10.00,
+  "isActive": true
+}
+
+###
+
+### Update Add-on
+PATCH {{API_BASE_URL}}/v1/addons/11
+Content-Type: application/json
+
+{
+  "name": "Etekita Label - Premium",
+  "basePrice": 3.00
+}
+
+###
+
+### Delete Add-on
+DELETE {{API_BASE_URL}}/v1/addons/1
+Content-Type: application/json
+
+###
+
+# ==================== INCLUSION RULES ====================
+
+### List All Inclusion Rules
+GET {{API_BASE_URL}}/v1/addons/rules/list
+Content-Type: application/json
+
+###
+
+### Create Inclusion Rule (Free if quantity >= 40)
+POST {{API_BASE_URL}}/v1/addons/rules
+Content-Type: application/json
+
+{
+  "addonId": 11,
+  "ruleType": "MIN_QTY",
+  "thresholdValue": 40,
+  "discountPercent": 100,
+  "isActive": true
+}
+
+###
+
+### Create Partial Discount Rule
+POST {{API_BASE_URL}}/v1/addons/rules
+Content-Type: application/json
+
+{
+  "addonId": 12,
+  "ruleType": "MIN_QTY",
+  "thresholdValue": 50,
+  "discountPercent": 50,
+  "isActive": true
+}
+
+###
+
+### Update Inclusion Rule
+PATCH {{API_BASE_URL}}/v1/addons/rules/1
+Content-Type: application/json
+
+{
+  "thresholdValue": 30,
+  "discountPercent": 100
+}
+
+###
+
+### Delete Inclusion Rule
+DELETE {{API_BASE_URL}}/v1/addons/rules/1
+Content-Type: application/json
+
+###
+
+# ==================== PRICING CALCULATOR ====================
+
+### Calculate Add-on Pricing (Below threshold - paid)
+POST {{API_BASE_URL}}/v1/addons/calculate-price
+Content-Type: application/json
+
+{
+  "addons": [
+    {
+      "addonId": 11,
+      "quantity": 1
+    },
+    {
+      "addonId": 12,
+      "quantity": 2
+    }
+  ],
+  "quantity": 30
+}
+
+###
+
+### Calculate Add-on Pricing (Above threshold - free)
+POST {{API_BASE_URL}}/v1/addons/calculate-price
+Content-Type: application/json
+
+{
+  "addons": [
+    {
+      "addonId": 1,
+      "quantity": 1
+    },
+    {
+      "addonId": 2,
+      "quantity": 2
+    }
+  ],
+  "quantity": 50
+}
+
+###
+
+### Get Add-on with Rules
+GET {{API_BASE_URL}}/v1/addons/1/rules
+Content-Type: application/json
+
+###
+
+### Check Eligibility (Not eligible)
+GET {{API_BASE_URL}}/v1/addons/1/check-eligibility?quantity=30
+Content-Type: application/json
+
+###
+
+### Check Eligibility (Eligible for free)
+GET {{API_BASE_URL}}/v1/addons/1/check-eligibility?quantity=50
+Content-Type: application/json
+
+###
+
+# ==================== SALES ORDER INTEGRATION ====================
+
+### Create Sales Order with Add-ons
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Test Customer with Add-ons",
+  "orderDate": "2024-01-15",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 50,
+      "unitOfMeasureId": 1,
+      "unitPrice": 10.00,
+      "warehouseId": 1,
+      "locationId": 1,
+      "serviceTypeId": 1,
+      "serviceOptionId": 1,
+      "labelSource": "CUSTOMER",
+      "addons": [
+        {
+          "addonId": 1,
+          "quantity": 1,
+          "notes": "Customer provided etekita"
+        },
+        {
+          "addonId": 2,
+          "quantity": 1,
+          "notes": "Company provided hangtag"
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+### Create Sales Order with Add-ons (Below threshold)
+POST {{API_BASE_URL}}/v1/ops/sales-orders
+Content-Type: application/json
+
+{
+  "customerName": "Test Customer - Small Order",
+  "orderDate": "2024-01-15",
+  "items": [
+    {
+      "itemId": 1,
+      "quantity": 20,
+      "unitOfMeasureId": 1,
+      "unitPrice": 10.00,
+      "warehouseId": 1,
+      "locationId": 1,
+      "addons": [
+        {
+          "addonId": 1,
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# ==================== ERROR TESTS ====================
+
+### Test Error - Create Add-on with Duplicate Code
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ETEKITA",
+  "name": "Duplicate Etekita",
+  "type": "PHYSICAL",
+  "basePrice": 2.50
+}
+
+###
+
+### Test Error - Create Rule for Non-existent Add-on
+POST {{API_BASE_URL}}/v1/addons/rules
+Content-Type: application/json
+
+{
+  "addonId": 99999,
+  "ruleType": "MIN_QTY",
+  "thresholdValue": 40,
+  "discountPercent": 100
+}
+
+###
+
+### Test Error - Access without Authentication
+GET {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+###
+
+### Test Error - Invalid Add-on Type
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "INVALID",
+  "name": "Invalid Type",
+  "type": "INVALID_TYPE",
+  "basePrice": 10.00
+}
+
+###
+
+### Test Error - Negative Price
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "NEGATIVE",
+  "name": "Negative Price",
+  "type": "PHYSICAL",
+  "basePrice": -10.00
+}
+
+###
+
+# ==================== BULK OPERATIONS ====================
+
+### Create Multiple Add-ons (Bulk)
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "INNER_LABEL",
+  "name": "Inner Label",
+  "description": "Label inside the garment",
+  "type": "PHYSICAL",
+  "basePrice": 1.50
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "HANGTAG",
+  "name": "Hangtag",
+  "description": "Brand hangtag for garment",
+  "type": "PHYSICAL",
+  "basePrice": 0.75
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "SIZE_LABEL",
+  "name": "Size Label",
+  "description": "Size label on garment",
+  "type": "PHYSICAL",
+  "basePrice": 0.50
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "HEM_TAG",
+  "name": "Hem Tag",
+  "description": "Tag at the hem of garment",
+  "type": "PHYSICAL",
+  "basePrice": 1.00
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "PATCH_NECK",
+  "name": "Patch Neck",
+  "description": "Patch on neck area",
+  "type": "PHYSICAL",
+  "basePrice": 3.00
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "SLEEVE_TAG",
+  "name": "Sleeve Tag",
+  "description": "Tag on sleeve",
+  "type": "PHYSICAL",
+  "basePrice": 0.80
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "EXPRESS_PROCESSING",
+  "name": "Express Processing",
+  "description": "Fast track processing service",
+  "type": "SERVICE",
+  "basePrice": 15.00
+}
+
+###
+
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "SPECIAL_PACKAGING",
+  "name": "Special Packaging",
+  "description": "Premium packaging service",
+  "type": "SERVICE",
+  "basePrice": 5.00
+}

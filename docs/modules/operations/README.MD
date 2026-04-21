@@ -22,6 +22,7 @@ The Operations module provides foundational supply chain and production data: it
 | Cycle Counts & Physical Inventory | 📋 Planned | Counting programs, recounts, and postings to the ledger. |
 | Quality & Inspection | 📋 Planned | Receiving inspection, NCRs, hold/release flows. |
 | Pricing & Catalog Hooks | 📋 Planned | Pricing tiers/agreements to support sales flows. |
+| Service Configuration (Printing MRP) | 📋 Planned | Dynamic service configuration for printing operations (silk screen, DTF, sublimation) with BOM auto-selection and pricing. |
 | Event Broadcast & Webhooks | 📋 Planned | Ops domain events (receipts/issues/BOM changes) emitted to central notifications/webhook service. |
 
 ## References
