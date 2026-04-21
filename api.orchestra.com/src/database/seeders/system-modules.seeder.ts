@@ -30,7 +30,8 @@ export const SystemModulesSeeder: Seeder = {
           ('Accounting', 'AIS', 'MODULE', true, NOW(), NOW()),
           ('Customer Relations', 'CRM', 'MODULE', true, NOW(), NOW()),
           ('Inventory Management', 'INVENTORY', 'MODULE', true, NOW(), NOW()),
-          ('Project Management', 'PMS', 'MODULE', true, NOW(), NOW())
+          ('Project Management', 'PMS', 'MODULE', true, NOW(), NOW()),
+          ('Service Configuration', 'SERVICE_CONFIG', 'MODULE', true, NOW(), NOW())
       `);
 
       // Get parent module IDs

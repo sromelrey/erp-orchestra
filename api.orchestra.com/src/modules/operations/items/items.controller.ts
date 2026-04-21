@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -25,6 +26,7 @@ import { CreateUnitOfMeasureDto } from './dto/create-unit-of-measure.dto';
 import { UpdateUnitOfMeasureDto } from './dto/update-unit-of-measure.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { ListItemsDto } from './dto/list-items.dto';
 
 @ApiTags('Operations - Items')
 @ApiBearerAuth()
@@ -140,9 +142,19 @@ export class ItemsController {
     permission: 'operations.item.view',
   })
   @ApiOperation({ summary: 'List items' })
-  listItems(@Req() req: AuthenticatedRequest) {
+  listItems(@Req() req: AuthenticatedRequest, @Query() queryDto: ListItemsDto) {
     const actor = this.getActor(req);
-    return this.service.findItems(actor.tenantId);
+    const { cursor, limit, search, isActive, categoryId } = queryDto;
+
+    return this.service.findItems(
+      actor.tenantId,
+      { cursor, limit },
+      {
+        search,
+        isActive,
+        categoryId,
+      },
+    );
   }
 
   @Patch('items/:id')

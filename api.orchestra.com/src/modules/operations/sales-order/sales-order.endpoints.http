@@ -320,3 +320,136 @@ Content-Type: application/json
 ### Test Complex Filters
 GET {{API_BASE_URL}}/v1/ops/sales-orders?status=CONFIRMED&customerName=John&orderDateFrom=2024-01-01&sortBy=createdAt&sortOrder=DESC
 Content-Type: application/json
+
+###
+
+### Bulk Import Sales Orders - Full Import
+POST {{API_BASE_URL}}/v1/ops/sales-orders/import
+Content-Type: application/json
+
+<@ C:\\Users\\ROMEL\\Desktop\\sales_orders_import_payload.json
+
+###
+
+### Bulk Import Sales Orders - With Auto Create Items
+POST {{API_BASE_URL}}/v1/ops/sales-orders/import
+Content-Type: application/json
+
+{
+  "rows": [
+    {
+      "order_no": "SO-2024-003",
+      "customer_name": "Bob Wilson",
+      "order_date": "2024-01-17",
+      "item_code": "Smoke Hood",
+      "quantity": 20,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "A-02",
+      "unit_price": 150
+    }
+  ],
+  "autoCreateItems": true,
+  "autoConfirm": false,
+  "skipExisting": true,
+  "groupByOrderNo": true
+}
+
+###
+
+### Bulk Import Sales Orders - With Auto Complete Workflow
+POST {{API_BASE_URL}}/v1/ops/sales-orders/import
+Content-Type: application/json
+
+{
+  "rows": [
+    {
+      "order_no": "SO-2024-004",
+      "customer_name": "Alice Brown",
+      "order_date": "2024-01-18",
+      "item_code": "FG-PANTS-001",
+      "quantity": 15,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "A-03",
+      "unit_price": 75
+    }
+  ],
+  "autoCreateItems": true,
+  "autoComplete": true,
+  "skipExisting": true,
+  "groupByOrderNo": true
+}
+
+###
+
+### Bulk Import Sales Orders - Group By Customer + Date
+POST {{API_BASE_URL}}/v1/ops/sales-orders/import
+Content-Type: application/json
+
+{
+  "rows": [
+    {
+      "order_no": "ROW-001",
+      "customer_name": "Charlie Davis",
+      "order_date": "2024-01-19",
+      "item_code": "FG-SOCKS-001",
+      "quantity": 50,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "C-01",
+      "unit_price": 10
+    },
+    {
+      "order_no": "ROW-002",
+      "customer_name": "Charlie Davis",
+      "order_date": "2024-01-19",
+      "item_code": "FG-SHIRT-001",
+      "quantity": 25,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "C-02",
+      "unit_price": 35
+    }
+  ],
+  "autoCreateItems": true,
+  "groupByCustomerDate": true,
+  "groupByOrderNo": false
+}
+
+###
+
+### Bulk Import Sales Orders - Multiple Rows Same Order
+POST {{API_BASE_URL}}/v1/ops/sales-orders/import
+Content-Type: application/json
+
+{
+  "rows": [
+    {
+      "order_no": "SO-2024-005",
+      "customer_name": "David Lee",
+      "order_date": "2024-01-20",
+      "item_code": "FG-HAT-001",
+      "quantity": 10,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "D-01",
+      "unit_price": 45
+    },
+    {
+      "order_no": "SO-2024-005",
+      "customer_name": "David Lee",
+      "order_date": "2024-01-20",
+      "item_code": "FG-SCARF-001",
+      "quantity": 10,
+      "uom_code": "PCS",
+      "warehouse_code": "WH-MAIN",
+      "location_code": "D-02",
+      "unit_price": 20
+    }
+  ],
+  "autoCreateItems": true,
+  "groupByOrderNo": true
+}
+
+###

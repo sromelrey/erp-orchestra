@@ -13,6 +13,7 @@ This document links Operations capabilities to their governing epics for traceab
 | BOM Costing & History | ✅ Delivered | [EPIC-06 Operations Master Data](../../epics/EPIC-06-Operations-Master-Data.md#%F0%9F%93%8C-phase-4-costing--availability) | Complete costing module with calculation, history tracking, updates, and audit trail. |
 | Costing & Availability | ✅ Delivered | [EPIC-06 Operations Master Data](../../epics/EPIC-06-Operations-Master-Data.md#%F0%9F%93%8C-phase-4-costing--availability) | Standard costing API + history with full CRUD; availability endpoints planned; FIFO follow-up slated. |
 | Documentation & DX (OpenAPI, Admin UX) | 🚧 In Progress | [EPIC-06 Operations Master Data](../../epics/EPIC-06-Operations-Master-Data.md#%F0%9F%93%8C-phase-5-documentation--dx) | OpenAPI examples done; admin UI polish/import templates pending. |
+| Service Configuration (Printing MRP) | 📋 Planned | [Service Configuration Feature](./SERVICE-CONFIGURATION.md) | Dynamic service configuration layer for printing operations (silk screen, DTF, sublimation) with BOM auto-selection and pricing. |
 | Advanced Cost Roll-up & MRP | 📋 Planned | [PROJECT-ROADMAP](../../PROJECT-ROADMAP.md#%F0%9F%93%86-phase-3-operational-modules) | Future roll-up, MRP, procurement integration, availability performance views. |
 
 ## How to Use This File

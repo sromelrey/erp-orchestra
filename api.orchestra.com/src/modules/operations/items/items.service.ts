@@ -12,6 +12,8 @@ import { CreateUnitOfMeasureDto } from './dto/create-unit-of-measure.dto';
 import { UpdateUnitOfMeasureDto } from './dto/update-unit-of-measure.dto';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
+import { CursorPaginationDto } from '@/common/dto/cursor-pagination.dto';
+import { PaginatedResult } from '@/types';
 
 interface ActorContext {
   tenantId: number;
@@ -144,11 +146,61 @@ export class ItemsService {
     return saved;
   }
 
-  findItems(tenantId: number) {
-    return this.itemRepo.find({
-      where: { tenantId },
-      relations: ['category', 'baseUom'],
-    });
+  async findItems(
+    tenantId: number,
+    paginationDto: CursorPaginationDto,
+    filters?: {
+      search?: string;
+      isActive?: boolean;
+      categoryId?: number;
+    },
+  ): Promise<PaginatedResult<Item>> {
+    const { cursor, limit = 10 } = paginationDto;
+    const { search, isActive, categoryId } = filters || {};
+
+    const queryBuilder = this.itemRepo.createQueryBuilder('item');
+
+    queryBuilder
+      .where('item.tenantId = :tenantId', { tenantId })
+      .leftJoinAndSelect('item.category', 'category')
+      .leftJoinAndSelect('item.baseUom', 'baseUom');
+
+    if (cursor) {
+      queryBuilder.andWhere('item.id > :cursor', { cursor });
+    }
+
+    if (isActive !== undefined) {
+      queryBuilder.andWhere('item.isActive = :isActive', { isActive });
+    }
+
+    if (search) {
+      queryBuilder.andWhere('item.code LIKE :search', {
+        search: `%${search}%`,
+      });
+    }
+
+    if (categoryId !== undefined) {
+      queryBuilder.andWhere('item.categoryId = :categoryId', {
+        categoryId,
+      });
+    }
+
+    queryBuilder.orderBy('item.id', 'ASC').take(limit + 1);
+
+    const items = await queryBuilder.getMany();
+    let nextCursor: string | number | null = null;
+
+    if (items.length > limit) {
+      const nextItem = items.pop();
+      nextCursor = nextItem ? nextItem.id : null;
+    }
+
+    return {
+      data: items,
+      meta: {
+        nextCursor,
+      },
+    };
   }
 
   async updateItem(id: number, dto: UpdateItemDto, actor: ActorContext) {

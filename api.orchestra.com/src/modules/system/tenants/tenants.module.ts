@@ -9,6 +9,7 @@ import { Tenant, Plan } from '@/entities';
   imports: [TypeOrmModule.forFeature([Tenant, Plan])],
   controllers: [TenantsController],
   providers: [TenantsService],
+  exports: [TenantsService],
 })
 /**
  * Module for managing Tenants.

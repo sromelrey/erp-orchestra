@@ -1,0 +1,118 @@
+### Seed Data: Add-ons
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== ADD-ONS ====================
+
+### Create Add-on: Inner Tag
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ADDON_0001",
+  "name": "Inner Tag",
+  "description": "Label inside the garment",
+  "type": "PHYSICAL",
+  "basePrice": 1.50,
+  "isActive": true
+}
+
+###
+
+### Create Add-on: Hangtag
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ADDON_0002",
+  "name": "Hangtag",
+  "description": "Brand hangtag for garment",
+  "type": "PHYSICAL",
+  "basePrice": 0.75,
+  "isActive": true
+}
+
+###
+
+### Create Add-on: Hem Tag
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ADDON_0003",
+  "name": "Hem Tag",
+  "description": "Tag at the hem of garment",
+  "type": "PHYSICAL",
+  "basePrice": 1.00,
+  "isActive": true
+}
+
+###
+
+### Create Add-on: Sleeve Tag
+POST {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+{
+  "code": "ADDON_0004",
+  "name": "Sleeve Tag",
+  "description": "Tag on sleeve",
+  "type": "PHYSICAL",
+  "basePrice": 0.80,
+  "isActive": true
+}
+
+###
+
+# ==================== INCLUSION RULES ====================
+
+### Create Inclusion Rule for Inner Tag (Free if quantity >= 40)
+POST {{API_BASE_URL}}/v1/addons/rules
+Content-Type: application/json
+
+{
+  "addonId": 1,
+  "ruleType": "MIN_QTY",
+  "thresholdValue": 40,
+  "discountPercent": 100,
+  "isActive": true
+}
+
+###
+
+### Create Inclusion Rule for Hangtag (Free if quantity >= 50)
+POST {{API_BASE_URL}}/v1/addons/rules
+Content-Type: application/json
+
+{
+  "addonId": 2,
+  "ruleType": "MIN_QTY",
+  "thresholdValue": 50,
+  "discountPercent": 100,
+  "isActive": true
+}
+
+###
+
+# ==================== VERIFICATION ====================
+
+### List All Add-ons
+GET {{API_BASE_URL}}/v1/addons
+Content-Type: application/json
+
+###
+
+### List All Inclusion Rules
+GET {{API_BASE_URL}}/v1/addons/rules/list
+Content-Type: application/json
+
+###

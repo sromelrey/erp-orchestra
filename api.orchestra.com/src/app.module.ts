@@ -8,6 +8,7 @@ import { HrisModule } from './modules/hris/hris.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ManagementModule } from './modules/management/management.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { ServiceConfigModule } from './modules/service-config/service-config.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { InventoryModule } from './modules/inventory/inventory.module';
     HrisModule,
     ManagementModule,
     InventoryModule,
+    ServiceConfigModule,
   ],
 })
 export class AppModule {}

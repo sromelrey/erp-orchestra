@@ -10,6 +10,7 @@ import { ItemsModule } from './items/items.module';
 import { GoodsIssuanceModule } from './goods-issuance/goods-issuance.module';
 import { ProductionModule } from './production/production.module';
 import { OperationsDashboardModule } from './operations-dashboard/operations-dashboard.module';
+import { ServiceConfigModule } from '../service-config/service-config.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { OperationsDashboardModule } from './operations-dashboard/operations-das
     GoodsIssuanceModule,
     ProductionModule,
     OperationsDashboardModule,
+    ServiceConfigModule,
   ],
   controllers: [],
 })

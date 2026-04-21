@@ -1,0 +1,129 @@
+### Seed Data: Service Configurations
+
+### Login (Establish Session)
+POST {{API_BASE_URL}}/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{TEST_USERNAME}}",
+    "password": "{{TEST_USER_PASSWORD}}"
+}
+
+###
+
+# ==================== SERVICE TYPES ====================
+
+### Create Service Type: Silk Screen
+POST {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+{
+  "code": "SILK_SCREEN",
+  "name": "Silk Screen Printing",
+  "description": "Traditional silk screen printing service",
+  "isActive": true
+}
+
+###
+
+# ==================== SERVICE OPTIONS ====================
+
+### Create Service Option: 1 Color
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "SILK_PRINT_0001",
+  "name": "Silk Screen 1 Color",
+  "description": "Single color silk screen printing",
+  "isActive": true
+}
+
+###
+
+### Create Service Option: 2 Colors
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "SILK_PRINT_0002",
+  "name": "Silk Screen 2 Colors",
+  "description": "Two color silk screen printing",
+  "isActive": true
+}
+
+###
+
+### Create Service Option: 3 Colors
+POST {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+{
+  "code": "SILK_PRINT_0003",
+  "name": "Silk Screen 3 Colors",
+  "description": "Three color silk screen printing",
+  "isActive": true
+}
+
+###
+
+# ==================== SERVICE CONFIGURATIONS ====================
+
+### Create Service Configuration: 1 Color - Price 90
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 1,
+  "price": 90,
+  "isActive": true
+}
+
+###
+
+### Create Service Configuration: 2 Colors - Price 105
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 2,
+  "price": 105,
+  "isActive": true
+}
+
+###
+
+### Create Service Configuration: 3 Colors - Price 120
+POST {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+{
+  "serviceTypeId": 1,
+  "serviceOptionId": 3,
+  "price": 120,
+  "isActive": true
+}
+
+###
+
+# ==================== VERIFICATION ====================
+
+### List All Service Types
+GET {{API_BASE_URL}}/v1/service-config/service-types
+Content-Type: application/json
+
+###
+
+### List All Service Options
+GET {{API_BASE_URL}}/v1/service-config/service-options
+Content-Type: application/json
+
+###
+
+### List All Service Configurations
+GET {{API_BASE_URL}}/v1/service-config/service-configurations
+Content-Type: application/json
+
+###

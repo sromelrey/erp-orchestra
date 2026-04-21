@@ -1,8 +1,18 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { CommonEntity } from '../common.entity';
 import { SalesOrder } from './sales-order.entity';
 import { Item } from '../inventory/item.entity';
 import { UnitOfMeasure } from '../inventory/unit-of-measure.entity';
+import { ServiceType } from '../service-config/service-type.entity';
+import { ServiceOption } from '../service-config/service-option.entity';
+import { SalesOrderItemAddon } from '../addons/sales-order-item-addon.entity';
 
 @Entity({ name: 'sales_order_items', schema: 'operations' })
 @Index(['salesOrderId'], { where: 'deleted_at IS NULL' })
@@ -106,6 +116,16 @@ export class SalesOrderItem extends CommonEntity {
   @Column({ name: 'notes', type: 'text', nullable: true })
   notes?: string;
 
+  // Service Configuration fields
+  @Column({ name: 'service_type_id', type: 'int', nullable: true })
+  serviceTypeId?: number;
+
+  @Column({ name: 'service_option_id', type: 'int', nullable: true })
+  serviceOptionId?: number;
+
+  @Column({ name: 'label_source', type: 'varchar', length: 50, nullable: true })
+  labelSource?: string;
+
   // Relationships
   @ManyToOne(() => SalesOrder, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'sales_order_id' })
@@ -118,4 +138,15 @@ export class SalesOrderItem extends CommonEntity {
   @ManyToOne(() => UnitOfMeasure, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'unit_of_measure_id' })
   unitOfMeasure: UnitOfMeasure;
+
+  @ManyToOne(() => ServiceType, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'service_type_id' })
+  serviceType?: ServiceType;
+
+  @ManyToOne(() => ServiceOption, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'service_option_id' })
+  serviceOption?: ServiceOption;
+
+  @OneToMany(() => SalesOrderItemAddon, (addon) => addon.salesOrderItem)
+  addons?: SalesOrderItemAddon[];
 }
