@@ -1,0 +1,118 @@
+export const service_config_seeder = [
+  // Service Configuration - Service Types
+  {
+    module: 'service_config',
+    resource: 'service_type',
+    action: 'view',
+    slug: 'service_config.service_type.view',
+    name: 'View Service Types',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_type',
+    action: 'create',
+    slug: 'service_config.service_type.create',
+    name: 'Create Service Types',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_type',
+    action: 'update',
+    slug: 'service_config.service_type.update',
+    name: 'Update Service Types',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_type',
+    action: 'delete',
+    slug: 'service_config.service_type.delete',
+    name: 'Delete Service Types',
+  },
+  // Service Configuration - Service Options
+  {
+    module: 'service_config',
+    resource: 'service_option',
+    action: 'view',
+    slug: 'service_config.service_option.view',
+    name: 'View Service Options',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_option',
+    action: 'create',
+    slug: 'service_config.service_option.create',
+    name: 'Create Service Options',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_option',
+    action: 'update',
+    slug: 'service_config.service_option.update',
+    name: 'Update Service Options',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_option',
+    action: 'delete',
+    slug: 'service_config.service_option.delete',
+    name: 'Delete Service Options',
+  },
+  // Service Configuration - Service Conditions
+  {
+    module: 'service_config',
+    resource: 'service_condition',
+    action: 'view',
+    slug: 'service_config.service_condition.view',
+    name: 'View Service Conditions',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_condition',
+    action: 'create',
+    slug: 'service_config.service_condition.create',
+    name: 'Create Service Conditions',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_condition',
+    action: 'update',
+    slug: 'service_config.service_condition.update',
+    name: 'Update Service Conditions',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_condition',
+    action: 'delete',
+    slug: 'service_config.service_condition.delete',
+    name: 'Delete Service Conditions',
+  },
+  // Service Configuration - Service Configurations
+  {
+    module: 'service_config',
+    resource: 'service_configuration',
+    action: 'view',
+    slug: 'service_config.service_configuration.view',
+    name: 'View Service Configurations',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_configuration',
+    action: 'create',
+    slug: 'service_config.service_configuration.create',
+    name: 'Create Service Configurations',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_configuration',
+    action: 'update',
+    slug: 'service_config.service_configuration.update',
+    name: 'Update Service Configurations',
+  },
+  {
+    module: 'service_config',
+    resource: 'service_configuration',
+    action: 'delete',
+    slug: 'service_config.service_configuration.delete',
+    name: 'Delete Service Configurations',
+  },
+];

@@ -40,44 +40,16 @@ export function AppSidebar() {
 
   // Filter menu items based on permissions (System Admins see everything)
   const filteredItems = React.useMemo(() => {
-    console.log('[AppSidebar] Debug info:', {
-      isSystemAdmin,
-      permissions: permissions.slice(0, 5), // Show first 5 permissions
-      totalPermissions: permissions.length,
-      hasGoodsReceiptPermission: permissions.includes('operations.goods-receipt.view')
-    });
-
     return CUSTOMER_PORTAL_MENU_ITEMS.map((item) => {
       // 1. Check parent permission
       const hasParentAccess =
         isSystemAdmin || !item.permission || permissions.includes(item.permission);
-
-      // Debug for Operations menu
-      if (item.menu_code === 'OPS') {
-        console.log('[AppSidebar] Operations menu:', {
-          menu_code: item.menu_code,
-          hasParentAccess,
-          permission: item.permission,
-          childrenCount: item.children?.length || 0
-        });
-      }
 
       // 2. Filter children if they exist
       if (item.children) {
         const visibleChildren = item.children.filter(
           (child) => {
             const hasAccess = isSystemAdmin || !child.permission || permissions.includes(child.permission);
-            // Debug for Goods Receipts specifically
-            if (child.menu_code === 'CP-06-05') {
-              console.log('[AppSidebar] Goods Receipts child:', {
-                menu_code: child.menu_code,
-                label: child.label,
-                permission: child.permission,
-                hasAccess,
-                isSystemAdmin,
-                permissionInList: child.permission ? permissions.includes(child.permission) : false
-              });
-            }
             return hasAccess;
           }
         );
@@ -141,15 +113,6 @@ export function AppSidebar() {
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             isActive={isActive}
-                            onClick={() => {
-                              if (item.menu_code === 'CP-04-04') {
-                                console.log('[Sidebar] Employees menu clicked', {
-                                  pathname,
-                                  isActive,
-                                  childrenCount: item.children?.length ?? 0,
-                                });
-                              }
-                            }}
                           >
                             {item.icon && <item.icon />}
                             {item.href ? (
@@ -186,15 +149,6 @@ export function AppSidebar() {
                                         <SidebarMenuButton
                                           size="sm"
                                           isActive={subItemIsActive}
-                                          onClick={() => {
-                                            if (subItem.menu_code === 'CP-04-04') {
-                                              console.log('[Sidebar] Employees submenu clicked', {
-                                                pathname,
-                                                isActive: subItemIsActive,
-                                                childrenCount: subItem.children?.length ?? 0,
-                                              });
-                                            }
-                                          }}
                                         >
                                           {subItem.icon && <subItem.icon />}
                                           <span className="flex-1">{subItem.label}</span>

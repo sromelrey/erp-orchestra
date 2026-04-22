@@ -21,6 +21,7 @@ import {
   Book,
   ShoppingCart,
   Factory,
+  Layers,
 } from 'lucide-react';
 import { MenuItem } from './sidebar.types';
 
@@ -125,6 +126,47 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
             permission: 'hris.employee.manage',
           },
         ],
+      },
+    ],
+  },
+  {
+    label: 'Service Setup',
+    icon: Layers,
+    description: 'Configure printing services and add-ons',
+    menu_code: 'SS',
+    permission: 'service-config.view',
+    children: [
+      {
+        label: 'Service Types',
+        href: '/service-setup/service-types',
+        icon: Settings,
+        description: 'Manage service types (Silk Screen, Sublimation)',
+        menu_code: 'SS-01',
+        permission: 'service-config.service-type.view',
+      },
+      {
+        label: 'Service Options',
+        href: '/service-setup/service-options',
+        icon: Settings,
+        description: 'Manage service options (1 Color, 2 Colors)',
+        menu_code: 'SS-02',
+        permission: 'service-config.service-option.view',
+      },
+      {
+        label: 'Service Configurations',
+        href: '/service-setup/service-configurations',
+        icon: Settings,
+        description: 'Map services to BOMs and pricing',
+        menu_code: 'SS-03',
+        permission: 'service-config.service-configuration.view',
+      },
+      {
+        label: 'Add-ons',
+        href: '/service-setup/addons',
+        icon: Package,
+        description: 'Manage add-ons (labels, tags)',
+        menu_code: 'SS-04',
+        permission: 'addons.view',
       },
     ],
   },

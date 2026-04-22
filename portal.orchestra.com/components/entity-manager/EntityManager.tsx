@@ -280,26 +280,33 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
         }
       >
         <div className="relative">
-          {/* Processing Overlay */}
-          {isProcessing && (
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-20">
-              <Loader2 className="h-6 w-6 animate-spin mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Processing...
-              </p>
+          {/* Loading state for form data */}
+          {isMutating && formMode === 'edit' ? (
+            <div className="flex items-center justify-center h-32">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-sm text-muted-foreground">Loading data...</span>
             </div>
+          ) : (
+            <>
+              {/* Processing Overlay */}
+              {isProcessing && (
+                <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex flex-col items-center justify-center z-20">
+                  <Loader2 className="h-6 w-6 animate-spin mb-2" />
+                  <p className="text-sm text-muted-foreground">
+                    Processing...
+                  </p>
+                </div>
+              )}
+              <div className='grid gap-4 py-4 px-6' >
+              <FormRenderer
+                fields={formFields}
+                formData={formData as Record<string, string | number | boolean | unknown[] | undefined>}
+                formMode={formMode}
+                onFieldChange={handleFieldChange}
+                isProcessing={isProcessing}
+              /></div>
+            </>
           )}
-          <div className="grid gap-4 py-4 px-6">
-            <FormRenderer
-              fields={formMode === 'view' || formMode === 'edit' 
-                ? formFields.filter(field => field.name !== 'status') 
-                : formFields}
-              formData={formData as Record<string, string | number | boolean | undefined>}
-              formMode={formMode}
-              onFieldChange={handleFieldChange}
-              isProcessing={isProcessing}
-            />
-          </div>
         </div>
       </SliderForm>
 

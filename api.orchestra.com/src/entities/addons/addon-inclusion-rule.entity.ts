@@ -2,6 +2,12 @@ import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { CommonEntity } from '@/entities/common.entity';
 import { Addon } from './addon.entity';
 
+export enum RuleType {
+  MIN_QTY = 'MIN_QTY',
+  QUANTITY_THRESHOLD = 'QUANTITY_THRESHOLD',
+  ORDER_TOTAL = 'ORDER_TOTAL',
+}
+
 @Entity('addon_inclusion_rules')
 @Index(['tenantId'])
 @Index(['addonId'])
@@ -15,11 +21,11 @@ export class AddonInclusionRule extends CommonEntity {
 
   @Column({
     name: 'rule_type',
-    type: 'varchar',
-    length: 20,
-    default: 'MIN_QTY',
+    type: 'enum',
+    enum: RuleType,
+    default: RuleType.MIN_QTY,
   })
-  ruleType: 'MIN_QTY';
+  ruleType: RuleType;
 
   @Column({ name: 'threshold_value', type: 'numeric', precision: 10, scale: 2 })
   thresholdValue: number;
