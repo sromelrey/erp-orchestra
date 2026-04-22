@@ -18,28 +18,6 @@ export const formFields: FormField[] = [
     options: [], // Will be populated dynamically
   },
   {
-    name: 'conditionKey',
-    label: 'Condition Key',
-    type: 'text',
-    placeholder: 'e.g., LABEL_SOURCE',
-    required: false,
-  },
-  {
-    name: 'conditionValue',
-    label: 'Condition Value',
-    type: 'text',
-    placeholder: 'e.g., CUSTOMER',
-    required: false,
-  },
-  {
-    name: 'bomId',
-    label: 'BOM',
-    type: 'select',
-    placeholder: 'Select BOM',
-    required: false,
-    options: [], // Will be populated dynamically
-  },
-  {
     name: 'price',
     label: 'Price',
     type: 'number',

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { CUSTOMER_PORTAL_MENU_ITEMS } from './sidebar.config';
 import { useLogout } from '../../hooks/useLogout';
 import { LogOut } from 'lucide-react';
+import { HasPermission } from '@/components/auth/HasPermission';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -21,6 +22,52 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         {CUSTOMER_PORTAL_MENU_ITEMS.map((item) => {
+          // Check if parent item has permission
+          if (item.permission) {
+            return (
+              <HasPermission key={item.menu_code} permission={item.permission}>
+                {item.children ? (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-muted-foreground">
+                      {item.icon && <item.icon className="w-4 h-4" />}
+                      {item.label}
+                    </div>
+                    <div className="mt-1 space-y-1">
+                      {item.children.map((child) => (
+                        <HasPermission key={child.menu_code} permission={child.permission}>
+                          <Link
+                            href={child.href || '#'}
+                            className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
+                              pathname === child.href
+                                ? 'bg-primary/10 text-primary font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            }`}
+                          >
+                            {child.icon && <child.icon className="w-4 h-4" />}
+                            {child.label}
+                          </Link>
+                        </HasPermission>
+                      ))}
+                    </div>
+                  </div>
+                ) : item.href ? (
+                  <Link
+                    href={item.href}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      pathname === item.href
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                  >
+                    {item.icon && <item.icon className="w-4 h-4" />}
+                    {item.label}
+                  </Link>
+                ) : null}
+              </HasPermission>
+            );
+          }
+          
+          // No permission required for parent
           if (item.children) {
             return (
               <div key={item.menu_code} className="mb-4">
@@ -30,18 +77,34 @@ export function Sidebar() {
                 </div>
                 <div className="mt-1 space-y-1">
                   {item.children.map((child) => (
-                    <Link
-                      key={child.menu_code}
-                      href={child.href || '#'}
-                      className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
-                        pathname === child.href
-                          ? 'bg-primary/10 text-primary font-medium'
-                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                      }`}
-                    >
-                      {child.icon && <child.icon className="w-4 h-4" />}
-                      {child.label}
-                    </Link>
+                    child.permission ? (
+                      <HasPermission key={child.menu_code} permission={child.permission}>
+                        <Link
+                          href={child.href || '#'}
+                          className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
+                            pathname === child.href
+                              ? 'bg-primary/10 text-primary font-medium'
+                              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                          }`}
+                        >
+                          {child.icon && <child.icon className="w-4 h-4" />}
+                          {child.label}
+                        </Link>
+                      </HasPermission>
+                    ) : (
+                      <Link
+                        key={child.menu_code}
+                        href={child.href || '#'}
+                        className={`flex items-center gap-3 px-3 py-2 pl-10 rounded-md text-sm transition-colors ${
+                          pathname === child.href
+                            ? 'bg-primary/10 text-primary font-medium'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                      >
+                        {child.icon && <child.icon className="w-4 h-4" />}
+                        {child.label}
+                      </Link>
+                    )
                   ))}
                 </div>
               </div>

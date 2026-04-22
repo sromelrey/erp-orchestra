@@ -45,9 +45,9 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
   const [cancelSalesOrder, { isLoading: isCancelling }] = useCancelSalesOrderMutation();
 
   // Fetch dependencies for form options
-  const { data: items } = useGetItemsQuery({ isActive: true });
-  const { data: warehouses } = useGetWarehousesQuery({});
-  const { data: uoms } = useGetItemUomsQuery();
+  const { data: items = [] } = useGetItemsQuery({ isActive: true });
+  const { data: warehouses = [] } = useGetWarehousesQuery({});
+  const { data: uoms = [] } = useGetItemUomsQuery();
 
   // Handlers
   const handleCreate = async (formData: CreateSalesOrderRequest) => {
@@ -141,7 +141,7 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
 
   // Dynamic options for form fields
   const itemOptions = useMemo(() => {
-    if (!items) return [];
+    if (!items || !Array.isArray(items)) return [];
     return items.map(item => ({
       value: item.id.toString(),
       label: `${item.code} - ${item.name}`,
@@ -149,15 +149,15 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
   }, [items]);
 
   const warehouseOptions = useMemo(() => {
-    if (!warehouses) return [];
+    if (!warehouses || !Array.isArray(warehouses)) return [];
     return warehouses.map(warehouse => ({
       value: warehouse.id.toString(),
-      label: `${warehouse.code} - ${warehouse.name}`,
+      label: warehouse.name,
     }));
   }, [warehouses]);
 
   const uomOptions = useMemo(() => {
-    if (!uoms) return [];
+    if (!uoms || !Array.isArray(uoms)) return [];
     return uoms.map(uom => ({
       value: uom.id.toString(),
       label: `${uom.code} - ${uom.name}`,

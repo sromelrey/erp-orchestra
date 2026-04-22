@@ -7,7 +7,7 @@ import { formFields } from './form-fields';
 
 export default function ServiceTypesPage() {
   return (
-    <PermissionGuard permission="service-config.service-type.view">
+    <PermissionGuard permission="service_config.service_type.view">
       <EntityManager
         entityName="Service Type"
         entityNamePlural="Service Types"
@@ -16,10 +16,10 @@ export default function ServiceTypesPage() {
         formFields={formFields}
         keyExtractor={(item) => item.id}
         permissions={{
-          create: 'service-config.service-type.create',
-          update: 'service-config.service-type.update',
-          delete: 'service-config.service-type.delete',
-          view: 'service-config.service-type.view',
+          create: 'service_config.service_type.create',
+          update: 'service_config.service_type.update',
+          delete: 'service_config.service_type.delete',
+          view: 'service_config.service_type.view',
         }}
       />
     </PermissionGuard>

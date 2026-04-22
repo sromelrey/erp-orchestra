@@ -28,19 +28,9 @@ export const columns: Column<ServiceConfiguration>[] = [
     cell: (item) => <span>{item.serviceOption?.name || '-'}</span>,
   },
   {
-    header: 'Condition',
-    accessorKey: 'conditionKey',
-    cell: (item) => <span>{item.conditionKey ? `${item.conditionKey} = ${item.conditionValue}` : '-'}</span>,
-  },
-  {
-    header: 'BOM ID',
-    accessorKey: 'bomId',
-    cell: (item) => <span className="text-gray-600">{item.bomId || '-'}</span>,
-  },
-  {
     header: 'Price',
     accessorKey: 'price',
-    cell: (item) => <span className="font-medium">${item.price.toFixed(2)}</span>,
+    cell: (item) => <span className="font-medium">${item.price}</span>,
   },
   {
     header: 'Active',
@@ -50,10 +40,5 @@ export const columns: Column<ServiceConfiguration>[] = [
         {item.isActive ? 'Yes' : 'No'}
       </span>
     ),
-  },
-  {
-    header: 'Actions',
-    className: 'text-right',
-    cell: () => <></>,
   },
 ];

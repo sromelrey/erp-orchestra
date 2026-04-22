@@ -134,15 +134,22 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
     icon: Layers,
     description: 'Configure printing services and add-ons',
     menu_code: 'SS',
-    permission: 'service-config.view',
     children: [
+      {
+        label: 'Services',
+        href: '/service-setup/services',
+        icon: Settings,
+        description: 'Manage all services, options, and configurations',
+        menu_code: 'SS-00',
+        permission: 'service_config.service_type.view',
+      },
       {
         label: 'Service Types',
         href: '/service-setup/service-types',
         icon: Settings,
         description: 'Manage service types (Silk Screen, Sublimation)',
         menu_code: 'SS-01',
-        permission: 'service-config.service-type.view',
+        permission: 'service_config.service_type.view',
       },
       {
         label: 'Service Options',
@@ -150,7 +157,7 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         icon: Settings,
         description: 'Manage service options (1 Color, 2 Colors)',
         menu_code: 'SS-02',
-        permission: 'service-config.service-option.view',
+        permission: 'service_config.service_option.view',
       },
       {
         label: 'Service Configurations',
@@ -158,7 +165,7 @@ export const CUSTOMER_PORTAL_MENU_ITEMS: MenuItem[] = [
         icon: Settings,
         description: 'Map services to BOMs and pricing',
         menu_code: 'SS-03',
-        permission: 'service-config.service-configuration.view',
+        permission: 'service_config.service_configuration.view',
       },
       {
         label: 'Add-ons',
