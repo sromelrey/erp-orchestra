@@ -19,10 +19,14 @@ import {
 import { useGetItemsQuery } from '@/store/api';
 import { useGetWarehousesQuery } from '@/store/api';
 import { useGetItemUomsQuery } from '@/store/api';
+import { useGetServiceTypesQuery } from '@/store/api';
+import { useGetServiceOptionsQuery } from '@/store/api';
+import { useGetAddonsQuery } from '@/store/api';
 import { getErrorMessage } from '@/types';
 
 export interface UseSalesOrdersOptions {
   initialParams?: SalesOrderFilters;
+  skipFormOptions?: boolean;
 }
 
 export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
@@ -44,10 +48,13 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
   const [deliverSalesOrder, { isLoading: isDelivering }] = useDeliverSalesOrderMutation();
   const [cancelSalesOrder, { isLoading: isCancelling }] = useCancelSalesOrderMutation();
 
-  // Fetch dependencies for form options
-  const { data: items = [] } = useGetItemsQuery({ isActive: true });
-  const { data: warehouses = [] } = useGetWarehousesQuery({});
-  const { data: uoms = [] } = useGetItemUomsQuery();
+  // Fetch dependencies for form options - skip if form is not open
+  const { data: itemsData } = useGetItemsQuery({ isActive: true }, { skip: options.skipFormOptions });
+  const { data: warehouses = [] } = useGetWarehousesQuery({}, { skip: options.skipFormOptions });
+  const { data: uoms = [] } = useGetItemUomsQuery(undefined, { skip: options.skipFormOptions });
+  const { data: serviceTypesResponse } = useGetServiceTypesQuery({}, { skip: options.skipFormOptions });
+  const { data: serviceOptionsResponse } = useGetServiceOptionsQuery({}, { skip: options.skipFormOptions });
+  const { data: addonsResponse } = useGetAddonsQuery({}, { skip: options.skipFormOptions });
 
   // Handlers
   const handleCreate = async (formData: CreateSalesOrderRequest) => {
@@ -141,12 +148,13 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
 
   // Dynamic options for form fields
   const itemOptions = useMemo(() => {
-    if (!items || !Array.isArray(items)) return [];
+    const items = itemsData?.data || [];
+    if (!Array.isArray(items)) return [];
     return items.map(item => ({
       value: item.id.toString(),
-      label: `${item.code} - ${item.name}`,
+      label: item.name,
     }));
-  }, [items]);
+  }, [itemsData]);
 
   const warehouseOptions = useMemo(() => {
     if (!warehouses || !Array.isArray(warehouses)) return [];
@@ -163,6 +171,33 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
       label: `${uom.code} - ${uom.name}`,
     }));
   }, [uoms]);
+
+  const serviceTypeOptions = useMemo(() => {
+    const serviceTypes = serviceTypesResponse?.data || [];
+    if (!Array.isArray(serviceTypes)) return [];
+    return serviceTypes.map(type => ({
+      value: type.id.toString(),
+      label: type.name,
+    }));
+  }, [serviceTypesResponse]);
+
+  const serviceOptionOptions = useMemo(() => {
+    const serviceOptions = serviceOptionsResponse?.data || [];
+    if (!Array.isArray(serviceOptions)) return [];
+    return serviceOptions.map(option => ({
+      value: option.id.toString(),
+      label: option.name,
+    }));
+  }, [serviceOptionsResponse]);
+
+  const addonOptions = useMemo(() => {
+    const addons = addonsResponse?.data || [];
+    if (!Array.isArray(addons)) return [];
+    return addons.map(addon => ({
+      value: addon.id.toString(),
+      label: addon.name,
+    }));
+  }, [addonsResponse]);
 
   // Stats
   const stats = useMemo(() => {
@@ -190,6 +225,7 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
     salesOrders: salesOrdersData?.data || [],
     meta: salesOrdersData?.meta,
     stats,
+    items: itemsData?.data || [],
 
     // Loading states
     isLoading,
@@ -222,6 +258,9 @@ export function useSalesOrders(options: UseSalesOrdersOptions = {}) {
     itemOptions,
     warehouseOptions,
     uomOptions,
+    serviceTypeOptions,
+    serviceOptionOptions,
+    addonOptions,
   };
 }
 

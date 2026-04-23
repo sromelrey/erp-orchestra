@@ -161,4 +161,32 @@ export class ServiceConfigurationService {
       relations: ['bom'],
     });
   }
+
+  async getPrice(
+    tenantId: number,
+    serviceTypeId: number,
+    serviceOptionId: number,
+  ) {
+    const configuration = await this.serviceConfigurationRepository.findOne({
+      where: {
+        tenantId,
+        serviceTypeId,
+        serviceOptionId,
+        isActive: true,
+      },
+      relations: ['serviceType', 'serviceOption'],
+    });
+
+    if (!configuration) {
+      throw new Error(
+        `No active service configuration found for service type ${serviceTypeId} and option ${serviceOptionId}`,
+      );
+    }
+
+    return {
+      price: configuration.price,
+      serviceTypeName: configuration.serviceType?.name || '',
+      serviceOptionName: configuration.serviceOption?.name || '',
+    };
+  }
 }

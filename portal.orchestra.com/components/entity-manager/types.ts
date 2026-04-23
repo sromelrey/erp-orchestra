@@ -43,13 +43,69 @@ export interface FormField {
   getOptions?: (dependencyValue: string | number | boolean) => Promise<FormFieldOption[]> | FormFieldOption[];
   // For nested array fields (like items in a sales order)
   nestedArrayConfig?: {
-    columns: Array<{
+    // Flag to enable tab-based layout instead of sections
+    useTabs?: boolean;
+    // Top row columns (always visible above tabs)
+    topRowColumns?: Array<{
       key: string;
       label: string;
-      type: 'text' | 'number' | 'select' | 'date';
+      type: 'text' | 'number' | 'select' | 'date' | 'custom' | 'combobox';
       options?: FormFieldOption[];
       required?: boolean;
       width?: 'full' | 'half';
+      disabled?: boolean;
+      dependsOn?: string;
+      getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
+      allowNegative?: boolean;
+      allowDecimal?: boolean;
+      decimalScale?: number;
+      render?: (props: {
+        value: unknown;
+        onChange: (value: string | number | unknown) => void;
+        item: Record<string, string | number | unknown>;
+        itemIndex: number;
+        column: unknown;
+        isDisabled: boolean;
+      }) => ReactNode;
+      multiple?: boolean;
+    }>;
+    // Tab definitions for tab-based layout
+    tabs?: Array<{
+      value: string;
+      label: string;
+      gridCols?: number; // Number of columns for the grid (default 2)
+      columns: Array<{
+        key: string;
+        label: string;
+        type: 'text' | 'number' | 'select' | 'date' | 'custom' | 'combobox';
+        options?: FormFieldOption[];
+        required?: boolean;
+        width?: 'full' | 'half';
+        disabled?: boolean;
+        dependsOn?: string;
+        getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
+        allowNegative?: boolean;
+        allowDecimal?: boolean;
+        decimalScale?: number;
+        render?: (props: {
+          value: unknown;
+          onChange: (value: string | number | unknown) => void;
+          item: Record<string, string | number | unknown>;
+          itemIndex: number;
+          column: unknown;
+          isDisabled: boolean;
+        }) => ReactNode;
+        multiple?: boolean;
+      }>;
+    }>;
+    columns?: Array<{
+      key: string;
+      label: string;
+      type: 'text' | 'number' | 'select' | 'date' | 'custom' | 'combobox';
+      options?: FormFieldOption[];
+      required?: boolean;
+      width?: 'full' | 'half';
+      disabled?: boolean;
       // For dependent columns within nested arrays
       dependsOn?: string; // Column key this column depends on
       getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
@@ -57,6 +113,50 @@ export interface FormField {
       allowNegative?: boolean;
       allowDecimal?: boolean;
       decimalScale?: number;
+      // Custom render for complex columns
+      render?: (props: {
+        value: unknown;
+        onChange: (value: string | number | unknown) => void;
+        item: Record<string, string | number | unknown>;
+        itemIndex: number;
+        column: unknown;
+        isDisabled: boolean;
+      }) => ReactNode;
+      // For combobox columns (multiple selection)
+      multiple?: boolean;
+    }>;
+    // New sections-based structure for grouped fields
+    sections?: Array<{
+      title: string;
+      description: string;
+      isEssential?: boolean; // For progressive disclosure - essential fields shown in collapsed view
+      columns: Array<{
+        key: string;
+        label: string;
+        type: 'text' | 'number' | 'select' | 'date' | 'custom' | 'combobox';
+        options?: FormFieldOption[];
+        required?: boolean;
+        width?: 'full' | 'half';
+        disabled?: boolean;
+        // For dependent columns within nested arrays
+        dependsOn?: string; // Column key this column depends on
+        getOptions?: (dependencyValue: string | number) => Promise<FormFieldOption[]> | FormFieldOption[];
+        // For number columns
+        allowNegative?: boolean;
+        allowDecimal?: boolean;
+        decimalScale?: number;
+        // Custom render for complex columns
+        render?: (props: {
+          value: unknown;
+          onChange: (value: string | number | unknown) => void;
+          item: Record<string, string | number | unknown>;
+          itemIndex: number;
+          column: unknown;
+          isDisabled: boolean;
+        }) => ReactNode;
+        // For combobox columns (multiple selection)
+        multiple?: boolean;
+      }>;
     }>;
     itemLabel?: string; // e.g., "Item"
     itemsLabel?: string; // e.g., "Items"
@@ -96,6 +196,7 @@ export interface EntityManagerProps<T> {
   onFormOpen?: (item: T) => void; // Called when form opens with an item
   onFormClose?: () => void; // Called when form is closed
   onFormChange?: () => void; // Called when form data changes
+  onFormOpenChange?: (open: boolean) => void; // Called when form open state changes
 
   // Optional customization
   searchPlaceholder?: string;
@@ -119,6 +220,9 @@ export interface EntityManagerProps<T> {
 
   // Expandable row support
   expandedRow?: (item: T) => React.ReactNode;
+
+  // Auto-size table based on content
+  autoSize?: boolean;
 
   /**
    * Permissions required for various CRUD operations.

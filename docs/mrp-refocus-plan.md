@@ -51,6 +51,38 @@
 - [x] **Discount & Tax Support** - Line-level and order-level discounts and taxes
 - [x] **Audit Trail** - Approval, shipping, and delivery tracking with user/timestamp
 
+#### 🆕 Design Upload & Job Order Preparation
+- Allow uploading design images per Sales Order Item
+- Only available when status = CONFIRMED
+- Store image as file path (local storage)
+
+##### Features
+- Upload/replace design per item
+- Preview design in Sales Order details
+- Filter Sales Orders:
+  - Status = CONFIRMED
+  - With/without design
+- Generate Job Order PDF from selected orders/items
+
+##### Workflow
+```text
+DRAFT → CONFIRMED → (Upload Design) → Job Order → Production
+```
+
+##### Database Updates
+Extend `sales_order_items`:
+- design_image_path
+- design_notes
+
+##### API Additions
+- Upload design endpoint
+- Job order PDF generation endpoint
+
+##### Notes
+- Design is required before generating Job Order
+- Does not affect inventory or BOM
+- Acts as bridge between Sales and Production
+
 ### 6. Bill of Materials (BOM) ✅ **COMPLETED** (100%)
 - [x] **BOM Definition** - Raw materials needed per finished good
 - [x] **BOM Versions** - Track changes over time
@@ -106,7 +138,7 @@
 - [ ] **Customer History** - Order history and payment tracking
 - [ ] **Integration** - Link to Sales Orders (replace customer_name field)
 
-### 11. Service Configuration (Printing MRP) ✅ **COMPLETED** (100% Backend, 0% Frontend)
+### 11. Service Configuration (Printing MRP) ✅ **COMPLETED** (100% Backend, 100% Frontend)
 - Enables service-based order entry for printing operations (Silk Screen, Sublimation)
 - Acts as a decision layer between Sales Orders and BOM
 - Automatically assigns BOM and pricing based on service selection
@@ -129,7 +161,7 @@
   - Production module
   - Inventory module
 
-### 12. Add-ons & Inclusion Rules 📋 **NOT STARTED** (0%)
+### 12. Add-ons & Inclusion Rules ✅ **COMPLETED** (100% Backend, 100% Frontend)
 - Supports optional add-ons per sales order item:
   - Etekita
   - Inner Label
@@ -140,10 +172,10 @@
   - Sleeve Tag
 
 #### Features
-- [ ] **Add-on Selection** - Per Sales Order item
-- [ ] **Pricing per Add-on** - Individual add-on pricing
-- [ ] **Free Inclusion Rules** - Example: Free if quantity ≥ 40
-- [ ] **Conditional Inventory Deduction** - Deduct only if company provided, skip if customer provided
+- [x] **Add-on Selection** - Per Sales Order item
+- [x] **Pricing per Add-on** - Individual add-on pricing
+- [x] **Free Inclusion Rules** - Example: Free if quantity ≥ 40
+- [x] **Conditional Inventory Deduction** - Deduct only if company provided, skip if customer provided
 
 #### Notes
 - Add-ons must NOT be part of Service Types
@@ -159,13 +191,14 @@
 | Goods Issuance | ✅ 100% | ✅ 100% | 100% | Complete | High |
 | Goods Receipt | ✅ 100% | ✅ 100% | 100% | Complete | High |
 | Sales Orders | ✅ 100% | ✅ 100% | 100% | Complete | Medium |
+| Design Upload & Job Order Preparation | 📋 0% | 📋 0% | 0% | Not Started | High |
 | BOM | ✅ 100% | ✅ 100% | 100% | Complete | Medium |
 | Production | ✅ 100% | ✅ 100% | 100% | Complete | Low |
 | Materials | ✅ 100% | ✅ 100% | 100% | Complete | High |
 | User Management | ✅ 100% | ✅ 100% | 100% | Complete | Critical |
 | Infrastructure | ✅ 100% | 🚧 40% | 70% | In Progress | Critical |
-| Service Configuration | ✅ 100% | 📋 0% | 50% | Backend Complete | High |
-| Add-ons & Inclusion Rules | ✅ 100% | 📋 0% | 50% | Backend Complete | Medium |
+| Service Configuration | ✅ 100% | ✅ 100% | 100% | Complete | High |
+| Add-ons & Inclusion Rules | ✅ 100% | ✅ 100% | 100% | Complete | Medium |
 
 ### Legend
 - ✅ Completed/High Progress (80-100%)
@@ -173,8 +206,7 @@
 - 📋 Not Started/Low Progress (0-29%)
 
 ### Summary by Status
-- **Complete**: Item Master (100%), Materials (100%), Sales Orders (100%), Goods Receipt (100%), Production (100%), Inventory Management (100%), Goods Issuance (100%), User Management (100%), BOM (100%)
-- **Backend Complete**: Service Configuration (100%), Add-ons & Inclusion Rules (100%)
+- **Complete**: Item Master (100%), Materials (100%), Sales Orders (100%), Goods Receipt (100%), Production (100%), Inventory Management (100%), Goods Issuance (100%), User Management (100%), BOM (100%), Service Configuration (100%), Add-ons & Inclusion Rules (100%)
 - **In Progress**: Infrastructure (70%)
 
 ## Completion Summary
@@ -184,15 +216,15 @@
 - **In Progress**: 0 modules
 - **Not Started**: 0 modules
 
-### Frontend UI (85% Complete)
-- **Fully Completed**: 9 modules (Item Master, Materials, Sales Orders, Goods Receipt, Production, Inventory Management, Goods Issuance, User Management, BOM)
-- **In Progress**: 1 module (Common Components)
-- **Not Started**: 2 modules (Service Configuration, Add-ons & Inclusion Rules)
+### Frontend UI (100% Complete)
+- **Fully Completed**: 11 modules (Item Master, Materials, Sales Orders, Goods Receipt, Production, Inventory Management, Goods Issuance, User Management, BOM, Service Configuration, Add-ons & Inclusion Rules)
+- **In Progress**: 0 modules
+- **Not Started**: 0 modules
 
-### Overall Project (93% Complete)
+### Overall Project (100% Complete - Core MRP)
 - **Backend Complete**: 11/11 modules ready
-- **UI Complete**: 9/11 modules complete
-- **Next Priority**: Build frontend for Service Configuration and Add-ons & Inclusion Rules
+- **UI Complete**: 11/11 modules complete
+- **Next Priority**: Infrastructure deployment and Phase 2 enhancements
 
 ## Next Steps
 
@@ -230,8 +262,8 @@
 
 | Task | Backend | Frontend/Portal | Testing | Overall | Status | Priority |
 |------|---------|-----------------|---------|---------|---------|----------|
-| **Service Configuration (Printing MRP) Frontend** | ✅ 100% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
-| **Add-ons & Inclusion Rules Frontend** | ✅ 100% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
+| **Service Configuration (Printing MRP) Frontend** | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | Complete | **High** |
+| **Add-ons & Inclusion Rules Frontend** | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | Complete | **High** |
 | **Selectable Values API** | 📋 0% | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
 | **Entity Manager Cleanup** | - | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |
 | **Form Component Creation** | - | 📋 0% | 📋 0% | 📋 0% | Not Started | **High** |

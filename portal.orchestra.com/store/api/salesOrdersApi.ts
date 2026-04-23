@@ -33,6 +33,11 @@ export interface SalesOrderItem {
   locationId: number;
   locationName: string;
   notes?: string;
+  serviceTypeId?: number;
+  serviceOptionId?: number;
+  labelSource?: string;
+  serviceType?: { id: number; name: string };
+  serviceOption?: { id: number; name: string };
   createdAt: string;
   updatedAt: string;
   tenantId: number;
@@ -77,6 +82,10 @@ export interface CreateSalesOrderItemRequest {
   warehouseId: number;
   locationId: number;
   notes?: string;
+  serviceTypeId?: number;
+  serviceOptionId?: number;
+  labelSource?: string;
+  addons?: Array<{ addonId: number; quantity: number }>;
 }
 
 export interface CreateSalesOrderRequest {

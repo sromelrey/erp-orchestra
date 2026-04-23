@@ -168,6 +168,7 @@ export const useGetServiceConfigurationByIdQuery = api.useGetServiceConfiguratio
 export const useCreateServiceConfigurationMutation = api.useCreateServiceConfigurationMutation;
 export const useUpdateServiceConfigurationMutation = api.useUpdateServiceConfigurationMutation;
 export const useDeleteServiceConfigurationMutation = api.useDeleteServiceConfigurationMutation;
+export const useGetServicePriceQuery = api.useGetServicePriceQuery;
 
 // Addons hooks
 export const useGetAddonsQuery = api.useGetAddonsQuery;

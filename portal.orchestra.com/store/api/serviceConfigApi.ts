@@ -40,6 +40,12 @@ interface ServiceConfiguration {
   serviceOption?: { name: string };
 }
 
+interface ServicePriceResponse {
+  price: number;
+  serviceTypeName: string;
+  serviceOptionName: string;
+}
+
 interface CreateServiceTypeRequest {
   code: string;
   name: string;
@@ -209,6 +215,15 @@ export const serviceConfigEndpoints = (builder: EndpointBuilder<BaseQueryFn<stri
         method: 'DELETE',
       }),
       invalidatesTags: ['ServiceConfiguration'],
+    }),
+
+    // Service Configuration Price Lookup
+    getServicePrice: builder.query<ServicePriceResponse, { serviceTypeId: number; serviceOptionId: number }>({
+      query: ({ serviceTypeId, serviceOptionId }) => ({
+        url: '/service-config/service-configurations/price',
+        method: 'GET',
+        params: { service_type_id: serviceTypeId, service_option_id: serviceOptionId },
+      }),
     }),
   });
 

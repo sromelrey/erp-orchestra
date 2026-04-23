@@ -25,6 +25,7 @@ export function useEntityManager<T extends object>({
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [formData, setFormData] = useState<Partial<T> | Record<string, unknown>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<Partial<T> | Record<string, unknown>>({});
 
   const plural = entityNamePlural || `${entityName}s`;
 
@@ -53,15 +54,15 @@ export function useEntityManager<T extends object>({
 
   // Form handlers
   const openCreateForm = () => {
+    const initialData = formFields.reduce((acc, field) => {
+      const record = acc as Record<string, unknown>;
+      record[field.name] = field.defaultValue ?? '';
+      return record as Partial<T>;
+    }, {} as Partial<T>);
     setFormMode('create');
     setSelectedItem(null);
-    setFormData(
-      formFields.reduce((acc, field) => {
-        const record = acc as Record<string, unknown>;
-        record[field.name] = field.defaultValue ?? '';
-        return record as Partial<T>;
-      }, {} as Partial<T>)
-    );
+    setFormData(initialData);
+    setInitialFormData(initialData);
   };
 
   const handleView = (item: T) => {
@@ -73,7 +74,9 @@ export function useEntityManager<T extends object>({
     setSelectedItem(item);
     // Apply optimistic updates to form data
     const optimisticUpdate = optimisticUpdates?.get(keyExtractor(item));
-    setFormData(optimisticUpdate ? { ...item, ...optimisticUpdate } : item);
+    const data = optimisticUpdate ? { ...item, ...optimisticUpdate } : item;
+    setFormData(data);
+    setInitialFormData(data);
     onFormOpen?.(item);
   };
 
@@ -88,7 +91,9 @@ export function useEntityManager<T extends object>({
     setSelectedItem(item);
     // Apply optimistic updates to form data
     const optimisticUpdate = optimisticUpdates?.get(keyExtractor(item));
-    setFormData(optimisticUpdate ? { ...item, ...optimisticUpdate } : item);
+    const data = optimisticUpdate ? { ...item, ...optimisticUpdate } : item;
+    setFormData(data);
+    setInitialFormData(data);
     onFormOpen?.(item);
   };
 
@@ -147,6 +152,8 @@ export function useEntityManager<T extends object>({
         const id = keyExtractor(selectedItem);
         await onUpdate(id, cleanedData as Partial<T>);
       }
+      // Reset dirty state after successful save
+      resetDirtyState();
       setFormMode(null);
     } finally {
       setIsSubmitting(false);
@@ -156,6 +163,19 @@ export function useEntityManager<T extends object>({
   const handleFieldChange = (name: string, value: string | number | boolean | unknown[]) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     onFormChange?.();
+  };
+
+  // Check if form has unsaved changes
+  const isDirty = () => {
+    if (formMode === 'view') return false;
+    const current = formData as Record<string, unknown>;
+    const initial = initialFormData as Record<string, unknown>;
+    return JSON.stringify(current) !== JSON.stringify(initial);
+  };
+
+  // Reset dirty state (set initialFormData to current formData)
+  const resetDirtyState = () => {
+    setInitialFormData(formData);
   };
 
   const formTitle = useMemo(() => {
@@ -207,5 +227,7 @@ export function useEntityManager<T extends object>({
     handleView,
     handleEdit,
     handleDelete,
+    isDirty,
+    resetDirtyState,
   };
 }

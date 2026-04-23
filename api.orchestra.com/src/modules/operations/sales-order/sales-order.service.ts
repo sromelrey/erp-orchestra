@@ -238,6 +238,8 @@ export class SalesOrderService {
     const queryBuilder = this.salesOrderRepository
       .createQueryBuilder('so')
       .leftJoinAndSelect('so.items', 'soi')
+      .leftJoinAndSelect('soi.serviceType', 'st')
+      .leftJoinAndSelect('soi.serviceOption', 'sopt')
       .where('so.deletedAt IS NULL');
 
     if (tenantId) {
@@ -296,7 +298,7 @@ export class SalesOrderService {
   async findOne(id: number, tenantId?: number) {
     const order = await this.salesOrderRepository.findOne({
       where: { id, ...(tenantId && { tenantId }) },
-      relations: ['items'],
+      relations: ['items', 'items.serviceType', 'items.serviceOption'],
     });
 
     if (!order) {

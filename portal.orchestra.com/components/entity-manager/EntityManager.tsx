@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Plus, Search, Loader2, Eye, Edit, Trash2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +29,7 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
     onDelete,
     onFormClose,
     onFormChange,
+    onFormOpenChange,
     keyExtractor,
     showViewButton = true,
     showEditButton = true,
@@ -36,6 +37,7 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
     isRowEditable,
     isRowDeletable,
     expandedRow,
+    autoSize = false,
     formWidth = 'lg',
     permissions,
     workflowActions,
@@ -52,6 +54,10 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
     confirmLabel: string;
     onConfirm: () => void | Promise<void>;
   } | null>(null);
+
+  // Unsaved changes dialog state
+  const [unsavedChangesDialog, setUnsavedChangesDialog] = useState(false);
+  const [pendingClose, setPendingClose] = useState<(() => void) | null>(null);
 
   const {
     searchQuery,
@@ -70,11 +76,62 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
     handleView,
     handleEdit,
     handleDelete,
+    isDirty,
   } = useEntityManager({
     ...props,
     optimisticUpdates,
     onFormChange,
   });
+
+  // Track form open state changes
+  useEffect(() => {
+    onFormOpenChange?.(formMode !== null);
+  }, [formMode, onFormOpenChange]);
+
+  // Handle form close with dirty check
+  const handleFormClose = () => {
+    if (isDirty()) {
+      setPendingClose(() => () => {
+        setFormMode(null);
+        onFormClose?.();
+      });
+      setUnsavedChangesDialog(true);
+    } else {
+      setFormMode(null);
+      onFormClose?.();
+    }
+  };
+
+  // Handle discard unsaved changes
+  const handleDiscardChanges = () => {
+    setUnsavedChangesDialog(false);
+    if (pendingClose) {
+      pendingClose();
+      setPendingClose(null);
+    }
+  };
+
+  // Handle cancel unsaved changes dialog
+  const handleCancelDiscard = () => {
+    setUnsavedChangesDialog(false);
+    setPendingClose(null);
+  };
+
+  // Browser navigation protection
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty()) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [formMode, formData, isDirty]);
 
   // Build columns with action buttons
   const columnsWithActions: Column<T>[] = useMemo(() => {
@@ -186,9 +243,10 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
       <SliderForm
         open={formMode !== null}
         onOpenChange={(open) => {
+          console.log('[EntityManager] SliderForm onOpenChange', { open, formMode });
+          onFormOpenChange?.(open);
           if (!open) {
-            setFormMode(null);
-            onFormClose?.();
+            handleFormClose();
           }
         }}
         title={formTitle}
@@ -325,6 +383,18 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
         />
       )}
 
+      {/* Unsaved Changes Dialog */}
+      <ConfirmationDialog
+        open={unsavedChangesDialog}
+        onOpenChange={handleCancelDiscard}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to leave?"
+        confirmLabel="Discard"
+        cancelLabel="Cancel"
+        variant="default"
+        onConfirm={handleDiscardChanges}
+      />
+
       {/* Loading State - only show full loader when initial loading with no data */}
       {isLoading && filteredData.length === 0 && (
         <div className="flex justify-center p-12">
@@ -375,6 +445,7 @@ function EntityManager<T extends object>(props: EntityManagerProps<T>) {
             keyExtractor={keyExtractor}
             emptyMessage={emptyMessage || `No ${plural.toLowerCase()} found`}
             expandedRow={expandedRow}
+            autoSize={autoSize}
           />
         )}
       </div>
