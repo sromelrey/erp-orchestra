@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Addon } from '@/entities/addons/addon.entity';
-import { AddonInclusionRule } from '@/entities/addons/addon-inclusion-rule.entity';
+import {
+  AddonInclusionRule,
+  RuleType,
+} from '@/entities/addons/addon-inclusion-rule.entity';
 import { CalculateAddonPriceDto } from '../dto/addon-selection.dto';
 
 export interface AddonPricingResult {
@@ -96,7 +99,7 @@ export class AddonPricingService {
       const addonRules = rulesByAddon[addon.id] || [];
       for (const rule of addonRules) {
         if (
-          rule.ruleType === 'MIN_QTY' &&
+          rule.ruleType === RuleType.MIN_QTY &&
           calculateDto.quantity >= rule.thresholdValue
         ) {
           // Apply the rule with the highest discount
@@ -180,7 +183,7 @@ export class AddonPricingService {
     });
 
     const applicableRules = rules.filter((rule) => {
-      if (rule.ruleType === 'MIN_QTY') {
+      if (rule.ruleType === RuleType.MIN_QTY) {
         return quantity >= rule.thresholdValue;
       }
       return false;

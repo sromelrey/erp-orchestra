@@ -32,7 +32,7 @@ export default function PlansPage() {
     {
       label: "Avg. Price",
       value: plans.length
-        ? `$${(
+        ? `₱${(
             plans.reduce((acc: number, curr: any) => acc + Number(curr.monthlyPrice), 0) /
             plans.length
           ).toFixed(2)}`

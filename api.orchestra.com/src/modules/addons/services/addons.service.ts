@@ -23,22 +23,52 @@ export class AddonsService {
     private readonly ruleRepository: Repository<AddonInclusionRule>,
   ) {}
 
+  private async generateNextAddonCode(tenantId: number): Promise<string> {
+    // Find the highest code number for this tenant
+    const lastAddon = await this.addonRepository.findOne({
+      where: { tenantId },
+      order: { code: 'DESC' },
+    });
+
+    let nextNumber = 1;
+    if (lastAddon && lastAddon.code) {
+      // Extract number from code (e.g., ADDON_0001 -> 1)
+      const match = lastAddon.code.match(/ADDON_(\d+)$/);
+      if (match) {
+        nextNumber = parseInt(match[1], 10) + 1;
+      }
+    }
+
+    // Format as ADDON_XXXX (4 digits, zero-padded)
+    return `ADDON_${nextNumber.toString().padStart(4, '0')}`;
+  }
+
   async create(
     createDto: CreateAddonDto,
     actor: { tenantId: number; userId: number },
   ) {
-    // Check if addon with the same code already exists for this tenant
-    const existing = await this.findByCode(createDto.code, actor);
-    if (existing) {
-      throw new ConflictException(
-        `Addon with code '${createDto.code}' already exists for this tenant. ` +
-          `Existing addon: ${existing.name} (ID: ${existing.id}). ` +
-          `Please use a different code or update the existing addon.`,
-      );
+    // Auto-generate code if not provided
+    let code = createDto.code;
+    if (!code) {
+      code = await this.generateNextAddonCode(actor.tenantId);
+    } else {
+      // Check if addon with the same code already exists for this tenant
+      const existing = await this.findByCode(code, actor);
+      if (existing) {
+        throw new ConflictException(
+          `Addon with code '${code}' already exists for this tenant. ` +
+            `Existing addon: ${existing.name} (ID: ${existing.id}). ` +
+            `Please use a different code or update the existing addon.`,
+        );
+      }
     }
 
+    // Extract rules from DTO (they'll be handled separately)
+    const { rules, ...addonData } = createDto;
+
     const addon = this.addonRepository.create({
-      ...createDto,
+      ...addonData,
+      code,
       tenantId: actor.tenantId,
       createdBy: actor.userId,
       updatedBy: actor.userId,
@@ -46,14 +76,29 @@ export class AddonsService {
 
     try {
       const savedAddon = await this.addonRepository.save(addon);
-      return plainToInstance(AddonResponseDto, savedAddon);
+
+      // Create rules if provided
+      if (rules && rules.length > 0) {
+        const ruleEntities = rules.map((rule) =>
+          this.ruleRepository.create({
+            ...rule,
+            addonId: savedAddon.id,
+            tenantId: actor.tenantId,
+            createdBy: actor.userId,
+            updatedBy: actor.userId,
+          }),
+        );
+        await this.ruleRepository.save(ruleEntities);
+      }
+
+      return await this.findOne(savedAddon.id, actor);
     } catch (error) {
       if (
         error instanceof QueryFailedError &&
         error.message.includes('duplicate key')
       ) {
         throw new ConflictException(
-          `Failed to create addon: An addon with code '${createDto.code}' already exists. ` +
+          `Failed to create addon: An addon with code '${code}' already exists. ` +
             `Please use a different code or update the existing addon.`,
         );
       }
@@ -99,6 +144,7 @@ export class AddonsService {
       where,
       skip,
       take: limit,
+      relations: ['inclusionRules'],
       order: {
         createdAt: 'DESC',
       },
@@ -164,6 +210,9 @@ export class AddonsService {
       }
     }
 
+    // Extract rules from DTO (they'll be handled separately)
+    const { rules, ...addonData } = updateDto;
+
     try {
       await this.addonRepository.update(
         {
@@ -171,11 +220,41 @@ export class AddonsService {
           tenantId: actor.tenantId,
         },
         {
-          ...updateDto,
+          ...addonData,
           updatedBy: actor.userId,
           updatedAt: new Date(),
         },
       );
+
+      // Handle rules if provided
+      if (rules !== undefined) {
+        // Get existing rules for this addon
+        const existingRules = await this.ruleRepository.find({
+          where: { addonId: id, tenantId: actor.tenantId },
+        });
+
+        // Delete all existing rules
+        if (existingRules.length > 0) {
+          await this.ruleRepository.softDelete({
+            addonId: id,
+            tenantId: actor.tenantId,
+          });
+        }
+
+        // Create new rules
+        if (rules.length > 0) {
+          const ruleEntities = rules.map((rule) =>
+            this.ruleRepository.create({
+              ...rule,
+              addonId: id,
+              tenantId: actor.tenantId,
+              createdBy: actor.userId,
+              updatedBy: actor.userId,
+            }),
+          );
+          await this.ruleRepository.save(ruleEntities);
+        }
+      }
 
       return await this.findOne(id, actor);
     } catch (error) {

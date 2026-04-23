@@ -37,6 +37,11 @@ export const TAG_TYPES = [
   'StockAdjustment',
   'StockTransfer',
   'GoodsIssuance',
+  'ServiceType',
+  'ServiceOption',
+  'ServiceConfiguration',
+  'Addon',
+  'AddonRule',
 ] as const;
 
 export type TagTypes = typeof TAG_TYPES[number];

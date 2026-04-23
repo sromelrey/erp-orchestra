@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectUserPermissions,
@@ -57,6 +57,31 @@ export function HasPermission({
   const userPermissions = useSelector(selectUserPermissions);
   const user = useSelector(selectCurrentUser);
 
+  // TODO: Add selectTenantFeatures to authSlice once plan/modules are synchronized from backend
+  // For now, we focus on permission gating as the primary shield
+  const hasFeatureAccess = true; // Placeholder for future feature-gating logic
+
+  const hasPermissionAccess = permission ? userPermissions.includes(permission) : true;
+
+  const hasAccess = isAuthenticated && hasFeatureAccess && hasPermissionAccess;
+
+  // Handle redirects in useEffect to avoid setState during render
+  useEffect(() => {
+    // Only redirect if initialized and access is denied
+    if (isInitialized && !hasAccess) {
+      // If they don't have access because they aren't logged in at all, always go to login
+      if (!isAuthenticated) {
+        router.push('/login');
+        return;
+      }
+
+      // If they are logged in but lack the specific permission, go to the specified redirect path
+      if (redirectTo) {
+        router.push(redirectTo);
+      }
+    }
+  }, [hasAccess, isAuthenticated, isInitialized, redirectTo, router]);
+
   // Wait for the AuthInit /auth/me call to complete before evaluating permissions.
   // Without this, full-page refreshes instantly fail because Redux starts empty.
   if (!isInitialized) {
@@ -68,27 +93,8 @@ export function HasPermission({
     return <>{children}</>;
   }
 
-  // TODO: Add selectTenantFeatures to authSlice once plan/modules are synchronized from backend
-  // For now, we focus on permission gating as the primary shield
-  const hasFeatureAccess = true; // Placeholder for future feature-gating logic
-
-  const hasPermissionAccess = permission ? userPermissions.includes(permission) : true;
-
-  const hasAccess = isAuthenticated && hasFeatureAccess && hasPermissionAccess;
-
   if (!hasAccess) {
-    // If they don't have access because they aren't logged in at all, always go to login
-    if (!isAuthenticated) {
-      router.push('/login');
-      return null;
-    }
-
-    // If they are logged in but lack the specific permission, go to the specified redirect path
-    if (redirectTo) {
-      router.push(redirectTo);
-      return null;
-    }
-
+    // Return fallback while redirect is happening
     return <>{fallback}</>;
   }
 

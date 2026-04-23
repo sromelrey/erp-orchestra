@@ -1,5 +1,7 @@
 import { FormField, FormFieldOption } from '@/components/entity-manager/types';
 import { SalesOrderStatus } from '@/store/api/salesOrdersApi';
+import { Badge } from '@/components/ui/badge';
+import { MultiSelectCombobox } from '@/components/ui/multi-select-combobox';
 
 function isOrderEditable(status: SalesOrderStatus): boolean {
   return status === SalesOrderStatus.DRAFT;
@@ -11,9 +13,53 @@ export const getFormFields = (
   warehouseOptions: Array<{ value: string; label: string }>,
   locationOptions: Array<{ value: string; label: string }>,
   getLocationsByWarehouse?: (warehouseId: string | number) => Promise<FormFieldOption[]>,
-  currentStatus?: SalesOrderStatus
+  currentStatus?: SalesOrderStatus,
+  serviceTypeOptions?: Array<{ value: string; label: string }>,
+  serviceOptionOptions?: Array<{ value: string; label: string }>,
+  addonOptions?: Array<{ value: string; label: string }>
 ): FormField[] => {
-  const isEditable = !currentStatus || isOrderEditable(currentStatus);
+  const isEditable = currentStatus === undefined || isOrderEditable(currentStatus);
+
+  // Custom render for addons with multiple selection
+  const renderAddons = ({ value, onChange, isDisabled }: { value: unknown; onChange: (value: string | number | unknown) => void; item: Record<string, string | number | unknown>; itemIndex: number; column: unknown; isDisabled: boolean }) => {
+    const selectedAddons = Array.isArray(value) ? value as Array<{ addonId: number; quantity: number }> : [];
+
+    // Table view: show only 4 addons with more indicator
+    if (isDisabled) {
+      const displayAddons = selectedAddons.slice(0, 4);
+      const remainingCount = selectedAddons.length - 4;
+
+      return (
+        <div className="flex flex-wrap gap-1">
+          {displayAddons.map((addon) => {
+            const option = addonOptions?.find(opt => opt.value === String(addon.addonId));
+            return (
+              <Badge key={addon.addonId} variant="secondary" className="text-xs">
+                {option?.label || `Add-on ${addon.addonId}`}
+              </Badge>
+            );
+          })}
+          {remainingCount > 0 && (
+            <Badge variant="outline" className="text-xs">
+              +{remainingCount} more
+            </Badge>
+          )}
+        </div>
+      );
+    }
+
+    // Form view: show full multi-select combobox
+    return (
+      <MultiSelectCombobox
+        value={selectedAddons}
+        onChange={(newValue) => onChange(newValue)}
+        options={addonOptions || []}
+        disabled={isDisabled}
+        idKey="addonId"
+        placeholder="Select add-on"
+      />
+    );
+  };
 
   return [
   {
@@ -79,70 +125,116 @@ export const getFormFields = (
       itemLabel: 'Item',
       itemsLabel: 'Items',
       emptyMessage: 'No items added yet. Click "Add Item" to start.',
-      columns: [
+      useTabs: true,
+      topRowColumns: [
         {
           key: 'itemId',
           label: 'Item',
           type: 'select',
           options: itemOptions,
           required: true,
-    
         },
         {
           key: 'quantity',
           label: 'Quantity',
           type: 'number',
           required: true,
-       
+        },
+        {
+          key: 'unitOfMeasureId',
+          label: 'UOM',
+          type: 'select',
+          options: uomOptions,
+          required: true,
         },
         {
           key: 'unitPrice',
           label: 'Unit Price',
           type: 'number',
           required: true,
-        
+        },
+      ],
+      tabs: [
+        {
+          value: 'pricing',
+          label: 'Pricing',
+          columns: [
+            {
+              key: 'discountPercent',
+              label: 'Discount %',
+              type: 'number',
+              required: false,
+            },
+            {
+              key: 'taxPercent',
+              label: 'Tax %',
+              type: 'number',
+              required: false,
+            },
+          ],
         },
         {
-          key: 'unitOfMeasureId',
-          label: 'Unit of Measure',
-          type: 'select',
-          options: uomOptions,
-          required: true,
-       
+          value: 'fulfillment',
+          label: 'Fulfillment',
+          columns: [
+            {
+              key: 'warehouseId',
+              label: 'Warehouse',
+              type: 'select',
+              options: warehouseOptions,
+              required: true,
+            },
+            {
+              key: 'locationId',
+              label: 'Location',
+              type: 'select',
+              options: locationOptions,
+              required: true,
+              dependsOn: 'warehouseId',
+              getOptions: getLocationsByWarehouse ? async (warehouseId: string | number) => {
+                return getLocationsByWarehouse(warehouseId);
+              } : undefined,
+            },
+          ],
         },
         {
-          key: 'warehouseId',
-          label: 'Warehouse',
-          type: 'select',
-          options: warehouseOptions,
-          required: true,
-      
-        },
-        {
-          key: 'locationId',
-          label: 'Location',
-          type: 'select',
-          options: locationOptions,
-          required: true,
-        
-          dependsOn: 'warehouseId',
-          getOptions: getLocationsByWarehouse ? async (warehouseId: string | number) => {
-            return getLocationsByWarehouse(warehouseId);
-          } : undefined,
-        },
-        {
-          key: 'discountPercent',
-          label: 'Discount %',
-          type: 'number',
-          required: false,
-          
-        },
-        {
-          key: 'taxPercent',
-          label: 'Tax %',
-          type: 'number',
-          required: false,
-          
+          value: 'printing',
+          label: 'Printing',
+          gridCols: 3,
+          columns: [
+            {
+              key: 'serviceTypeId',
+              label: 'Service',
+              type: 'select',
+              options: serviceTypeOptions || [],
+              required: false, 
+            },
+            {
+              key: 'serviceOptionId',
+              label: 'Service Option',
+              type: 'select',
+              options: serviceOptionOptions || [],
+              required: false, 
+            },
+            {
+              key: 'labelSource',
+              label: 'Label Source',
+              type: 'select',
+              options: [
+                { label: 'Customer', value: 'CUSTOMER' },
+                { label: 'Company', value: 'COMPANY' }
+              ],
+              required: false, 
+            },
+            {
+              key: 'addons',
+              label: 'Add-ons',
+              type: 'custom',
+              required: false,
+              render: renderAddons,
+              width: 'full',
+            },
+          ],
         },
       ],
     },

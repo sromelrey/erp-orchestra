@@ -4,18 +4,63 @@ import {
   IsEnum,
   IsNumber,
   IsBoolean,
+  ValidateIf,
+  IsArray,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type, Transform } from 'class-transformer';
+import { RuleType } from '@/entities/addons/addon-inclusion-rule.entity';
 
 export enum AddonType {
   PHYSICAL = 'PHYSICAL',
   SERVICE = 'SERVICE',
 }
 
+export class CreateAddonRuleDto {
+  @ApiPropertyOptional({ description: 'Rule ID (for updates)' })
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+
+  @ApiProperty({
+    description: 'Type of rule',
+    enum: RuleType,
+  })
+  @IsEnum(RuleType)
+  ruleType: RuleType;
+
+  @ApiProperty({ description: 'Threshold value for the rule' })
+  @IsNumber()
+  thresholdValue: number;
+
+  @ApiProperty({ description: 'Discount percentage' })
+  @IsNumber()
+  discountPercent: number;
+
+  @ApiPropertyOptional({
+    description: 'Whether the rule is active',
+    default: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }: { value: unknown }) => {
+    if (typeof value === 'string') {
+      return value === 'true';
+    }
+    return value as boolean;
+  })
+  isActive?: boolean = true;
+}
+
 export class CreateAddonDto {
-  @ApiProperty({ description: 'Unique code for the add-on' })
+  @ApiPropertyOptional({
+    description: 'Unique code for the add-on (auto-generated if not provided)',
+  })
+  @IsOptional()
+  @ValidateIf((object, value) => value !== undefined)
   @IsString()
-  code: string;
+  code?: string;
 
   @ApiProperty({ description: 'Name of the add-on' })
   @IsString()
@@ -46,4 +91,14 @@ export class CreateAddonDto {
   @ApiProperty({ description: 'Whether the add-on is active', default: true })
   @IsBoolean()
   isActive: boolean = true;
+
+  @ApiPropertyOptional({
+    description: 'Addon inclusion rules',
+    type: [CreateAddonRuleDto],
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAddonRuleDto)
+  rules?: CreateAddonRuleDto[];
 }

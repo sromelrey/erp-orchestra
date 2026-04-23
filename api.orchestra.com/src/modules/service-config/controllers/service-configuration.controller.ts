@@ -193,6 +193,46 @@ export class ServiceConfigurationController {
     );
   }
 
+  @Get('price')
+  @RequireAccess({
+    feature: 'SERVICE_CONFIG',
+    permission: 'service_config.service_configuration.view',
+  })
+  @ApiOperation({
+    summary: 'Get price for service configuration',
+    description:
+      'Quick lookup to get the price and service names for a given service type and option',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Price retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        price: { type: 'number' },
+        serviceTypeName: { type: 'string' },
+        serviceOptionName: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'No matching configuration found' })
+  @ApiQuery({ name: 'service_type_id', required: true, example: 1 })
+  @ApiQuery({ name: 'service_option_id', required: true, example: 1 })
+  async getPrice(
+    @Query('service_type_id') serviceTypeId: string,
+    @Query('service_option_id') serviceOptionId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const actor = this.getActor(req);
+    return await this.serviceConfigurationService.getPrice(
+      actor.tenantId,
+      Number(serviceTypeId),
+      Number(serviceOptionId),
+    );
+  }
+
   @Patch(':id')
   @RequireAccess({
     feature: 'SERVICE_CONFIG',

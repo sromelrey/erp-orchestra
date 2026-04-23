@@ -1,5 +1,5 @@
 import { Column } from '@/components/ui/data-table';
-import { SalesOrder, SalesOrderStatus } from '@/store/api/salesOrdersApi';
+import { SalesOrder, SalesOrderStatus, SalesOrderItem } from '@/store/api/salesOrdersApi';
 
 const getStatusColor = (status: SalesOrderStatus): string => {
   switch (status) {
@@ -67,11 +67,39 @@ export const columns: Column<SalesOrder>[] = [
     },
   },
   {
+    header: 'Services',
+    cell: (item) => {
+      if (!item.items || item.items.length === 0) return <div>-</div>;
+
+      // Get unique services from all items
+      const services = new Set<string>();
+      item.items.forEach((orderItem: SalesOrderItem) => {
+        if (orderItem.serviceType?.name && orderItem.serviceOption?.name) {
+          services.add(`${orderItem.serviceType.name} - ${orderItem.serviceOption.name}`);
+        }
+      });
+
+      if (services.size === 0) return <div>-</div>;
+
+      const serviceList = Array.from(services).slice(0, 2); // Show max 2 services
+      const hasMore = services.size > 2;
+
+      return (
+        <div className="text-sm">
+          {serviceList.map((service, idx) => (
+            <div key={idx}>{service}</div>
+          ))}
+          {hasMore && <div className="text-gray-500">+{services.size - 2} more</div>}
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: 'discountAmount',
     header: 'Discount',
     cell: (item) => {
       const discount = item.discountAmount;
-      return discount ? <div className="text-red-600">-${discount}</div> : <div>-</div>;
+      return discount ? <div className="text-red-600">-₱{discount}</div> : <div>-</div>;
     },
   },
   {
@@ -79,7 +107,7 @@ export const columns: Column<SalesOrder>[] = [
     header: 'Tax',
     cell: (item) => {
       const tax = item.taxAmount;
-      return tax ? <div className="text-green-600">${tax}</div> : <div>-</div>;
+      return tax ? <div className="text-green-600">₱{tax}</div> : <div>-</div>;
     },
   },
   {
@@ -87,7 +115,7 @@ export const columns: Column<SalesOrder>[] = [
     header: 'Final Amount',
     cell: (item) => {
       const amount = item.finalAmount;
-      return <div className="font-semibold">${amount}</div>;
+      return <div className="font-semibold">₱{amount}</div>;
     },
   },
   {

@@ -25,6 +25,7 @@ interface DataTableProps<T> {
   keyExtractor: (row: T) => string | number;
   emptyMessage?: string;
   expandedRow?: (row: T) => React.ReactNode;
+  autoSize?: boolean;
 }
 
 export function DataTable<T>({
@@ -33,6 +34,7 @@ export function DataTable<T>({
   keyExtractor,
   emptyMessage = 'No results.',
   expandedRow,
+  autoSize = false,
 }: DataTableProps<T>) {
   const [expandedRows, setExpandedRows] = useState<Set<string | number>>(new Set());
 
@@ -78,7 +80,7 @@ export function DataTable<T>({
     : columns;
 
   return (
-    <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+    <div className={`rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden ${autoSize ? 'w-fit' : 'w-full'}`}>
       <Table>
         <TableHeader>
           <TableRow>

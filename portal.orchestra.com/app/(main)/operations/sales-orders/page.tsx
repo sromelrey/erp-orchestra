@@ -11,16 +11,18 @@ import { useSalesOrderWorkflow } from '@/hooks/operations/useSalesOrderWorkflow'
 import { useSalesOrderForm } from '@/hooks/operations/useSalesOrderForm';
 import { useSalesOrderStats } from '@/hooks/operations/useSalesOrderStats';
 import { PermissionGuard } from '@/components/auth/PermissionGuard';
-import { SalesOrderStatus, CreateSalesOrderRequest, UpdateSalesOrderRequest } from '@/store/api/salesOrdersApi';
+import { SalesOrderStatus, CreateSalesOrderRequest, UpdateSalesOrderRequest, SalesOrder } from '@/store/api/salesOrdersApi';
 import { formatSalesOrderForCreate, formatSalesOrderForUpdate } from '@/utils/salesOrderHelpers';
 import { SalesOrderHeader } from '@/components/sales-orders/SalesOrderHeader';
 import { SalesOrderStats } from '@/components/sales-orders/SalesOrderStats';
 import { DeliveryDialog } from '@/components/sales-orders/DeliveryDialog';
+import { SalesOrderExpandedRow } from '@/components/sales-orders/SalesOrderExpandedRow';
 import { selectCurrentUser } from '@/store/slices/authSlice';
 
 export default function SalesOrdersPage() {
   const currentUser = useSelector(selectCurrentUser);
   const [currentEditStatus, setCurrentEditStatus] = useState<SalesOrderStatus | undefined>();
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const {
     salesOrders,
@@ -38,7 +40,10 @@ export default function SalesOrdersPage() {
     itemOptions,
     warehouseOptions,
     uomOptions,
-  } = useSalesOrders();
+    serviceTypeOptions,
+    serviceOptionOptions,
+    addonOptions,
+  } = useSalesOrders({ skipFormOptions: !isFormOpen });
 
   const { workflowActions, isProcessing, optimisticUpdates, mergeWithOptimistic, deliveryDialogOpen, handleDeliveryDialogConfirm, handleDeliveryDialogCancel, deliveryOrderId, handleFormOpen: workflowHandleFormOpen, handleCloseForm: workflowHandleCloseForm } =
     useSalesOrderWorkflow({
@@ -61,6 +66,10 @@ export default function SalesOrdersPage() {
     workflowHandleCloseForm();
   };
 
+  const handleFormOpenChange = (open: boolean) => {
+    setIsFormOpen(open);
+  };
+
   const { getLocationsByWarehouse } = useSalesOrderForm();
 
   const { statsCards } = useSalesOrderStats({
@@ -81,7 +90,7 @@ export default function SalesOrdersPage() {
     await handleDelete(id);
   };
 
-  const formFields = getFormFields(itemOptions, uomOptions, warehouseOptions, [], getLocationsByWarehouse, currentEditStatus);
+  const formFields = getFormFields(itemOptions, uomOptions, warehouseOptions, [], getLocationsByWarehouse, currentEditStatus, serviceTypeOptions, serviceOptionOptions, addonOptions);
 
   const salesOrdersWithOptimistic = mergeWithOptimistic(salesOrders as unknown as Record<string, unknown>[]);
 
@@ -106,6 +115,7 @@ export default function SalesOrdersPage() {
           onDelete={handleDeleteSalesOrder}
           onFormOpen={handleFormOpen}
           onFormClose={handleCloseForm}
+          onFormOpenChange={handleFormOpenChange}
           searchPlaceholder="Search sales orders by order no or customer..."
           isLoading={isLoading}
           isMutating={isCreating || isUpdating || isDeleting}
@@ -119,6 +129,8 @@ export default function SalesOrdersPage() {
           workflowActions={workflowActions}
           optimisticUpdates={optimisticUpdates}
           header={SalesOrderHeader}
+          expandedRow={(item) => <SalesOrderExpandedRow order={item as unknown as SalesOrder} />}
+          autoSize={true}
           isRowEditable={(item: unknown) => {
             const order = item as { status: SalesOrderStatus };
             return order.status === SalesOrderStatus.DRAFT;

@@ -18,7 +18,6 @@ POST {{API_BASE_URL}}/v1/addons
 Content-Type: application/json
 
 {
-  "code": "ADDON_0001",
   "name": "Inner Tag",
   "description": "Label inside the garment",
   "type": "PHYSICAL",
@@ -33,7 +32,6 @@ POST {{API_BASE_URL}}/v1/addons
 Content-Type: application/json
 
 {
-  "code": "ADDON_0002",
   "name": "Hangtag",
   "description": "Brand hangtag for garment",
   "type": "PHYSICAL",
@@ -48,7 +46,6 @@ POST {{API_BASE_URL}}/v1/addons
 Content-Type: application/json
 
 {
-  "code": "ADDON_0003",
   "name": "Hem Tag",
   "description": "Tag at the hem of garment",
   "type": "PHYSICAL",
@@ -63,7 +60,6 @@ POST {{API_BASE_URL}}/v1/addons
 Content-Type: application/json
 
 {
-  "code": "ADDON_0004",
   "name": "Sleeve Tag",
   "description": "Tag on sleeve",
   "type": "PHYSICAL",

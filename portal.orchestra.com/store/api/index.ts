@@ -11,6 +11,8 @@ import { bomEndpoints } from './bomApi';
 import { stockAdjustmentsEndpoints } from './stockAdjustmentsApi';
 import { stockTransfersEndpoints } from './stockTransfersApi';
 import { goodsIssuanceEndpoints } from './goodsIssuanceApi';
+import { serviceConfigEndpoints } from './serviceConfigApi';
+import { addonsEndpoints } from './addonsApi';
 import { departmentsApi, useGetDepartmentsQuery, useCreateDepartmentMutation, useGetDepartmentByIdQuery, useUpdateDepartmentMutation } from './departmentsApi';
 import { dashboardApi } from './dashboardApi';
 
@@ -28,6 +30,8 @@ export const api = baseApi
   .injectEndpoints({ endpoints: stockAdjustmentsEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: stockTransfersEndpoints, overrideExisting: true })
   .injectEndpoints({ endpoints: goodsIssuanceEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: serviceConfigEndpoints, overrideExisting: true })
+  .injectEndpoints({ endpoints: addonsEndpoints, overrideExisting: true })
   
 // Export hooks for each API
 export const warehousesHooks = api.endpoints;
@@ -145,6 +149,41 @@ export const useUpdateGoodsIssuanceMutation = api.useUpdateGoodsIssuanceMutation
 export const useApproveGoodsIssuanceMutation = api.useApproveGoodsIssuanceMutation;
 export const useCancelGoodsIssuanceMutation = api.useCancelGoodsIssuanceMutation;
 export const useDeleteGoodsIssuanceMutation = api.useDeleteGoodsIssuanceMutation;
+
+// Service Config hooks
+export const useGetServiceTypesQuery = api.useGetServiceTypesQuery;
+export const useGetServiceTypeByIdQuery = api.useGetServiceTypeByIdQuery;
+export const useCreateServiceTypeMutation = api.useCreateServiceTypeMutation;
+export const useUpdateServiceTypeMutation = api.useUpdateServiceTypeMutation;
+export const useDeleteServiceTypeMutation = api.useDeleteServiceTypeMutation;
+
+export const useGetServiceOptionsQuery = api.useGetServiceOptionsQuery;
+export const useGetServiceOptionByIdQuery = api.useGetServiceOptionByIdQuery;
+export const useCreateServiceOptionMutation = api.useCreateServiceOptionMutation;
+export const useUpdateServiceOptionMutation = api.useUpdateServiceOptionMutation;
+export const useDeleteServiceOptionMutation = api.useDeleteServiceOptionMutation;
+
+export const useGetServiceConfigurationsQuery = api.useGetServiceConfigurationsQuery;
+export const useGetServiceConfigurationByIdQuery = api.useGetServiceConfigurationByIdQuery;
+export const useCreateServiceConfigurationMutation = api.useCreateServiceConfigurationMutation;
+export const useUpdateServiceConfigurationMutation = api.useUpdateServiceConfigurationMutation;
+export const useDeleteServiceConfigurationMutation = api.useDeleteServiceConfigurationMutation;
+export const useGetServicePriceQuery = api.useGetServicePriceQuery;
+
+// Addons hooks
+export const useGetAddonsQuery = api.useGetAddonsQuery;
+export const useGetAddonByIdQuery = api.useGetAddonByIdQuery;
+export const useCreateAddonMutation = api.useCreateAddonMutation;
+export const useUpdateAddonMutation = api.useUpdateAddonMutation;
+export const useDeleteAddonMutation = api.useDeleteAddonMutation;
+export const useGetAddonRulesQuery = api.useGetAddonRulesQuery;
+export const useGetAddonRuleByIdQuery = api.useGetAddonRuleByIdQuery;
+export const useCreateAddonRuleMutation = api.useCreateAddonRuleMutation;
+export const useUpdateAddonRuleMutation = api.useUpdateAddonRuleMutation;
+export const useDeleteAddonRuleMutation = api.useDeleteAddonRuleMutation;
+export const useGetAddonWithRulesQuery = api.useGetAddonWithRulesQuery;
+export const useCheckAddonEligibilityQuery = api.useCheckAddonEligibilityQuery;
+export const useCalculateAddonPriceMutation = api.useCalculateAddonPriceMutation;
 
 // Re-export other APIs as needed
 export { materialsApi } from './materialsApi';

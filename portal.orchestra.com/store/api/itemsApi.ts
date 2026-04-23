@@ -1,6 +1,7 @@
 import { EndpointBuilder, BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { FetchBaseQueryError, FetchArgs, FetchBaseQueryMeta } from '@reduxjs/toolkit/query';
 import { TagTypes } from './baseApi';
+import { PaginatedResponse } from '@/types';
 
 export interface ItemCategory {
   id: number;
@@ -99,7 +100,7 @@ export const itemsEndpoints = (builder: EndpointBuilder<BaseQueryFn<string | Fet
   }),
 
   // Items
-  getItems: builder.query<Item[], ItemsQueryParams>({
+  getItems: builder.query<PaginatedResponse<Item>, ItemsQueryParams>({
     query: (params) => ({
       url: '/ops/items',
       params,
